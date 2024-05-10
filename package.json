@@ -1,0 +1,25 @@
+{
+  "name": "shop.dafunda.com",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro build && wrangler pages dev",
+    "astro": "astro",
+    "deploy": "astro build && wrangler pages deploy",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.6.0",
+    "@astrojs/cloudflare": "^10.2.5",
+    "astro": "^4.8.2",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240502.0",
+    "wrangler": "^3.55.0"
+  }
+}
+
