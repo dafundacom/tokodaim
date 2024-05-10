@@ -6,10 +6,7 @@ import { cn } from "@/lib/utils/style"
 const user = Astro.locals.user
 
 if (!user) {
-  return new Response(null, {
-    status: 404,
-    statusText: "Not found",
-  })
+  return Astro.redirect("/")
 }
 ---
 
