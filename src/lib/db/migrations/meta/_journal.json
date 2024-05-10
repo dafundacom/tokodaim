@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1715322013926,
+      "tag": "0000_parallel_eternity",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1715322366803,
+      "tag": "0001_even_penance",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1715323834645,
+      "tag": "0002_slippery_gargoyle",
+      "breakpoints": true
+    }
+  ]
+}

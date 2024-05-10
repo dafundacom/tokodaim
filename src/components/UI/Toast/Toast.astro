@@ -1,0 +1,51 @@
+---
+
+---
+
+<script type="module" is:inline>
+  let notif = document.createElement("div")
+  notif.style.position = "fixed"
+  notif.style.bottom = "20px"
+  notif.style.right = "20px"
+  notif.style.padding = "15px"
+  notif.style.borderRadius = "5px"
+  notif.style.zIndex = "1000"
+
+  document.addEventListener("showNotification", function (e) {
+    notif.innerText = e.detail.message
+
+    switch (e.detail.type) {
+      case "success":
+        notif.style.backgroundColor = "#4CAF50"
+        notif.style.color = "white"
+        break
+      case "warning":
+        notif.style.backgroundColor = "#ff9800"
+        notif.style.color = "black"
+        break
+      case "danger":
+        notif.style.backgroundColor = "#f44336"
+        notif.style.color = "white"
+        break
+    }
+
+    document.body.appendChild(notif)
+
+    let timeoutId = setTimeout(function () {
+      notif.style.opacity = "0"
+      setTimeout(function () {
+        if (document.body.contains(notif)) {
+          document.body.removeChild(notif)
+          notif.style.opacity = "1"
+        }
+      }, 500)
+    }, 3000)
+
+    notif.addEventListener("click", function () {
+      clearTimeout(timeoutId)
+      if (document.body.contains(notif)) {
+        document.body.removeChild(notif)
+      }
+    })
+  })
+</script>

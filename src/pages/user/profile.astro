@@ -1,0 +1,43 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro"
+import { buttonVariants } from "@/components/UI/Button"
+import { cn } from "@/lib/utils/style"
+
+const user = Astro.locals.user
+
+if (!user) {
+  return new Response(null, {
+    status: 404,
+    statusText: "Not found",
+  })
+}
+---
+
+<MainLayout>
+  <main class="pb-10">
+    <div
+      class="authenticated-layout container mt-4 md:mt-10"
+      data-testid="authenticated-layout"
+    >
+      <section class="profile-page">
+        <h2 class="mb-[14px] text-base font-bold md:mb-6 md:text-2xl">
+          Akun
+        </h2><div class="mb-[14px] flex flex-wrap text-sm md:mb-6 md:text-base">
+          <div class="w-[130px]">Name</div><div class="w-[calc(100%-130px)]">
+            {user?.name}
+          </div><div class="mt-2 w-[130px]">Email</div><div
+            class="mt-2 w-[calc(100%-130px)]"
+          >
+            {user?.email}
+          </div>
+        </div>
+        <form method="post" action="/api/auth/logout">
+          <button
+            class={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
+            variant="outline">Logout</button
+          >
+        </form>
+      </section>
+    </div>
+  </main>
+</MainLayout>

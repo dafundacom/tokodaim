@@ -1,0 +1,43 @@
+---
+import { Icon } from "@/components/UI/Icon"
+---
+
+<script is:inline>
+  const r = window.matchMedia("(prefers-color-scheme: dark)")
+  let toggle = r.matches ? "dark" : localStorage.getItem("theme") ?? "light"
+  function switchIcon() {
+    if (toggle !== "dark") {
+      document.getElementById("light-icon").style.display = "none"
+      document.getElementById("dark-icon").style.display = "block"
+    } else {
+      document.getElementById("light-icon").style.display = "block"
+      document.getElementById("dark-icon").style.display = "none"
+    }
+  }
+
+  const toggleTheme = () => {
+    const newTheme = toggle === "light" ? "dark" : "light"
+    document.dispatchEvent(new CustomEvent("set-theme", { detail: newTheme }))
+    toggle = newTheme
+    switchIcon()
+  }
+</script>
+
+<div class="flex items-center justify-center">
+  <div
+    onclick="toggleTheme()"
+    class={`relative flex h-7 w-[52px] items-center rounded-full bg-border transition duration-200 ease-linear`}
+  >
+    <button
+      id="dark-mode-switcher"
+      class={`border-1 absolute left-0 mx-[2px] flex h-6 w-6 transform cursor-pointer items-center justify-center rounded-full bg-background transition duration-100 ease-linear translate-x-full`}
+    >
+      <Icon.Dark id="dark-icon" aria-label="Dark Theme" className="h-4 w-4" />
+      <Icon.Light
+        id="light-icon"
+        aria-label="Light Theme"
+        className="hidden h-4 w-4"
+      />
+    </button>
+  </div>
+</div>
