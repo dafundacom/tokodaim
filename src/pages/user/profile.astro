@@ -28,12 +28,27 @@ if (!user) {
             {user?.email}
           </div>
         </div>
-        <form method="post" action="/api/auth/logout">
-          <button
-            class={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
-            variant="outline">Logout</button
-          >
-        </form>
+        <div class="flex justify-start space-x-2">
+          {
+            user?.role.includes("admin" || "author") && (
+              <a
+                class={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "rounded-full",
+                )}
+                href="/dashboard"
+              >
+                Dashboard
+              </a>
+            )
+          }
+          <form method="post" action="/api/auth/logout">
+            <button
+              class={cn(buttonVariants({ variant: "danger" }), "rounded-full")}
+              >Logout</button
+            >
+          </form>
+        </div>
       </section>
     </div>
   </main>

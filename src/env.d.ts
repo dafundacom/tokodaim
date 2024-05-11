@@ -7,16 +7,19 @@
 
 type UserRole = "user" | "member" | "author" | "admin"
 
-type UserType =
-  | (import("lucia").User & {
-      role: UserRole
-    })
-  | null
+interface IUser {
+  id: string
+  name: string
+  username: string
+  email: string
+  image: string
+  role: UserRole
+}
 
 declare namespace App {
   interface Locals extends Runtime {
     session: import("lucia").Session | null
-    user: UserType
+    user: UserType | null
     cache(_seconds: number): void
   }
 }
