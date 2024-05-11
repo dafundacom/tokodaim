@@ -20,9 +20,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
       <Sidebar>
         {user?.role === "admin" && (
           <>
-            <SidebarItem icon={<Icon.Shop aria-label="Visit Shop" />}>
-              <a aria-label="Visit Shop" href="/shop" target="_blank">
-                Visit Shop
+            <SidebarItem icon={<Icon.Home aria-label="Home" />}>
+              <a aria-label="Home" href="/" target="_blank">
+                Home
               </a>
             </SidebarItem>
             <SidebarItem
