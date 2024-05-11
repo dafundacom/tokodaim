@@ -11,6 +11,11 @@ const balanceResponse = await fetch(
   `${import.meta.env.PUBLIC_API_URL}/top-up/digiflazz/balance`,
 )
 const balance = balanceResponse.ok ? await balanceResponse.json() : null
+
+const voucherResponse = await fetch(
+  `${import.meta.env.PUBLIC_API_URL}/voucher/count`,
+)
+const voucher = voucherResponse.ok ? await voucherResponse.json() : null
 ---
 
 <DashboardLayout
@@ -44,6 +49,13 @@ const balance = balanceResponse.ok ? await balanceResponse.json() : null
           >{formatIdr((balance as number) ?? 0)}</DashboardBoxCount
         >
         <DashboardBoxDescription>balance</DashboardBoxDescription>
+      </DashboardBox>
+      <DashboardBox>
+        <DashboardBoxIconWrapper>
+          <Icon.Discount />
+        </DashboardBoxIconWrapper>
+        <DashboardBoxCount>{voucher ?? 0}</DashboardBoxCount>
+        <DashboardBoxDescription>vouchers</DashboardBoxDescription>
       </DashboardBox>
     </div>
   </div>
