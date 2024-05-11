@@ -22,6 +22,20 @@
       "when": 1715323834645,
       "tag": "0002_slippery_gargoyle",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1715337840936,
+      "tag": "0003_sparkling_star_brand",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1715341609246,
+      "tag": "0004_swift_lady_vermin",
+      "breakpoints": true
     }
   ]
 }

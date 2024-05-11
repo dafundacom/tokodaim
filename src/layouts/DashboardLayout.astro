@@ -1,0 +1,91 @@
+---
+import { SEO, type Props as SeoProps } from "astro-seo"
+
+import "@/styles/globals.css"
+
+import DashboardContainer from "@/components/Dashboard/DashboardContainer"
+import Themes from "@/components/Theme/Themes.astro"
+import DashboardSidebar from "@/components/Dashboard/DashboardSidebar"
+import { Toaster } from "@/components/UI/Toast/Toaster"
+import Toast from "@/components/UI/Toast/Toast.astro"
+
+interface Props {
+  seo?: SeoProps
+}
+
+const user = Astro.locals.user
+
+const { seo } = Astro.props
+
+const settingResponse = await fetch(
+  `${import.meta.env.PUBLIC_API_URL}/setting/key/settings`,
+)
+
+const settings = settingResponse.ok ? await settingResponse.json() : null
+
+let siteSettings
+
+if (settingResponse.ok) {
+  const parsedData = JSON.parse(settings)
+  siteSettings = { ...parsedData }
+}
+
+const title = seo?.title || import.meta.env.PUBLIC_SITE_TITLE
+const description = seo?.description || import.meta.env.PUBLIC_SITE_DESCRIPTION
+const titleTemplate = `%s | ${seo?.titleTemplate ?? siteSettings?.siteTagline ?? import.meta.env.PUBLIC_SITE_TITLE ?? ""}`
+const titleDefault =
+  seo?.titleDefault ??
+  siteSettings?.siteTitle ??
+  import.meta.env.PUBLIC_SITE_TITLE ??
+  "Teknodaim"
+
+if (!user.role.includes("admin")) {
+  return new Response(null, {
+    status: 404,
+    statusText: "Not found",
+  })
+}
+---
+
+<html lang="id">
+  <head>
+    <Themes />
+    <SEO
+      {...seo}
+      title={title}
+      description={description}
+      titleTemplate={titleTemplate}
+      titleDefault={titleDefault}
+      charset="utf-8"
+      noindex={true}
+    />
+    <link rel="icon" type="image/svg+xml" href="/icon/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      is:inline
+      type="text/partytown"
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=G-P4Y1YPM7SR`}></script>
+    <script is:inline type="text/partytown">
+      {
+        ;`
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", "G-P4Y1YPM7SR");
+          `
+      }
+    </script>
+    <Toast />
+  </head>
+  <body class="font-400 font-sans antialiased">
+    <Toaster client:load />
+    <DashboardContainer client:load
+      ><Fragment slot="sidebar"
+        ><DashboardSidebar user={user} client:load /></Fragment
+      ><slot /></DashboardContainer
+    >
+  </body>
+</html>

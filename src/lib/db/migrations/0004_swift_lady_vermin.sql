@@ -1,0 +1,1 @@
+ALTER TABLE promos ADD `status` text DEFAULT 'draft' NOT NULL;

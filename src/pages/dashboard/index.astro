@@ -1,0 +1,50 @@
+---
+import DashboardLayout from "@/layouts/DashboardLayout.astro"
+import DashboardBox from "@/components/Dashboard/DashboardBox.astro"
+import DashboardBoxCount from "@/components/Dashboard/DashboardBoxCount.astro"
+import DashboardBoxDescription from "@/components/Dashboard/DashboardBoxDescription.astro"
+import DashboardBoxIconWrapper from "@/components/Dashboard/DashboardBoxIconWrapper.astro"
+import { Icon } from "@/components/UI/Icon"
+import { formatIdr } from "@/lib/utils/currency"
+
+const balanceResponse = await fetch(
+  `${import.meta.env.PUBLIC_API_URL}/top-up/digiflazz/balance`,
+)
+const balance = balanceResponse.ok ? await balanceResponse.json() : null
+---
+
+<DashboardLayout
+  seo={{
+    title: "Dashboard",
+    description: "Dashboard",
+
+    canonical: `${import.meta.env.PUBLIC_SITE_URL}/dashboard`,
+    openGraph: {
+      basic: {
+        title: `Dashboard | `,
+        url: `${import.meta.env.PUBLIC_SITE_URL}/dashboard`,
+        type: "website",
+        image: "",
+      },
+      optional: {
+        description: "Dashboard",
+        locale: "ID",
+      },
+    },
+  }}
+>
+  <div class="mx-4 my-8 w-full">
+    <h2 class="text-3xl">Statistics</h2>
+    <div class="my-8 grid grid-cols-2 gap-3 md:grid-cols-5">
+      <DashboardBox>
+        <DashboardBoxIconWrapper>
+          <Icon.Balance />
+        </DashboardBoxIconWrapper>
+        <DashboardBoxCount
+          >{formatIdr((balance as number) ?? 0)}</DashboardBoxCount
+        >
+        <DashboardBoxDescription>balance</DashboardBoxDescription>
+      </DashboardBox>
+    </div>
+  </div>
+</DashboardLayout>

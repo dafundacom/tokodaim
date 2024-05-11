@@ -1,4 +1,4 @@
-// TODO: Add sort-imports plugin
+ // TODO: Add sort-imports plugin
 
 /** @typedef  {import("prettier").Config} PrettierConfig */
 /** @typedef {import("prettier-plugin-tailwindcss").PluginOptions} TailwindConfig */

@@ -66,6 +66,11 @@ export const stylePlugin = plugin(
         "@apply bg-background text-foreground": {},
         fontFeatureSettings: '"rlig" 2, "calt" 1',
       },
+      ".scrollbar": { scrollBehavior: "smooth" },
+      ".scrollbar::-webkit-scrollbar": { width: "3px" },
+      ".short-container": {
+        scrollSnapType: "y mandatory",
+      },
       "::selection": { "@apply bg-primary/40 text-foreground": {} },
       h1: { "@apply text-2xl font-bold md:text-4xl": {} },
       h2: { "@apply text-xl font-bold md:text-3xl": {} },
