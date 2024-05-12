@@ -60,7 +60,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleTopics.articleId, articles.id))
           .leftJoin(topics, eq(articleTopics.topicId, topics.id))
           .where(eq(articles.id, articleTranslationData?.articles[0].id!))
-          .all()
 
         const articleAuthorsData = await ctx.db
           .select({ id: users.id, name: users.name })
@@ -68,7 +67,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
           .leftJoin(users, eq(articleAuthors.userId, users.id))
           .where(eq(articles.id, articleTranslationData?.articles[0].id!))
-          .all()
 
         const articleEditorsData = await ctx.db
           .select({ id: users.id, name: users.name })
@@ -76,7 +74,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleEditors.articleId, articles.id))
           .leftJoin(users, eq(articleEditors.userId, users.id))
           .where(eq(articles.id, articleTranslationData?.articles[0].id!))
-          .all()
 
         const articleData = articleTranslationData?.articles.map((item) => ({
           ...item,
@@ -120,7 +117,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleTopics.articleId, articles.id))
           .leftJoin(topics, eq(articleTopics.topicId, topics.id))
           .where(eq(articles.id, input))
-          .all()
 
         const articleAuthorsData = await ctx.db
           .select({ id: users.id, name: users.name })
@@ -128,7 +124,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
           .leftJoin(users, eq(articleAuthors.userId, users.id))
           .where(eq(articles.id, input))
-          .all()
 
         const articleEditorsData = await ctx.db
           .select({ id: users.id, name: users.name })
@@ -136,7 +131,6 @@ export const articleRouter = createTRPCRouter({
           .leftJoin(articles, eq(articleEditors.articleId, articles.id))
           .leftJoin(users, eq(articleEditors.userId, users.id))
           .where(eq(articles.id, input))
-          .all()
 
         const data = articleData.map((item) => ({
           ...item.articles,
@@ -176,7 +170,6 @@ export const articleRouter = createTRPCRouter({
         .leftJoin(articles, eq(articleTopics.articleId, articles.id))
         .leftJoin(topics, eq(articleTopics.topicId, topics.id))
         .where(eq(articles.id, articleData[0].articles.id))
-        .all()
 
       const articleAuthorsData = await ctx.db
         .select({ id: users.id, name: users.name, username: users.username })
@@ -184,7 +177,6 @@ export const articleRouter = createTRPCRouter({
         .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
         .leftJoin(users, eq(articleAuthors.userId, users.id))
         .where(eq(articles.id, articleData[0].articles.id))
-        .all()
 
       const articleEditorsData = await ctx.db
         .select({ id: users.id, name: users.name })
@@ -192,7 +184,6 @@ export const articleRouter = createTRPCRouter({
         .leftJoin(articles, eq(articleEditors.articleId, articles.id))
         .leftJoin(users, eq(articleEditors.userId, users.id))
         .where(eq(articles.id, articleData[0].articles.id))
-        .all()
 
       const data = articleData.map((item) => ({
         ...item.articles,
@@ -265,7 +256,7 @@ export const articleRouter = createTRPCRouter({
       z.object({
         language: languageType,
         limit: z.number().min(1).max(100).nullable(),
-        cursor: z.string().optional().nullable(),
+        cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -291,7 +282,7 @@ export const articleRouter = createTRPCRouter({
           },
         })
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()
@@ -365,7 +356,7 @@ export const articleRouter = createTRPCRouter({
         topicId: z.string(),
         language: languageType,
         limit: z.number().min(1).max(100).nullable(),
-        cursor: z.string().optional().nullable(),
+        cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -390,7 +381,7 @@ export const articleRouter = createTRPCRouter({
           article.topics.some((topic) => topic.topicId === input.topicId),
         )
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()
@@ -464,7 +455,7 @@ export const articleRouter = createTRPCRouter({
         authorId: z.string(),
         language: languageType,
         limit: z.number().min(1).max(100).nullable(),
-        cursor: z.string().optional().nullable(),
+        cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -489,7 +480,7 @@ export const articleRouter = createTRPCRouter({
           article.authors.some((author) => author.userId === input.authorId),
         )
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()
@@ -521,7 +512,7 @@ export const articleRouter = createTRPCRouter({
         currentArticleId: z.string(),
         language: languageType,
         limit: z.number().min(1).max(100).nullable(),
-        cursor: z.string().optional().nullable(),
+        cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -547,7 +538,7 @@ export const articleRouter = createTRPCRouter({
           article.topics.some((topic) => topic.topicId === input.topicId),
         )
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()
@@ -850,11 +841,11 @@ export const articleRouter = createTRPCRouter({
           userId: editor,
         }))
 
-        await ctx.db.batch([
-          ctx.db.insert(articleTopics).values(topicValues),
-          ctx.db.insert(articleAuthors).values(authorValues),
-          ctx.db.insert(articleEditors).values(editorValues),
-        ])
+        await ctx.db.transaction(async () => {
+          await ctx.db.insert(articleTopics).values(topicValues)
+          await ctx.db.insert(articleAuthors).values(authorValues)
+          await ctx.db.insert(articleEditors).values(editorValues)
+        })
 
         return data
       } catch (error) {
@@ -882,17 +873,17 @@ export const articleRouter = createTRPCRouter({
           .where(eq(articles.id, input.id))
           .returning()
 
-        await ctx.db.batch([
-          ctx.db
+        await ctx.db.transaction(async () => {
+          await ctx.db
             .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input.id)),
-          ctx.db
+            .where(eq(articleTopics.articleId, input.id))
+          await ctx.db
             .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input.id)),
-          ctx.db
+            .where(eq(articleAuthors.articleId, input.id))
+          await ctx.db
             .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input.id)),
-        ])
+            .where(eq(articleEditors.articleId, input.id))
+        })
 
         const topicValues = input.topics.map((topic) => ({
           articleId: data[0].id,
@@ -909,11 +900,11 @@ export const articleRouter = createTRPCRouter({
           userId: editor,
         }))
 
-        await ctx.db.batch([
-          ctx.db.insert(articleAuthors).values(authorValues),
-          ctx.db.insert(articleTopics).values(topicValues),
-          ctx.db.insert(articleEditors).values(editorValues),
-        ])
+        await ctx.db.transaction(async () => {
+          await ctx.db.insert(articleAuthors).values(authorValues)
+          await ctx.db.insert(articleTopics).values(topicValues)
+          await ctx.db.insert(articleEditors).values(editorValues)
+        })
 
         return data
       } catch (error) {
@@ -949,17 +940,17 @@ export const articleRouter = createTRPCRouter({
           .where(eq(articles.id, input.id))
           .returning()
 
-        await ctx.db.batch([
-          ctx.db
+        await ctx.db.transaction(async () => {
+          await ctx.db
             .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input.id)),
-          ctx.db
+            .where(eq(articleTopics.articleId, input.id))
+          await ctx.db
             .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input.id)),
-          ctx.db
+            .where(eq(articleAuthors.articleId, input.id))
+          await ctx.db
             .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input.id)),
-        ])
+            .where(eq(articleEditors.articleId, input.id))
+        })
 
         const topicValues = input.topics.map((topic) => ({
           articleId: data[0].id,
@@ -976,11 +967,11 @@ export const articleRouter = createTRPCRouter({
           userId: editor,
         }))
 
-        await ctx.db.batch([
-          ctx.db.insert(articleAuthors).values(authorValues),
-          ctx.db.insert(articleEditors).values(editorValues),
-          ctx.db.insert(articleTopics).values(topicValues),
-        ])
+        await ctx.db.transaction(async () => {
+          await ctx.db.insert(articleAuthors).values(authorValues)
+          await ctx.db.insert(articleEditors).values(editorValues)
+          await ctx.db.insert(articleTopics).values(topicValues)
+        })
 
         return data
       } catch (error) {
@@ -1042,11 +1033,11 @@ export const articleRouter = createTRPCRouter({
           userId: editor,
         }))
 
-        await ctx.db.batch([
-          ctx.db.insert(articleTopics).values(topicValues),
-          ctx.db.insert(articleAuthors).values(authorValues),
-          ctx.db.insert(articleEditors).values(editorValues),
-        ])
+        await ctx.db.transaction(async () => {
+          await ctx.db.insert(articleAuthors).values(authorValues)
+          await ctx.db.insert(articleTopics).values(topicValues)
+          await ctx.db.insert(articleEditors).values(editorValues)
+        })
 
         return data
       } catch (error) {
@@ -1081,18 +1072,17 @@ export const articleRouter = createTRPCRouter({
           })
         }
 
-        const data = await ctx.db.batch([
-          ctx.db
+        const data = await ctx.db.transaction(async () => {
+          await ctx.db
             .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input)),
-          ctx.db
+            .where(eq(articleTopics.articleId, input))
+          await ctx.db
             .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input)),
-          ctx.db
+            .where(eq(articleAuthors.articleId, input))
+          await ctx.db
             .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input)),
-          ctx.db.delete(articles).where(eq(articles.id, input)),
-        ])
+            .where(eq(articleEditors.articleId, input))
+        })
 
         return data
       } catch (error) {
@@ -1111,18 +1101,18 @@ export const articleRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.batch([
-          ctx.db
+        const data = await ctx.db.transaction(async () => {
+          await ctx.db
             .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input)),
-          ctx.db
+            .where(eq(articleTopics.articleId, input))
+          await ctx.db
             .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input)),
-          ctx.db
+            .where(eq(articleAuthors.articleId, input))
+          await ctx.db
             .delete(articleEditors)
             .where(eq(articleEditors.articleId, input)),
-          ctx.db.delete(articles).where(eq(articles.id, input)),
-        ])
+            await ctx.db.delete(articles).where(eq(articles.id, input))
+        })
         return data
       } catch (error) {
         console.error("Error:", error)

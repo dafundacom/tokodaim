@@ -40,7 +40,7 @@ const config = {
       },
       {
         protocol: "https",
-        hostname: "**.tokodaim.com",
+        hostname: "**.yopem.com",
       },
     ],
   },

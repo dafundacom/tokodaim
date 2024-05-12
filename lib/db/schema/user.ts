@@ -1,11 +1,13 @@
-import { relations, sql } from "drizzle-orm"
-import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { relations } from "drizzle-orm"
+import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import { USER_ROLE } from "@/lib/validation/user"
 import { articleAuthors, articleEditors } from "./article"
 import { userLinks } from "./user-link"
 
-export const users = sqliteTable("users", {
+export const userRoleEnum = pgEnum("user_role", USER_ROLE)
+
+export const users = pgTable("users", {
   id: text("id").primaryKey(),
   email: text("email"),
   name: text("name"),
@@ -13,33 +15,33 @@ export const users = sqliteTable("users", {
   image: text("image"),
   phoneNumber: text("phone_number"),
   about: text("about"),
-  role: text("role", { enum: USER_ROLE }).default("user"),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  role: userRoleEnum("role").notNull().default("user"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export const accounts = sqliteTable(
-  "accounts",
-  {
-    provider: text("provider").notNull(),
-    providerAccountId: text("provider_account_id").notNull().unique(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-  },
-  (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.providerAccountId],
-    }),
-  }),
-)
+export const accounts = pgTable("accounts", {
+  provider: text("provider").notNull(),
+  providerAccountId: text("provider_account_id")
+    .notNull()
+    .unique()
+    .primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+})
 
-export const sessions = sqliteTable("sessions", {
+export const sessions = pgTable("sessions", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()
     .references(() => users.id),
-  expiresAt: integer("expires_at").notNull(),
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
 })
 
 export const usersRelations = relations(users, ({ many }) => ({

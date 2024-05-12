@@ -1,11 +1,11 @@
-import { relations, sql } from "drizzle-orm"
-import { sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { relations } from "drizzle-orm"
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import { articles } from "./article"
 import { topics } from "./topic"
 import { users } from "./user"
 
-export const medias = sqliteTable("medias", {
+export const medias = pgTable("medias", {
   id: text("id").primaryKey(),
   name: text("name").notNull().unique(),
   url: text("url").notNull(),
@@ -14,8 +14,8 @@ export const medias = sqliteTable("medias", {
   authorId: text("author_id")
     .notNull()
     .references(() => users.id),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export const mediaRelations = relations(medias, ({ one, many }) => ({

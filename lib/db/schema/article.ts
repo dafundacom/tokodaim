@@ -1,41 +1,50 @@
-import { relations, sql } from "drizzle-orm"
-import { primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { relations } from "drizzle-orm"
+import {
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 
 import { ARTICLE_VISIBILITY } from "@/lib/validation/article"
-import { LANGUAGE_TYPE } from "@/lib/validation/language"
-import { STATUS_TYPE } from "@/lib/validation/status"
 import { articleComments } from "./article-comment"
+import { languageEnum } from "./language"
 import { medias } from "./media"
+import { statusEnum } from "./status"
 import { topics } from "./topic"
 import { users } from "./user"
 
-export const articleTranslations = sqliteTable("article_translations", {
+export const articleVisibilityEnum = pgEnum(
+  "article_visibility",
+  ARTICLE_VISIBILITY,
+)
+
+export const articleTranslations = pgTable("article_translations", {
   id: text("id").primaryKey(),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export const articles = sqliteTable("articles", {
+export const articles = pgTable("articles", {
   id: text("id").primaryKey(),
-  language: text("language", { enum: LANGUAGE_TYPE }).notNull().default("id"),
+  language: languageEnum("language").notNull().default("id"),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   content: text("content").notNull(),
   excerpt: text("excerpt").notNull(),
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
-  status: text("status", { enum: STATUS_TYPE }).notNull().default("draft"),
-  visibility: text("visibility", { enum: ARTICLE_VISIBILITY })
-    .notNull()
-    .default("public"),
+  status: statusEnum("status").notNull().default("draft"),
+  visibility: articleVisibilityEnum("visibility").notNull().default("public"),
   articleTranslationId: text("article_translation_id")
     .notNull()
     .references(() => articleTranslations.id),
   featuredImageId: text("featured_image_id")
     .notNull()
     .references(() => medias.id),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export const articlesRelations = relations(articles, ({ one, many }) => ({
@@ -60,7 +69,7 @@ export const articleTranslationsRelations = relations(
   }),
 )
 
-export const articleAuthors = sqliteTable(
+export const articleAuthors = pgTable(
   "_article_authors",
   {
     articleId: text("article_id")
@@ -88,7 +97,7 @@ export const articleAuthorsRelations = relations(articleAuthors, ({ one }) => ({
   }),
 }))
 
-export const articleEditors = sqliteTable(
+export const articleEditors = pgTable(
   "_article_editors",
   {
     articleId: text("article_id")
@@ -116,7 +125,7 @@ export const articleEditorsRelations = relations(articleEditors, ({ one }) => ({
   }),
 }))
 
-export const articleTopics = sqliteTable(
+export const articleTopics = pgTable(
   "_article_topics",
   {
     articleId: text("article_id")

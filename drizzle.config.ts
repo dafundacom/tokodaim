@@ -1,15 +1,18 @@
-import type { Config } from "drizzle-kit"
+import { defineConfig, type Config } from "drizzle-kit"
 
 import env from "@/env.mjs"
 
-export default {
+export default defineConfig({
+  dialect: "postgresql",
   schema: "./lib/db/schema",
   out: "./lib/db/migrations",
-  driver: "turso",
   dbCredentials: {
     url: env.DATABASE_URL,
-    authToken: env.DATABASE_AUTH_TOKEN,
+  },
+  migration: {
+    table: "migrations",
+    schema: "public",
   },
   verbose: true,
   strict: true,
-} satisfies Config
+}) satisfies Config

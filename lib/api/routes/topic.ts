@@ -599,10 +599,12 @@ export const topicRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.batch([
-          ctx.db.delete(articleTopics).where(eq(articleTopics.topicId, input)),
-          ctx.db.delete(topics).where(eq(topics.id, input)),
-        ])
+        const data = await ctx.db.transaction(async () => {
+          await ctx.db
+            .delete(articleTopics)
+            .where(eq(articleTopics.topicId, input))
+          await ctx.db.delete(topics).where(eq(topics.id, input))
+        })
 
         return data
       } catch (error) {

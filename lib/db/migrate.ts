@@ -1,25 +1,24 @@
-import { createClient } from "@libsql/client"
-import { drizzle } from "drizzle-orm/libsql"
-import { migrate } from "drizzle-orm/libsql/migrator"
+import "dotenv/config"
 
-import env from "@/env.mjs"
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
+import postgres from "postgres"
 
-async function main() {
-  const db = drizzle(
-    createClient({ url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN }),
-  )
+const DATABASE_URL = process.env.DATABASE_URL
 
-  console.log("Running migrations")
-
-  await migrate(db, { migrationsFolder: "drizzle" })
-
-  console.log("Migrated successfully")
-
-  process.exit(0)
+if (!DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set")
 }
 
-main().catch((e) => {
-  console.error("Migration failed")
-  console.error(e)
-  process.exit(1)
-})
+const migrationClient = postgres(DATABASE_URL, { max: 1 })
+
+const db: PostgresJsDatabase = drizzle(migrationClient)
+
+const main = async () => {
+  console.log("Migrating database...")
+  await migrate(db, { migrationsFolder: "./lib/db/migrations" })
+  await migrationClient.end()
+  console.log("Database migrated successfully!")
+}
+
+main()

@@ -43,8 +43,7 @@ export const mediaRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100),
-        cursor: z.string().optional(),
-        direction: z.enum(["forward", "backward"]).optional(),
+        cursor: z.date().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -57,7 +56,7 @@ export const mediaRouter = createTRPCRouter({
           limit: limit + 1,
         })
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()

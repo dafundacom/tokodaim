@@ -1,13 +1,12 @@
-import { createClient } from "@libsql/client"
-import { drizzle } from "drizzle-orm/libsql"
+// TODO: use drizzle-zod
+
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 
 import env from "@/env.mjs"
 import * as schema from "./schema"
 
-export const sqlite = createClient({
-  url: env.DATABASE_URL,
-  authToken: env.DATABASE_AUTH_TOKEN,
-})
+const queryClient = postgres(env.DATABASE_URL)
 
-export const initializeDB = drizzle(sqlite)
-export const db = drizzle(sqlite, { schema })
+export const dbWithoutSchema = drizzle(queryClient)
+export const db = drizzle(queryClient, { schema })

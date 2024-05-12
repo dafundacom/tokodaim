@@ -86,7 +86,7 @@ export const articleCommentRouter = createTRPCRouter({
       z.object({
         articleId: z.string(),
         limit: z.number().min(1).max(100).nullable(),
-        cursor: z.string().nullable().optional(),
+        cursor: z.date().nullable().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -113,7 +113,7 @@ export const articleCommentRouter = createTRPCRouter({
           },
         })
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: Date | undefined = undefined
 
         if (data.length > limit) {
           const nextItem = data.pop()

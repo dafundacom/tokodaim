@@ -52,5 +52,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json("Internal Server Error", { status: 500 })
   }
 }
-
-export const runtime = "edge"

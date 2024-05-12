@@ -1,37 +1,38 @@
-import { relations, sql } from "drizzle-orm"
-import { sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { relations } from "drizzle-orm"
+import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import { LANGUAGE_TYPE } from "@/lib/validation/language"
-import { STATUS_TYPE } from "@/lib/validation/status"
 import { TOPIC_TYPE, TOPIC_VISIBILITY } from "@/lib/validation/topic"
 import { articleTopics } from "./article"
+import { languageEnum } from "./language"
 import { medias } from "./media"
+import { statusEnum } from "./status"
 
-export const topicTranslations = sqliteTable("topic_translations", {
+export const topicTypeEnum = pgEnum("topic_type", TOPIC_TYPE)
+export const topicVisibilityEnum = pgEnum("topic_visibility", TOPIC_VISIBILITY)
+
+export const topicTranslations = pgTable("topic_translations", {
   id: text("id").primaryKey(),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export const topics = sqliteTable("topics", {
+export const topics = pgTable("topics", {
   id: text("id").primaryKey(),
-  language: text("language", { enum: LANGUAGE_TYPE }).notNull().default("id"),
+  language: languageEnum("language").notNull().default("id"),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
   type: text("type", { enum: TOPIC_TYPE }).notNull().default("all"),
-  status: text("status", { enum: STATUS_TYPE }).notNull().default("draft"),
-  visibility: text("visibility", { enum: TOPIC_VISIBILITY })
-    .notNull()
-    .default("public"),
+  status: statusEnum("status").notNull().default("draft"),
+  visibility: topicVisibilityEnum("visibility").notNull().default("public"),
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   topicTranslationId: text("topic_translation_id")
     .notNull()
     .references(() => topicTranslations.id),
   featuredImageId: text("featured_image_id").references(() => medias.id),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export const topicsRelations = relations(topics, ({ one, many }) => ({

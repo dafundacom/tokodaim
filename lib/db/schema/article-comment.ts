@@ -1,10 +1,10 @@
-import { relations, sql } from "drizzle-orm"
-import { sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { relations } from "drizzle-orm"
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import { articles } from "./article"
 import { users } from "./user"
 
-export const articleComments = sqliteTable("article_comments", {
+export const articleComments = pgTable("article_comments", {
   id: text("id").primaryKey(),
   content: text("content").notNull(),
   replyToId: text("reply_to_id"),
@@ -14,8 +14,8 @@ export const articleComments = sqliteTable("article_comments", {
   authorId: text("author_id")
     .notNull()
     .references(() => users.id),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export const articleCommentsRelations = relations(
