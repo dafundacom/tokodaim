@@ -1,52 +1,47 @@
 import NextLink from "next/link"
 
 import Logo from "@/components/logo"
-import TopicListNav from "@/components/topic/topic-list-nav"
 import { Button } from "@/components/ui/button"
-import UserMenu from "@/components/user/user-menu"
 import { getSession } from "@/lib/auth/utils"
 import { getI18n } from "@/lib/locales/server"
-import type { LanguageType } from "@/lib/validation/language"
-import MobileMenu from "./mobile-menu"
 import SearchTopNav from "./search-top-nav"
 
-interface TopNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  locale: LanguageType
-}
+interface TopNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const TopNav: React.FC<TopNavProps> = async (props) => {
-  const { locale } = props
-
+const TopNav: React.FC<TopNavProps> = async () => {
   const t = await getI18n()
   const { session } = await getSession()
 
   return (
-    <nav className="opacity-1 fixed left-auto top-0 z-40 -my-0 mx-auto box-border flex h-16 w-full items-center border-b border-border/40 bg-background/95 bg-clip-padding px-4 py-0 align-baseline shadow-sm outline-none backdrop-blur backdrop-filter supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex flex-row items-center justify-between">
-        <MobileMenu locale={locale} />
-        <div className="flex flex-row">
-          <NextLink
-            aria-label="Home"
-            href="/"
-            className="flex items-center text-foreground"
-          >
+    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-white px-4 md:px-0">
+      <div className="container flex w-full justify-between">
+        <div className="relative flex items-center">
+          <a className="relative top-[3px] md:top-[2.5px]" href="/">
             <Logo />
-          </NextLink>
-          <div className="ml-4 hidden lg:flex">
-            <Button asChild variant="ghost">
-              <NextLink aria-label={t("home")} href="/">
-                {t("home")}
-              </NextLink>
-            </Button>
-            <TopicListNav locale={locale} />
-          </div>
+          </a>
         </div>
-        <div className="flex justify-center">
-          <UserMenu session={session} />
-          <SearchTopNav locale={locale} />
+        <div className="flex items-center">
+          {/* TODO: dont use locale */}
+          <SearchTopNav locale="id" />
+          {session?.user ? (
+            <NextLink
+              className="relative ml-4 h-[40px] w-[40px] text-muted-foreground transition-all group-hover:text-primary"
+              href="/user/profile"
+            >
+              <img
+                alt="user profile"
+                src={session?.user?.image}
+                className="overflow-hidden rounded-full border-solid"
+              />
+            </NextLink>
+          ) : (
+            <Button asChild variant="outline" className="mx-4 rounded-full">
+              <a href="/auth/login">{t("login")}</a>
+            </Button>
+          )}
         </div>
       </div>
-    </nav>
+    </header>
   )
 }
 
