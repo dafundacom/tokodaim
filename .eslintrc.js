@@ -7,7 +7,6 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:prettier/recommended",
     "plugin:@next/next/recommended",
-    "plugin:next-on-pages/recommended",
     "next",
     "next/core-web-vitals",
     "prettier",
@@ -21,7 +20,7 @@ const config = {
     project: true,
     ecmaVersion: 6,
   },
-  plugins: ["@typescript-eslint", "import", "prettier", "next-on-pages"],
+  plugins: ["@typescript-eslint", "import", "prettier"],
   rules: {
     "prettier/prettier": "error",
     "arrow-body-style": "off",
@@ -30,7 +29,6 @@ const config = {
     "no-prototype-builtins": "off",
     "no-unsafe-optional-chaining": "off",
     "import/consistent-type-specifier-style": "off",
-    "next-on-pages/no-unsupported-configs": "warn",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       { prefer: "type-imports", fixStyle: "separate-type-imports" },
