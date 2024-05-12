@@ -20,7 +20,7 @@ const config = {
     project: true,
     ecmaVersion: 6,
   },
-  plugins: ["@typescript-eslint", "import", "prettier"],
+  plugins: ["@typescript-eslint", "import", "prettier", "drizzle"],
   rules: {
     "prettier/prettier": "error",
     "arrow-body-style": "off",
