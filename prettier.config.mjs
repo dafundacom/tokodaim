@@ -1,8 +1,6 @@
- // TODO: Add sort-imports plugin
-
 /** @typedef  {import("prettier").Config} PrettierConfig */
 /** @typedef {import("prettier-plugin-tailwindcss").PluginOptions} TailwindConfig */
-// /** @typedef  {import("@trivago/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
+/** @typedef  {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 
 /** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
 const config = {
@@ -15,31 +13,22 @@ const config = {
   tabWidth: 2,
   trailingComma: "all",
   plugins: [
-    // "@trivago/prettier-plugin-sort-imports",
-    // "prettier-plugin-astro-organize-imports",
-    "prettier-plugin-astro",
+    "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
   ],
-  overrides: [
-    {
-      files: "*.astro",
-      options: {
-        parser: "astro",
-      },
-    },
+  importOrder: [
+    "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",
+    "^(next/(.*)$)|^(next$)",
+    "^(expo(.*)$)|^(expo$)",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "",
+    "^@/",
+    "^[../]",
+    "^[./]",
   ],
-  // importOrder: [
-  //   "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",
-  //   "^(astro/(.*)$)|^(astro$)",
-  //   "<THIRD_PARTY_MODULES>",
-  //   "",
-  //   "",
-  //   "^@/",
-  //   "^[../]",
-  //   "^[./]",
-  // ],
-  // importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
-  // importOrderTypeScriptVersion: "5.2.2",
-}
+  importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
+  importOrderTypeScriptVersion: "5.2.2",
+};
 
-export default config
+export default config;

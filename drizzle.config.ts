@@ -1,12 +1,14 @@
 import type { Config } from "drizzle-kit"
 
+import env from "@/env.mjs"
+
 export default {
-  schema: "./src/lib/db/schema",
-  out: "./src/lib/db/migrations",
-  driver: "d1",
+  schema: "./lib/db/schema",
+  out: "./lib/db/migrations",
+  driver: "turso",
   dbCredentials: {
-    wranglerConfigPath: `${process.cwd()}/wrangler.toml`,
-    dbName: "tokodaim",
+    url: env.DATABASE_URL,
+    authToken: env.DATABASE_AUTH_TOKEN,
   },
   verbose: true,
   strict: true,
