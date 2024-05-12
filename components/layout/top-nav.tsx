@@ -1,5 +1,6 @@
 import NextLink from "next/link"
 
+import Image from "@/components/image"
 import Logo from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { getSession } from "@/lib/auth/utils"
@@ -28,9 +29,9 @@ const TopNav: React.FC<TopNavProps> = async () => {
               className="relative ml-4 h-[40px] w-[40px] text-muted-foreground transition-all group-hover:text-primary"
               href="/user/profile"
             >
-              <img
+              <Image
                 alt="user profile"
-                src={session?.user?.image}
+                src={session?.user?.image!}
                 className="overflow-hidden rounded-full border-solid"
               />
             </NextLink>

@@ -89,7 +89,7 @@ export const getDomainWithoutSubdomain = (url: string) => {
     .join(".")
 }
 
-export const formatDate = (data: string | null, format: string) => {
+export const formatDate = (data: string | Date | null, format: string) => {
   dayjs.extend(LocalizedFormat)
 
   return dayjs(data).format(format)

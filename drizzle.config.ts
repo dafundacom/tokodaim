@@ -9,10 +9,6 @@ export default defineConfig({
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  migration: {
-    table: "migrations",
-    schema: "public",
-  },
   verbose: true,
   strict: true,
 }) satisfies Config
