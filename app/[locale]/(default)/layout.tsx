@@ -14,10 +14,10 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
   return (
     <>
       <GlobalNav />
-      <div className="w-[calc(100% - 92px)] layout-background-image relative ml-0 md:ml-[92px]">
+      <div className="w-[calc(100% - 92px)] layout-background-image relative ml-0 lg:ml-[92px]">
         <TopNav />
-        <main className="w-[calc(100% - 92px)] layout-background-image relative ml-0 md:ml-[92px]">
-          <div className="mx-4 mt-4 lg:mx-0 lg:mt-20">{children}</div>
+        <main className="w-[calc(100% - 92px)] layout-background-image relative ml-0 lg:ml-[92px]">
+          <div className="container mx-4 mt-4 lg:mx-8 lg:mt-20">{children}</div>
         </main>
       </div>
       <Footer />
