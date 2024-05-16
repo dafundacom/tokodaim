@@ -10,7 +10,7 @@ import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
 import ArticleCardHorizontal from "./article-card-horizontal"
 
-export type InfinteScrollRelatedArticlesDataProps = Pick<
+export type ArticleListRelatedDataProps = Pick<
   SelectArticle,
   "title" | "slug" | "excerpt"
 > & {
