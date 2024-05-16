@@ -21,6 +21,7 @@ export default async function DashboardPage() {
   const t = await getI18n()
 
   const promos = await api.promo.count()
+  const vouchers = await api.voucher.count()
 
   const ads = await api.ad.count()
   const articles = await api.article.count()
@@ -38,6 +39,13 @@ export default async function DashboardPage() {
           </DashboardBoxIconWrapper>
           <DashboardBoxCount>{promos}</DashboardBoxCount>
           <DashboardBoxDescription>{t("promos")}</DashboardBoxDescription>
+        </DashboardBox>
+        <DashboardBox>
+          <DashboardBoxIconWrapper>
+            <Icon.Voucher />
+          </DashboardBoxIconWrapper>
+          <DashboardBoxCount>{vouchers}</DashboardBoxCount>
+          <DashboardBoxDescription>{t("vouchers")}</DashboardBoxDescription>
         </DashboardBox>
       </div>
       <hr />
