@@ -20,6 +20,8 @@ export default async function DashboardPage() {
 
   const t = await getI18n()
 
+  const promos = await api.promo.count()
+
   const ads = await api.ad.count()
   const articles = await api.article.count()
   const medias = await api.media.count()
@@ -29,6 +31,16 @@ export default async function DashboardPage() {
   return (
     <>
       <h2 className="text-3xl">Statistics</h2>
+      <div className="my-8 grid grid-cols-2 gap-3 md:grid-cols-5">
+        <DashboardBox>
+          <DashboardBoxIconWrapper>
+            <Icon.Promo />
+          </DashboardBoxIconWrapper>
+          <DashboardBoxCount>{promos}</DashboardBoxCount>
+          <DashboardBoxDescription>{t("promos")}</DashboardBoxDescription>
+        </DashboardBox>
+      </div>
+      <hr />
       <div className="my-8 grid grid-cols-2 gap-3 md:grid-cols-5">
         <DashboardBox>
           <DashboardBoxIconWrapper>
