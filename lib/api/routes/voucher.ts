@@ -87,7 +87,7 @@ export const voucherRouter = createTRPCRouter({
     try {
       const data = await ctx.db.select({ value: count() }).from(vouchers)
 
-      return data
+      return data[0].value
     } catch (error) {
       console.error("Error:", error)
       if (error instanceof TRPCError) {
