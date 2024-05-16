@@ -6,6 +6,7 @@ import { promoRouter } from "./routes/promo"
 import { topicRouter } from "./routes/topic"
 import { userRouter } from "./routes/user"
 import { userLinkRouter } from "./routes/user-link"
+import { voucherRouter } from "./routes/voucher"
 import { createCallerFactory, createTRPCRouter } from "./trpc"
 
 export const appRouter = createTRPCRouter({
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   topic: topicRouter,
   user: userRouter,
   userLink: userLinkRouter,
+  voucher: voucherRouter,
 })
 
 export type AppRouter = typeof appRouter
