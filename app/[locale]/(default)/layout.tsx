@@ -21,8 +21,8 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
             {children}
           </div>
         </main>
+        <Footer />
       </div>
-      <Footer />
     </>
   )
 }
