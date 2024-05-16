@@ -425,13 +425,13 @@ export const promoRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.promos.findMany({
-          where: (promos, { eq, and, or, like }) =>
+          where: (promos, { eq, and, or, ilike }) =>
             and(
               eq(promos.language, input.language),
               eq(promos.status, "published"),
               or(
-                like(promos.title, `%${input.searchQuery}%`),
-                like(promos.slug, `%${input.searchQuery}%`),
+                ilike(promos.title, `%${input.searchQuery}%`),
+                ilike(promos.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
@@ -458,12 +458,12 @@ export const promoRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.promos.findMany({
-          where: (promos, { eq, and, or, like }) =>
+          where: (promos, { eq, and, or, ilike }) =>
             and(
               eq(promos.language, input.language),
               or(
-                like(promos.title, `%${input.searchQuery}%`),
-                like(promos.slug, `%${input.searchQuery}%`),
+                ilike(promos.title, `%${input.searchQuery}%`),
+                ilike(promos.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {

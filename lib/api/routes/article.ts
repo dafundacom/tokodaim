@@ -719,13 +719,13 @@ export const articleRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.articles.findMany({
-          where: (articles, { eq, and, or, like }) =>
+          where: (articles, { eq, and, or, ilike }) =>
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
               or(
-                like(articles.title, `%${input.searchQuery}%`),
-                like(articles.slug, `%${input.searchQuery}%`),
+                ilike(articles.title, `%${input.searchQuery}%`),
+                ilike(articles.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
@@ -752,12 +752,12 @@ export const articleRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.articles.findMany({
-          where: (articles, { eq, and, or, like }) =>
+          where: (articles, { eq, and, or, ilike }) =>
             and(
               eq(articles.language, input.language),
               or(
-                like(articles.title, `%${input.searchQuery}%`),
-                like(articles.slug, `%${input.searchQuery}%`),
+                ilike(articles.title, `%${input.searchQuery}%`),
+                ilike(articles.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
@@ -1082,6 +1082,7 @@ export const articleRouter = createTRPCRouter({
           await ctx.db
             .delete(articleEditors)
             .where(eq(articleEditors.articleId, input))
+          await ctx.db.delete(articles).where(eq(articles.id, input))
         })
 
         return data

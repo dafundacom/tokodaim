@@ -156,7 +156,7 @@ export const mediaRouter = createTRPCRouter({
   search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
       const data = await ctx.db.query.medias.findMany({
-        where: (medias, { like }) => like(medias.name, `%${input}%`),
+        where: (medias, { ilike }) => ilike(medias.name, `%${input}%`),
         limit: 10,
       })
 

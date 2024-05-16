@@ -150,11 +150,11 @@ export const userRouter = createTRPCRouter({
   search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
       const data = await ctx.db.query.users.findMany({
-        where: (users, { and, or, like }) =>
+        where: (users, { and, or, ilike }) =>
           and(
             or(
-              like(users.name, `%${input}%`),
-              like(users.username, `%${input}%`),
+              ilike(users.name, `%${input}%`),
+              ilike(users.username, `%${input}%`),
             ),
           ),
         limit: 10,

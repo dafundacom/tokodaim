@@ -329,14 +329,14 @@ export const topicRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and, or, like }) =>
+          where: (topics, { eq, and, or, ilike }) =>
             and(
               eq(topics.language, input.language),
               eq(topics.visibility, "public"),
               eq(topics.status, "published"),
               or(
-                like(topics.title, `%${input.searchQuery}%`),
-                like(topics.slug, `%${input.searchQuery}%`),
+                ilike(topics.title, `%${input.searchQuery}%`),
+                ilike(topics.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
@@ -363,12 +363,12 @@ export const topicRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and, or, like }) =>
+          where: (topics, { eq, and, or, ilike }) =>
             and(
               eq(topics.language, input.language),
               or(
-                like(topics.title, `%${input.searchQuery}%`),
-                like(topics.slug, `%${input.searchQuery}%`),
+                ilike(topics.title, `%${input.searchQuery}%`),
+                ilike(topics.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
@@ -406,15 +406,15 @@ export const topicRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and, or, like }) =>
+          where: (topics, { eq, and, or, ilike }) =>
             and(
               eq(topics.type, input.type),
               eq(topics.language, input.language),
               eq(topics.visibility, "public"),
               eq(topics.status, "published"),
               or(
-                like(topics.title, `%${input.searchQuery}%`),
-                like(topics.slug, `%${input.searchQuery}%`),
+                ilike(topics.title, `%${input.searchQuery}%`),
+                ilike(topics.slug, `%${input.searchQuery}%`),
               ),
             ),
           with: {
