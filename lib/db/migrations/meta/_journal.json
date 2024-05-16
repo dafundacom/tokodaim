@@ -8,6 +8,13 @@
       "when": 1715499935432,
       "tag": "0000_tricky_mattie_franklin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1715842637927,
+      "tag": "0001_wooden_professor_monster",
+      "breakpoints": true
     }
   ]
 }
