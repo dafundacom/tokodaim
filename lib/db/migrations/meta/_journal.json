@@ -15,6 +15,13 @@
       "when": 1715842637927,
       "tag": "0001_wooden_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1715850952154,
+      "tag": "0002_gigantic_komodo",
+      "breakpoints": true
     }
   ]
 }
