@@ -33,6 +33,7 @@ import {
 } from "react-icons/fa"
 import { FaBolt, FaXTwitter } from "react-icons/fa6"
 import { FcGoogle } from "react-icons/fc"
+import { HiOutlineReceiptPercent } from "react-icons/hi2"
 import { ImBook } from "react-icons/im"
 import { IoGameController } from "react-icons/io5"
 import {
@@ -226,6 +227,7 @@ export const Icon = {
   Pinterest: FaPinterestP,
   PlayStation: FaPlaystation,
   PlusSquare: FaPlusSquare,
+  Promo: MdDiscount,
   Receipt: MdOutlineReceipt,
   Reddit: FaRedditAlien,
   Refresh: MdOutlineRefresh,
@@ -262,6 +264,7 @@ export const Icon = {
   ViewSidebar: MdOutlineViewSidebar,
   Visibility: MdOutlineVisibility,
   VisibilityOff: MdOutlineVisibilityOff,
+  Voucher: HiOutlineReceiptPercent,
   VpnKey: MdVpnKey,
   Xbox: FaXbox,
   WhatsApp: FaWhatsapp,

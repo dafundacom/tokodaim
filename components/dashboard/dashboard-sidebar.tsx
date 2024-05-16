@@ -53,6 +53,10 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
             <SidebarItem href="/dashboard" icon={<Icon.Dashboard />}>
               {t("overview")}
             </SidebarItem>
+            <SidebarItem href="/dashboard/promo" icon={<Icon.Promo />}>
+              {t("promos")}
+            </SidebarItem>
+            <hr />
             <SidebarItem href="/dashboard/article" icon={<Icon.Article />}>
               {t("articles")}
             </SidebarItem>
