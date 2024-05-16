@@ -29,7 +29,7 @@ const PromoCardVertical: React.FunctionComponent<PromoCardVerticalProps> = (
           alt={title}
         />
       </NextLink>
-      <div className="rounded-b-lg bg-background px-2 py-3 shadow-md">
+      <div className="h-24 rounded-b-lg bg-background px-5 pb-5 pt-4 shadow-md">
         <NextLink aria-label={title} href={`/promo/${slug}/`}>
           <p className="text-xs">{formatDate(createdAt, "LL")}</p>
           <h3
