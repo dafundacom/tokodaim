@@ -524,7 +524,12 @@ export const promoRouter = createTRPCRouter({
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
             promoTranslationId: promoTranslation[0].id,
-            ...input,
+            language: input.language,
+            title: input.title,
+            content: input.content,
+            status: input.status,
+            featuredImageId: input.featuredImageId,
+            brand: input.brand,
           })
           .returning()
 
@@ -615,7 +620,13 @@ export const promoRouter = createTRPCRouter({
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            ...input,
+            language: input.language,
+            title: input.title,
+            content: input.content,
+            status: input.status,
+            featuredImageId: input.featuredImageId,
+            brand: input.brand,
+            promoTranslationId: input.promoTranslationId,
           })
           .returning()
 
