@@ -28,9 +28,9 @@ const voucherInput = {
       invalid_type_error: "Voucher amount must be a number",
     })
     .optional(),
-  expiration: z
+  expirationDate: z
     .string({
-      invalid_type_error: "Expiration must be a string",
+      invalid_type_error: "Expiration Date must be a string",
     })
     .datetime()
     .optional(),
