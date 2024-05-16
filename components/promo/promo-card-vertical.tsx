@@ -24,7 +24,7 @@ const PromoCardVertical: React.FunctionComponent<PromoCardVerticalProps> = (
       <NextLink aria-label={title} href={`/promo/${slug}`}>
         <Image
           className="!relative !h-[200px] overflow-hidden rounded-t-lg object-cover"
-          sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 20vw, 33vw"
           src={featuredImage?.url!}
           alt={title}
         />
