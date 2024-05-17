@@ -1,4 +1,5 @@
 export default {
+  account: "Akun",
   actions: "Tindakan",
   active: "Aktif",
   ad: "Iklan",

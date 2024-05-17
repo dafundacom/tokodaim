@@ -1,4 +1,5 @@
 export default {
+  account: "Account",
   actions: "Actions",
   active: "Active",
   ad: "Ad",
