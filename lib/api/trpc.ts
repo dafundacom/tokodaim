@@ -4,6 +4,8 @@ import { ZodError } from "zod"
 
 import { uncachedValidateRequest } from "@/lib/auth/utils"
 import { db } from "@/lib/db"
+import { digiflazz } from "@/lib/digiflazz"
+import { tripay } from "@/lib/tripay"
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const { session, user } = await uncachedValidateRequest()
@@ -12,6 +14,8 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     session,
     user,
     db,
+    tripay,
+    digiflazz,
     ...opts,
   }
 }

@@ -18,9 +18,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = (props) => {
   return (
     <>
       <DashboardSidebar onToggle={onToggle} onClose={onClose} isOpen={isOpen} />
-      <main className="flex-1 overflow-y-auto p-4 sm:ml-64 md:p-8">
-        {children}
-      </main>
+      <main className="flex-1 p-4 sm:ml-64 md:p-8">{children}</main>
     </>
   )
 }

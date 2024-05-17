@@ -1,5 +1,4 @@
-import { sql } from "drizzle-orm"
-import { boolean, integer, pgTable, text } from "drizzle-orm/pg-core"
+import { boolean, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 export const vouchers = pgTable("vouchers", {
   id: text("id").primaryKey(),
@@ -12,8 +11,8 @@ export const vouchers = pgTable("vouchers", {
   description: text("description"),
   expirationDate: text("expiration_date"),
   active: boolean("active").notNull().default(true),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 })
 
 export type InsertVoucher = typeof vouchers.$inferInsert

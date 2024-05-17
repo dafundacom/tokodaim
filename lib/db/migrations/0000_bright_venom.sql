@@ -110,6 +110,39 @@ CREATE TABLE IF NOT EXISTS "medias" (
 	CONSTRAINT "medias_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "promo_translations" (
+	"id" text PRIMARY KEY NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "promos" (
+	"id" text PRIMARY KEY NOT NULL,
+	"language" "language" DEFAULT 'id' NOT NULL,
+	"title" text NOT NULL,
+	"slug" text NOT NULL,
+	"content" text NOT NULL,
+	"excerpt" text NOT NULL,
+	"brand" text,
+	"meta_title" text,
+	"meta_description" text,
+	"status" "status" DEFAULT 'draft' NOT NULL,
+	"promo_translation_id" text NOT NULL,
+	"featured_image_id" text NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "promos_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "settings" (
+	"id" text PRIMARY KEY NOT NULL,
+	"key" text NOT NULL,
+	"value" text NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "settings_key_unique" UNIQUE("key")
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "topic_translations" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp DEFAULT now(),
@@ -170,6 +203,22 @@ CREATE TABLE IF NOT EXISTS "user_links" (
 	"user_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "vouchers" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"voucher_code" text NOT NULL,
+	"discount_percentage" integer NOT NULL,
+	"discount_max" integer NOT NULL,
+	"voucher_amount" integer NOT NULL,
+	"description" text,
+	"expiration_date" text,
+	"active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "vouchers_name_unique" UNIQUE("name"),
+	CONSTRAINT "vouchers_voucher_code_unique" UNIQUE("voucher_code")
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -234,6 +283,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "medias" ADD CONSTRAINT "medias_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "promos" ADD CONSTRAINT "promos_promo_translation_id_promo_translations_id_fk" FOREIGN KEY ("promo_translation_id") REFERENCES "public"."promo_translations"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "promos" ADD CONSTRAINT "promos_featured_image_id_medias_id_fk" FOREIGN KEY ("featured_image_id") REFERENCES "public"."medias"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

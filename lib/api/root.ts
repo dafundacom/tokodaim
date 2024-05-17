@@ -3,6 +3,8 @@ import { articleRouter } from "./routes/article"
 import { articleCommentRouter } from "./routes/article-comment"
 import { mediaRouter } from "./routes/media"
 import { promoRouter } from "./routes/promo"
+import { settingRouter } from "./routes/setting"
+import { topUpRouter } from "./routes/top-up"
 import { topicRouter } from "./routes/topic"
 import { userRouter } from "./routes/user"
 import { userLinkRouter } from "./routes/user-link"
@@ -15,7 +17,9 @@ export const appRouter = createTRPCRouter({
   articleComment: articleCommentRouter,
   media: mediaRouter,
   promo: promoRouter,
+  setting: settingRouter,
   topic: topicRouter,
+  topUp: topUpRouter,
   user: userRouter,
   userLink: userLinkRouter,
   voucher: voucherRouter,

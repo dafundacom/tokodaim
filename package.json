@@ -85,6 +85,7 @@
     "arctic": "^1.8.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "dayjs": "^1.11.11",
     "drizzle-orm": "^0.30.10",
     "html-to-react": "^1.7.0",

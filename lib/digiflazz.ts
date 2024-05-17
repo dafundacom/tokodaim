@@ -1,0 +1,10 @@
+import env from "@/env.mjs"
+import createDigiflazzConfig from "@/lib/sdk/digiflazz"
+
+export const digiflazz = createDigiflazzConfig({
+  username: env.DIGIFLAZZ_USERNAME!,
+  key:
+    process.env.APP_ENV === "development"
+      ? env.DIGIFLAZZ_API_KEY_DEV!
+      : env.DIGIFLAZZ_API_KEY_PROD!,
+})
