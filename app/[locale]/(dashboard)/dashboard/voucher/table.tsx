@@ -1,3 +1,5 @@
+// TODO: parse discount percentage and discount max to proper format
+
 import * as React from "react"
 
 import DashboardPagination from "@/components/dashboard/dashboard-pagination"
