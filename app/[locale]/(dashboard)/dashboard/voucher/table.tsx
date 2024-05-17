@@ -76,6 +76,12 @@ export default function VoucherTable(props: VoucherTableProps) {
               {t("code")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
+              {ts("discount_percentage")}
+            </TableHead>
+            <TableHead className="hidden whitespace-nowrap lg:table-cell">
+              {ts("discount_max")}
+            </TableHead>
+            <TableHead className="hidden whitespace-nowrap lg:table-cell">
               {t("active")}
             </TableHead>
           </TableRow>
@@ -91,8 +97,6 @@ export default function VoucherTable(props: VoucherTableProps) {
                     </span>
                     <span className="table-cell text-[10px] text-muted-foreground lg:hidden">
                       <span className="uppercase">{voucher.voucherCode}</span>
-                      <span className="pr-1">,</span>
-                      <span>{voucher.active}</span>
                     </span>
                   </div>
                 </TableCell>
@@ -100,6 +104,20 @@ export default function VoucherTable(props: VoucherTableProps) {
                   <div className="flex">
                     <span className="overflow-hidden text-ellipsis font-medium">
                       {voucher.voucherCode}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                  <div className="flex">
+                    <span className="overflow-hidden text-ellipsis font-medium">
+                      {voucher.discountPercentage}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                  <div className="flex">
+                    <span className="overflow-hidden text-ellipsis font-medium">
+                      {voucher.discountMax}
                     </span>
                   </div>
                 </TableCell>
