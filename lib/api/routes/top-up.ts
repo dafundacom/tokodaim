@@ -29,34 +29,20 @@ type DaftarHargaPrePaidDataReturnProps =
 
 export interface DigiflazzPriceListPrePaidResponse
   extends DaftarHargaPrePaidDataReturnProps {
-  brand: string
   slug: string
-  thumbnail: string
-  cover: string
   featuredImage?: string
   coverImage?: string
-  infoIdImage?: string
   icon?: string
+  infoIdImage?: string
 }
 
 export interface DigiflazzPriceListPostPaidResponse
   extends DaftarHargaPostPaidDataReturnProps {
-  brand: string
   slug: string
-  thumbnail: string
-  cover: string
   featuredImage?: string
   coverImage?: string
-  infoIdImage?: string
   icon?: string
-}
-
-function addSlugToTopUpProducts(item: DigiflazzPriceListPrePaidResponse) {
-  const slug = slugify(item.brand)
-  return {
-    ...item,
-    slug,
-  }
+  infoIdImage?: string
 }
 
 export const topUpRouter = createTRPCRouter({
@@ -117,97 +103,6 @@ export const topUpRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  digiflazzProductsByBrand: publicProcedure
-    .input(z.string())
-    .query(async ({ input, ctx }) => {
-      try {
-        const digiflazzPriceListPrePaid = (await ctx.digiflazz.daftarHarga(
-          "prepaid",
-        )) as DaftarHargaPrePaidReturnProps
-        const digiflazzPriceListPostPaid = (await ctx.digiflazz.daftarHarga(
-          "pasca",
-        )) as DaftarHargaPostPaidReturnProps
-
-        if (Array.isArray(digiflazzPriceListPrePaid.data)) {
-          await ctx.db
-            .insert(settings)
-            .values({
-              id: cuid(),
-              key: `digiflazz_top_up_price_list_prepaid`,
-              value: JSON.stringify(digiflazzPriceListPrePaid.data),
-            })
-            .onConflictDoUpdate({
-              target: settings.key,
-              set: {
-                value: JSON.stringify(digiflazzPriceListPrePaid.data),
-                updatedAt: sql`CURRENT_TIMESTAMP`,
-              },
-            })
-        }
-
-        if (Array.isArray(digiflazzPriceListPostPaid.data)) {
-          await ctx.db
-            .insert(settings)
-            .values({
-              id: cuid(),
-              key: `digiflazz_top_up_price_list_postpaid`,
-              value: JSON.stringify(digiflazzPriceListPostPaid.data),
-            })
-            .onConflictDoUpdate({
-              target: settings.key,
-              set: {
-                value: JSON.stringify(digiflazzPriceListPostPaid.data),
-                updatedAt: sql`CURRENT_TIMESTAMP`,
-              },
-            })
-        }
-
-        const topUpPriceListPrePaid = await ctx.db.query.settings.findFirst({
-          where: (setting, { eq }) =>
-            eq(setting.key, "digiflazz_top_up_price_list_prepaid"),
-        })
-
-        const topUpPriceListPostPaid = await ctx.db.query.settings.findFirst({
-          where: (setting, { eq }) =>
-            eq(setting.key, "digiflazz_top_up_price_list_postpaid"),
-        })
-
-        let topUpPriceListPrePaidData
-        let topUpPriceListPostPaidData
-
-        if (
-          topUpPriceListPrePaid?.value &&
-          typeof topUpPriceListPrePaid?.value === "string"
-        ) {
-          topUpPriceListPrePaidData = JSON.parse(topUpPriceListPrePaid?.value)
-        } else {
-          topUpPriceListPrePaidData = topUpPriceListPrePaid?.value
-        }
-
-        if (
-          topUpPriceListPostPaid?.value &&
-          typeof topUpPriceListPostPaid?.value === "string"
-        ) {
-          topUpPriceListPostPaidData = JSON.parse(topUpPriceListPostPaid?.value)
-        } else {
-          topUpPriceListPostPaidData = topUpPriceListPostPaid?.value
-        }
-
-        const topUpProducts = [
-          ...topUpPriceListPrePaidData,
-          ...topUpPriceListPostPaidData,
-        ] as unknown as (DigiflazzPriceListPostPaidResponse &
-          DigiflazzPriceListPrePaidResponse)[]
-
-        const filteredTopUpProducts = topUpProducts?.filter(
-          (topUpProduct) => topUpProduct?.brand === input,
-        )
-
-        return filteredTopUpProducts ?? null
-      } catch (error) {
-        console.error("Error:", error)
-      }
-    }),
   digiflazzPriceListBySlug: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -246,7 +141,7 @@ export const topUpRouter = createTRPCRouter({
             .insert(settings)
             .values({
               id: cuid(),
-              key: `digiflazz_top_up_price_list_postpaid`,
+              key: `digiflazz_top_up_price_list_pasca`,
               value: JSON.stringify(digiflazzPriceListPostPaid.data),
             })
             .onConflictDoUpdate({
@@ -265,7 +160,7 @@ export const topUpRouter = createTRPCRouter({
 
         const topUpPriceListPostPaid = await ctx.db.query.settings.findFirst({
           where: (setting, { eq }) =>
-            eq(setting.key, "digiflazz_top_up_price_list_postpaid"),
+            eq(setting.key, "digiflazz_top_up_price_list_pasca"),
         })
 
         let topUpPriceListPrePaidData
@@ -287,23 +182,25 @@ export const topUpRouter = createTRPCRouter({
         } else {
           topUpPriceListPostPaidData = topUpPriceListPostPaid?.value
         }
-        const topUpProducts = [
+        const topUpPriceList = [
           ...topUpPriceListPrePaidData,
           ...topUpPriceListPostPaidData,
         ] as unknown as (DigiflazzPriceListPostPaidResponse &
           DigiflazzPriceListPrePaidResponse)[]
 
-        const priceBySlugDatas = topUpProducts.find((price) => {
-          const brand = typeof price.brand === "string" && slugify(price.brand)
+        const topUpPriceListBySlug = topUpPriceList.find((topUpProduct) => {
+          const brand =
+            typeof topUpProduct.brand === "string" &&
+            slugify(topUpProduct.brand)
           return typeof brand === "string" && brand.includes(input)
         })
 
-        return priceBySlugDatas ?? null
+        return topUpPriceListBySlug ?? null
       } catch (error) {
         console.error("Error:", error)
       }
     }),
-  digiflazzBrands: publicProcedure.query(async ({ ctx }) => {
+  digiflazzTopUpProducts: publicProcedure.query(async ({ ctx }) => {
     try {
       const digiflazzPriceListPrePaid = (await ctx.digiflazz.daftarHarga(
         "prepaid",
@@ -339,7 +236,7 @@ export const topUpRouter = createTRPCRouter({
           .insert(settings)
           .values({
             id: cuid(),
-            key: `digiflazz_top_up_price_list_postpaid`,
+            key: `digiflazz_top_up_price_list_pasca`,
             value: JSON.stringify(digiflazzPriceListPostPaid.data),
           })
           .onConflictDoUpdate({
@@ -358,7 +255,7 @@ export const topUpRouter = createTRPCRouter({
 
       const topUpPriceListPostPaid = await ctx.db.query.settings.findFirst({
         where: (setting, { eq }) =>
-          eq(setting.key, "digiflazz_top_up_price_list_postpaid"),
+          eq(setting.key, "digiflazz_top_up_price_list_pasca"),
       })
 
       let topUpPriceListPrePaidData
@@ -387,7 +284,7 @@ export const topUpRouter = createTRPCRouter({
         ...topUpPriceListPostPaidData,
       ]
 
-      const topUpBrandPriceList = Array.from(
+      const topUpProductPriceList = Array.from(
         new Set(
           topUpProducts?.map(
             (
@@ -397,27 +294,46 @@ export const topUpRouter = createTRPCRouter({
             ) => item.brand,
           ),
         ),
-      ).map((brand) => {
-        return topUpProducts?.filter(
-          (
-            item:
-              | DigiflazzPriceListPrePaidResponse
-              | DigiflazzPriceListPostPaidResponse,
-          ) => item.brand === brand,
-        )[0]
+      ).map((brand) => ({
+        brand,
+        slug: slugify(brand),
+      }))
+
+      const topUpProductPriceListData = await ctx.db.query.settings.findFirst({
+        where: (setting, { eq }) =>
+          eq(setting.key, "digiflazz_top_up_products"),
       })
 
-      return topUpBrandPriceList ?? null
+      let topUpProductPriceListDataValue
+
+      if (!topUpProductPriceListData) {
+        // TODO: update data if digiflazz has new products
+        if (Array.isArray(topUpProductPriceList)) {
+          const data = await ctx.db.insert(settings).values({
+            id: cuid(),
+            key: "digiflazz_top_up_products",
+            value: JSON.stringify(topUpProductPriceList),
+          })
+          topUpProductPriceListDataValue = data
+        }
+      }
+
+      return JSON.parse(
+        topUpProductPriceListData?.value! ??
+          topUpProductPriceListDataValue ??
+          null,
+      )
     } catch (error) {
       console.error("Error:", error)
     }
   }),
-  digiflazzTopUpProductByBrand: publicProcedure
+  digiflazzTopUpProductBySlug: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
         const topUpProducts = await ctx.db.query.settings.findFirst({
-          where: (setting, { eq }) => eq(setting.key, "top_up_products"),
+          where: (setting, { eq }) =>
+            eq(setting.key, "digiflazz_top_up_products"),
         })
 
         if (!topUpProducts?.value || typeof topUpProducts?.value !== "string") {
@@ -426,35 +342,11 @@ export const topUpRouter = createTRPCRouter({
 
         const topUpProductsData = JSON.parse(topUpProducts?.value!)
 
-        const topUpPriceListByBrand = Array.from(
-          new Set(
-            topUpProductsData?.map(
-              (
-                item:
-                  | DigiflazzPriceListPrePaidResponse
-                  | DigiflazzPriceListPostPaidResponse,
-              ) => item.brand,
-            ),
-          ),
-        ).map((brand) => {
-          return topUpProductsData?.filter(
-            (
-              item:
-                | DigiflazzPriceListPrePaidResponse
-                | DigiflazzPriceListPostPaidResponse,
-            ) => item.brand === brand,
-          )[0]
-        })
-
-        const filteredTopUpPriceList = topUpPriceListByBrand.map(
-          addSlugToTopUpProducts,
+        const topUpProductBySlug = topUpProductsData.find(
+          (topUpProduct: { slug: string }) => topUpProduct.slug === input,
         )
 
-        const topUpPriceListBySlug = filteredTopUpPriceList.find(
-          (price) => price.slug.toLocaleLowerCase() === input,
-        )
-
-        return topUpPriceListBySlug
+        return topUpProductBySlug
       } catch (error) {
         console.error("Error:", error)
       }

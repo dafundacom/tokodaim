@@ -17,7 +17,7 @@ import { Icon } from "@/components/ui/icon"
 import { useI18n } from "@/lib/locales/client"
 
 interface DashboardShowOptionsProps {
-  onDelete: () => void
+  onDelete?: () => void
   editUrl: string | UrlObject
   translateUrl?: string | UrlObject
   viewUrl?: string | UrlObject
@@ -40,46 +40,54 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[150px] p-2">
-          <DropdownMenuItem onClick={() => setOpenDialog(true)}>
-            <Icon.Delete className="mr-2 size-4" />
-            {t("delete")}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {onDelete && (
+            <>
+              <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+                <Icon.Delete className="mr-2 size-4" />
+                {t("delete")}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem asChild>
             <NextLink href={editUrl}>
               <Icon.Edit className="mr-2 size-4" />
               {t("edit")}
             </NextLink>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
           {translateUrl && (
             <>
+              <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <NextLink href={translateUrl}>
                   <Icon.Language className="mr-2 size-4" />
                   {t("translate")}
                 </NextLink>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
             </>
           )}
           {viewUrl && (
-            <DropdownMenuItem asChild>
-              <NextLink href={viewUrl} target="_blank">
-                <Icon.View className="mr-2 size-4" />
-                {t("view")}
-              </NextLink>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <NextLink href={viewUrl} target="_blank">
+                  <Icon.View className="mr-2 size-4" />
+                  {t("view")}
+                </NextLink>
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDelete
-        description={description}
-        isOpen={openDialog}
-        className="max-w-[366px]"
-        onDelete={onDelete}
-        onClose={() => setOpenDialog(false)}
-      />
+      {onDelete && (
+        <AlertDelete
+          description={description}
+          isOpen={openDialog}
+          className="max-w-[366px]"
+          onDelete={onDelete}
+          onClose={() => setOpenDialog(false)}
+        />
+      )}
     </>
   )
 }
