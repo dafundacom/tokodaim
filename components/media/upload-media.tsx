@@ -23,7 +23,7 @@ interface UploadMediaProps extends React.HTMLAttributes<HTMLDivElement> {
 const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
   const { toggleUpload, setToggleUpload } = props
 
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [isPending, startTransition] = React.useTransition()
   const [previewImages, setPreviewImages] = React.useState<string[]>([])
 
   const t = useI18n()
@@ -54,24 +54,24 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
     }
   }, [watchedFiles])
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true)
+  const onSubmit = (values: FormValues) => {
+    startTransition(async () => {
+      const filesArray = Array.from(values.files)
 
-    const filesArray = Array.from(values.files)
+      const { data, error } = await uploadMultipleMediaAction(filesArray)
 
-    const { data, error } = await uploadMultipleMediaAction(filesArray)
-
-    if (data) {
-      setToggleUpload && setToggleUpload((prev) => !prev)
-      setPreviewImages([])
-      form.reset()
-      toast({ variant: "success", description: ts("upload_success") })
-    } else if (error) {
-      console.log(error)
-      toast({ variant: "danger", description: ts("upload_failed") })
-    }
-
-    setLoading(false)
+      startTransition(() => {
+        if (data) {
+          setToggleUpload && setToggleUpload((prev) => !prev)
+          setPreviewImages([])
+          form.reset()
+          toast({ variant: "success", description: ts("upload_success") })
+        } else if (error) {
+          console.log(error)
+          toast({ variant: "danger", description: ts("upload_failed") })
+        }
+      })
+    })
   }
 
   return (
@@ -113,7 +113,7 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
               type="button"
               onClick={form.handleSubmit(onSubmit)}
               aria-label="Submit"
-              loading={loading}
+              loading={isPending}
             >
               {t("submit")}
             </Button>
