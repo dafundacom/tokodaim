@@ -1,6 +1,7 @@
 import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
+import { notFound } from "next/navigation"
 
 import env from "@/env.mjs"
 import { api } from "@/lib/trpc/server"
@@ -41,6 +42,10 @@ export function generateMetadata({
 export default async function ManualTopUpDashboardPage() {
   const priceListPrePaid = await api.topUp.digiflazzPriceList("prepaid")
   const priceListPostPaid = await api.topUp.digiflazzPriceList("pasca")
+
+  if (!priceListPrePaid || !priceListPostPaid) {
+    notFound()
+  }
 
   return (
     <ManualTopUpForm

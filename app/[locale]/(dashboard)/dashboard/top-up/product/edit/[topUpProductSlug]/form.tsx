@@ -16,14 +16,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 
 interface FormValues {
-  active: boolean
   description?: string
   instructions?: string
   featuredImage?: string
@@ -35,7 +33,6 @@ interface FormValues {
 interface TopUpProduct {
   brand: string
   slug: string
-  active: boolean
   description?: string
   instructions?: string
   featuredImage?: string
@@ -100,11 +97,7 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
     },
   })
 
-  const form = useForm<FormValues>({
-    defaultValues: {
-      active: topUpProduct.active,
-    },
-  })
+  const form = useForm<FormValues>()
 
   React.useEffect(() => {
     setSelectedFeaturedImage(topUpProduct?.featuredImage!)
@@ -124,7 +117,7 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
         ...values,
         featuredImage: selectedFeaturedImage,
         icon: selectedIcon,
-        coverImage: selectedCoverImage,
+         coverImage: selectedCoverImage,
         infoIdImage: selectedInfoIdImage,
       }
 
@@ -255,24 +248,6 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
                       <Textarea
                         placeholder={ts("product_intructions_placeholder")}
                         {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="active"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">{t("active")}</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />

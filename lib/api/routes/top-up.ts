@@ -65,18 +65,25 @@ export const topUpRouter = createTRPCRouter({
           | DaftarHargaPrePaidReturnProps
           | DaftarHargaPostPaidReturnProps
 
+        const digiflazzPriceListWithSlugs = digiflazzPriceList.data.map(
+          (item) => ({
+            ...item,
+            slug: slugify(item.brand),
+          }),
+        )
+
         if (Array.isArray(digiflazzPriceList.data)) {
           await ctx.db
             .insert(settings)
             .values({
               id: cuid(),
               key: `digiflazz_top_up_price_list_${input}`,
-              value: JSON.stringify(digiflazzPriceList.data),
+              value: JSON.stringify(digiflazzPriceListWithSlugs),
             })
             .onConflictDoUpdate({
               target: settings.key,
               set: {
-                value: JSON.stringify(digiflazzPriceList.data),
+                value: JSON.stringify(digiflazzPriceListWithSlugs),
                 updatedAt: sql`CURRENT_TIMESTAMP`,
               },
             })
@@ -109,15 +116,23 @@ export const topUpRouter = createTRPCRouter({
       try {
         const digiflazzPriceListPrePaid = (await ctx.digiflazz.daftarHarga(
           "prepaid",
-        )) as {
-          data: string
-        }
+        )) as DaftarHargaPrePaidReturnProps
 
         const digiflazzPriceListPostPaid = (await ctx.digiflazz.daftarHarga(
           "pasca",
-        )) as {
-          data: string
-        }
+        )) as DaftarHargaPostPaidReturnProps
+
+        const digiflazzPriceListPrePaidWithSlugs =
+          digiflazzPriceListPrePaid.data.map((item) => ({
+            ...item,
+            slug: slugify(item.brand),
+          }))
+
+        const digiflazzPriceListPostPaidWithSlugs =
+          digiflazzPriceListPostPaid.data.map((item) => ({
+            ...item,
+            slug: slugify(item.brand),
+          }))
 
         if (Array.isArray(digiflazzPriceListPrePaid.data)) {
           await ctx.db
@@ -125,12 +140,12 @@ export const topUpRouter = createTRPCRouter({
             .values({
               id: cuid(),
               key: `digiflazz_top_up_price_list_prepaid`,
-              value: JSON.stringify(digiflazzPriceListPrePaid.data),
+              value: JSON.stringify(digiflazzPriceListPrePaidWithSlugs),
             })
             .onConflictDoUpdate({
               target: settings.key,
               set: {
-                value: JSON.stringify(digiflazzPriceListPrePaid.data),
+                value: JSON.stringify(digiflazzPriceListPrePaidWithSlugs),
                 updatedAt: sql`CURRENT_TIMESTAMP`,
               },
             })
@@ -142,12 +157,12 @@ export const topUpRouter = createTRPCRouter({
             .values({
               id: cuid(),
               key: `digiflazz_top_up_price_list_pasca`,
-              value: JSON.stringify(digiflazzPriceListPostPaid.data),
+              value: JSON.stringify(digiflazzPriceListPostPaidWithSlugs),
             })
             .onConflictDoUpdate({
               target: settings.key,
               set: {
-                value: JSON.stringify(digiflazzPriceListPostPaid.data),
+                value: JSON.stringify(digiflazzPriceListPostPaidWithSlugs),
                 updatedAt: sql`CURRENT_TIMESTAMP`,
               },
             })
@@ -204,15 +219,23 @@ export const topUpRouter = createTRPCRouter({
     try {
       const digiflazzPriceListPrePaid = (await ctx.digiflazz.daftarHarga(
         "prepaid",
-      )) as {
-        data: string
-      }
+      )) as DaftarHargaPrePaidReturnProps
 
       const digiflazzPriceListPostPaid = (await ctx.digiflazz.daftarHarga(
         "pasca",
-      )) as {
-        data: string
-      }
+      )) as DaftarHargaPostPaidReturnProps
+
+      const digiflazzPriceListPrePaidWithSlugs =
+        digiflazzPriceListPrePaid.data.map((item) => ({
+          ...item,
+          slug: slugify(item.brand),
+        }))
+
+      const digiflazzPriceListPostPaidWithSlugs =
+        digiflazzPriceListPostPaid.data.map((item) => ({
+          ...item,
+          slug: slugify(item.brand),
+        }))
 
       if (Array.isArray(digiflazzPriceListPrePaid.data)) {
         await ctx.db
@@ -220,12 +243,12 @@ export const topUpRouter = createTRPCRouter({
           .values({
             id: cuid(),
             key: `digiflazz_top_up_price_list_prepaid`,
-            value: JSON.stringify(digiflazzPriceListPrePaid.data),
+            value: JSON.stringify(digiflazzPriceListPrePaidWithSlugs),
           })
           .onConflictDoUpdate({
             target: settings.key,
             set: {
-              value: JSON.stringify(digiflazzPriceListPrePaid.data),
+              value: JSON.stringify(digiflazzPriceListPrePaidWithSlugs),
               updatedAt: sql`CURRENT_TIMESTAMP`,
             },
           })
@@ -237,12 +260,12 @@ export const topUpRouter = createTRPCRouter({
           .values({
             id: cuid(),
             key: `digiflazz_top_up_price_list_pasca`,
-            value: JSON.stringify(digiflazzPriceListPostPaid.data),
+            value: JSON.stringify(digiflazzPriceListPostPaidWithSlugs),
           })
           .onConflictDoUpdate({
             target: settings.key,
             set: {
-              value: JSON.stringify(digiflazzPriceListPostPaid.data),
+              value: JSON.stringify(digiflazzPriceListPostPaidWithSlugs),
               updatedAt: sql`CURRENT_TIMESTAMP`,
             },
           })
@@ -284,7 +307,7 @@ export const topUpRouter = createTRPCRouter({
         ...topUpPriceListPostPaidData,
       ]
 
-      const topUpProductPriceList = Array.from(
+      const topUpProductsWithSlugs = Array.from(
         new Set(
           topUpProducts?.map(
             (
@@ -297,30 +320,29 @@ export const topUpRouter = createTRPCRouter({
       ).map((brand) => ({
         brand,
         slug: slugify(brand),
-        active: true,
       }))
 
-      const topUpProductPriceListData = await ctx.db.query.settings.findFirst({
+      const topUpProductsData = await ctx.db.query.settings.findFirst({
         where: (setting, { eq }) =>
           eq(setting.key, "digiflazz_top_up_products"),
       })
 
-      let topUpProductPriceListDataValue
+      let topUpProductsDataValue
 
-      if (!topUpProductPriceListData) {
-        if (Array.isArray(topUpProductPriceList)) {
+      if (!topUpProductsData) {
+        if (Array.isArray(topUpProductsWithSlugs)) {
           const data = await ctx.db.insert(settings).values({
             id: cuid(),
             key: "digiflazz_top_up_products",
-            value: JSON.stringify(topUpProductPriceList),
+            value: JSON.stringify(topUpProductsWithSlugs),
           })
-          topUpProductPriceListDataValue = data
+          topUpProductsDataValue = data
         }
       } else {
-        const existingProductList = JSON.parse(topUpProductPriceListData.value)
+        const existingProductList = JSON.parse(topUpProductsData.value)
 
         // Find new products
-        const newProducts = topUpProductPriceList.filter(
+        const newProducts = topUpProductsWithSlugs.filter(
           (product) =>
             !existingProductList.some(
               (existingProduct: { brand: string }) =>
@@ -331,7 +353,7 @@ export const topUpRouter = createTRPCRouter({
         // Find removed products
         const removedProducts = existingProductList.filter(
           (existingProduct: { brand: string }) =>
-            !topUpProductPriceList.some(
+            !topUpProductsWithSlugs.some(
               (product) => product.brand === existingProduct.brand,
             ),
         )
@@ -356,7 +378,7 @@ export const topUpRouter = createTRPCRouter({
           await ctx.db
             .insert(settings)
             .values({
-              id: topUpProductPriceListData.id,
+              id: topUpProductsData.id,
               key: "digiflazz_top_up_products",
               value: JSON.stringify(updatedProductList),
             })
@@ -367,14 +389,12 @@ export const topUpRouter = createTRPCRouter({
                 updatedAt: sql`CURRENT_TIMESTAMP`,
               },
             })
-          topUpProductPriceListDataValue = updatedProductList
+          topUpProductsDataValue = updatedProductList
         }
       }
 
       return JSON.parse(
-        topUpProductPriceListData?.value! ??
-          topUpProductPriceListDataValue ??
-          null,
+        topUpProductsData?.value! ?? topUpProductsDataValue ?? null,
       )
     } catch (error) {
       console.error("Error:", error)

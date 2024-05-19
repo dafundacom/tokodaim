@@ -51,8 +51,6 @@ export default async function EditTopUpProductDashboard(
   const topUpProduct =
     await api.topUp.digiflazzTopUpProductBySlug(topUpProductSlug)
 
-  console.log(topUpProduct)
-
   const topUpProducts = await api.topUp.digiflazzTopUpProducts()
 
   if (!topUpProductSlug) {
