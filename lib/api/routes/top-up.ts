@@ -308,7 +308,6 @@ export const topUpRouter = createTRPCRouter({
       let topUpProductPriceListDataValue
 
       if (!topUpProductPriceListData) {
-        // TODO: update data if digiflazz has new products
         if (Array.isArray(topUpProductPriceList)) {
           const data = await ctx.db.insert(settings).values({
             id: cuid(),
@@ -316,6 +315,59 @@ export const topUpRouter = createTRPCRouter({
             value: JSON.stringify(topUpProductPriceList),
           })
           topUpProductPriceListDataValue = data
+        }
+      } else {
+        const existingProductList = JSON.parse(topUpProductPriceListData.value)
+
+        // Find new products
+        const newProducts = topUpProductPriceList.filter(
+          (product) =>
+            !existingProductList.some(
+              (existingProduct: { brand: string }) =>
+                existingProduct.brand === product.brand,
+            ),
+        )
+
+        // Find removed products
+        const removedProducts = existingProductList.filter(
+          (existingProduct: { brand: string }) =>
+            !topUpProductPriceList.some(
+              (product) => product.brand === existingProduct.brand,
+            ),
+        )
+
+        let updatedProductList = existingProductList
+
+        if (newProducts.length > 0) {
+          updatedProductList = [...existingProductList, ...newProducts]
+        }
+
+        if (removedProducts.length > 0) {
+          updatedProductList = updatedProductList.filter(
+            (product: { brand: string }) =>
+              !removedProducts.some(
+                (removedProduct: { brand: string }) =>
+                  removedProduct.brand === product.brand,
+              ),
+          )
+        }
+
+        if (newProducts.length > 0 || removedProducts.length > 0) {
+          await ctx.db
+            .insert(settings)
+            .values({
+              id: topUpProductPriceListData.id,
+              key: "digiflazz_top_up_products",
+              value: JSON.stringify(updatedProductList),
+            })
+            .onConflictDoUpdate({
+              target: settings.key,
+              set: {
+                value: JSON.stringify(updatedProductList),
+                updatedAt: sql`CURRENT_TIMESTAMP`,
+              },
+            })
+          topUpProductPriceListDataValue = updatedProductList
         }
       }
 
