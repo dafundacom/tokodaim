@@ -297,6 +297,7 @@ export const topUpRouter = createTRPCRouter({
       ).map((brand) => ({
         brand,
         slug: slugify(brand),
+        active: true,
       }))
 
       const topUpProductPriceListData = await ctx.db.query.settings.findFirst({
