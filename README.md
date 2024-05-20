@@ -5,3 +5,5 @@
 - [ ] add amp promo
 - [ ] add isFeatured to edit top up product
 - [ ] sort top up product by isFeatured first at homepage
+- [ ] add isFeatured to promo
+- [ ] add featured promo banner to homepage
