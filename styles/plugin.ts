@@ -139,7 +139,21 @@ export const stylePlugin = plugin(
           sm: "calc(var(--radius) - 4px)",
         },
         fontFamily: {
-          sans: ["var(--font-sans)", ...fontFamily.sans],
+          sans: [
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "segoe ui",
+            "helvetica neue",
+            "Arial",
+            "Roboto",
+            "Inter",
+            "noto sans",
+            "sans-serif",
+            "apple color emoji",
+            "segoe ui emoji",
+            "segoe ui symbol",
+            "noto color emoji",
+          ],
         },
         keyframes: {
           "accordion-down": {

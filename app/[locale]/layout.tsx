@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Inter } from "next/font/google"
 
 import "@/styles/globals.css"
 
@@ -12,8 +11,6 @@ import env from "@/env.mjs"
 import { I18nProviderClient } from "@/lib/locales/client"
 import TRPCReactProvider from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export function generateMetadata({
   params,
@@ -83,7 +80,7 @@ export default function RootLayout({ params, children }: RootLayoutProps) {
   const { locale } = params
 
   return (
-    <html lang="en" className={inter.className} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
         <I18nProviderClient locale={locale}>
           <ThemeProvider>
