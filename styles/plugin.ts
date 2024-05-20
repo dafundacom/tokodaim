@@ -1,4 +1,3 @@
-import { fontFamily } from "tailwindcss/defaultTheme"
 import plugin from "tailwindcss/plugin"
 
 export const stylePlugin = plugin(
