@@ -41,7 +41,7 @@ export default function DashboardAdContent() {
       <DashboardAdHeader />
       {!isLoading && ads !== undefined && ads.length > 0 ? (
         <AdTable
-          ads={ads ?? 1}
+          ads={ads}
           paramsName="page"
           page={page ? parseInt(page) : 1}
           lastPage={lastPage ?? 3}

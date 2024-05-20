@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
@@ -15,27 +16,64 @@ const Ad = dynamicFn(
   },
 )
 
-const ArticleList = dynamicFn(
+const TopUpProductGrid = dynamicFn(
   async () => {
-    const ArticleList = await import("@/components/article/article-list")
-    return ArticleList
+    const TopUpProductGrid = await import(
+      "@/components/top-up/top-up-product-grid"
+    )
+    return TopUpProductGrid
   },
   {
     ssr: false,
   },
 )
 
-interface HomePageProps {
-  params: {
-    locale: LanguageType
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: LanguageType }
+}): Promise<Metadata> {
+  const { locale } = params
+
+  const data = await api.setting.byKey("settings")
+
+  let settings
+
+  if (data) {
+    const parsedData = JSON.parse(data.value)
+    settings = { ...parsedData }
+  }
+
+  return {
+    title: {
+      absolute: `${settings?.site_title ?? env.NEXT_PUBLIC_SITE_TITLE} | ${
+        settings?.site_tagline ?? env.NEXT_PUBLIC_SITE_TAGLINE
+      }`,
+    },
+    description: settings?.site_description ?? env.NEXT_PUBLIC_SITE_DESCRIPTION,
+    alternates: {
+      canonical: `${env.NEXT_PUBLIC_SITE_URL}/`,
+    },
+    openGraph: {
+      title: `${
+        settings?.site_title ?? env.NEXT_PUBLIC_SITE_TITLE
+      } | ${settings?.site_tagline}`,
+      description:
+        settings?.site_description ?? env.NEXT_PUBLIC_SITE_DESCRIPTION,
+      url: `${env.NEXT_PUBLIC_SITE_URL}/`,
+      locale: locale,
+    },
   }
 }
 
-export default async function Home(props: HomePageProps) {
-  const { params } = props
-  const { locale } = params
-
+export default async function Home() {
   const adsBelowHeader = await api.ad.byPosition("article_below_header")
+  const topUpProductsGames =
+    await api.topUp.digiflazzTopUpProductsByCategory("games")
+  const topUpProductsPulsa =
+    await api.topUp.digiflazzTopUpProductsByCategory("pulsa")
+  const topUpProductsEMoney =
+    await api.topUp.digiflazzTopUpProductsByCategory("e-money")
 
   return (
     <>
@@ -64,8 +102,13 @@ export default async function Home(props: HomePageProps) {
           adsBelowHeader.map((ad) => {
             return <Ad key={ad.id} ad={ad} />
           })}
-        <div className="my-2 flex w-full flex-col">
-          <ArticleList locale={locale} />
+        <div className="my-2 flex w-full flex-col space-y-4 lg:space-y-8">
+          <TopUpProductGrid title="Games" topUpProducts={topUpProductsGames!} />
+          <TopUpProductGrid title="Pulsa" topUpProducts={topUpProductsPulsa!} />
+          <TopUpProductGrid
+            title="e-Money"
+            topUpProducts={topUpProductsEMoney!}
+          />
         </div>
       </section>
     </>

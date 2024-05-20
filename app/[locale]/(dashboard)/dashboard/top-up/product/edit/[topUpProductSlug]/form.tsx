@@ -97,7 +97,12 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
     },
   })
 
-  const form = useForm<FormValues>()
+  const form = useForm<FormValues>({
+    defaultValues: {
+      description: topUpProduct?.description,
+      instructions: topUpProduct?.instructions,
+    },
+  })
 
   React.useEffect(() => {
     setSelectedFeaturedImage(topUpProduct?.featuredImage!)
@@ -121,7 +126,7 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
         infoIdImage: selectedInfoIdImage,
       }
 
-      const mergedData = topUpProducts.map((obj) => {
+      const mergedData = topUpProducts?.map((obj) => {
         if (obj.brand === topUpProduct?.brand) {
           return {
             ...obj,

@@ -36,7 +36,7 @@ export default function DashboardTopUpProductContent() {
           topUpProducts={topUpProducts}
           paramsName="page"
           page={page ? parseInt(page) : 1}
-          lastPage={(lastPage as number) ?? 1}
+          lastPage={lastPage! ?? 1}
         />
       ) : (
         <div className="my-64 flex items-center justify-center">

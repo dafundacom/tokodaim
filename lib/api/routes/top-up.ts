@@ -45,6 +45,12 @@ export interface DigiflazzPriceListPostPaidResponse
   infoIdImage?: string
 }
 
+export interface TopUpProducts {
+  brand: string
+  slug: string
+  category: string
+}
+
 export const topUpRouter = createTRPCRouter({
   digiflazzCheckBalance: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
@@ -210,7 +216,11 @@ export const topUpRouter = createTRPCRouter({
           return typeof brand === "string" && brand.includes(input)
         })
 
-        return topUpPriceListBySlug ?? null
+        if (!topUpPriceListBySlug) {
+          return undefined
+        }
+
+        return topUpPriceListBySlug
       } catch (error) {
         console.error("Error:", error)
       }
@@ -229,14 +239,14 @@ export const topUpRouter = createTRPCRouter({
         digiflazzPriceListPrePaid.data.map((item) => ({
           ...item,
           slug: slugify(item.brand),
-          category: item.category,
+          category: slugify(item.category),
         }))
 
       const digiflazzPriceListPostPaidWithSlugs =
         digiflazzPriceListPostPaid.data.map((item) => ({
           ...item,
           slug: slugify(item.brand),
-          category: item.category,
+          category: slugify(item.category),
         }))
 
       if (Array.isArray(digiflazzPriceListPrePaid.data)) {
@@ -316,15 +326,17 @@ export const topUpRouter = createTRPCRouter({
               item:
                 | DigiflazzPriceListPrePaidResponse
                 | DigiflazzPriceListPostPaidResponse,
-            ) => item.brand,
+            ) => JSON.stringify({ brand: item.brand, category: item.category }),
           ),
         ),
-      ).map((brand, category) => ({
-        brand,
-        slug: slugify(brand),
-        category: category,
-      }))
-
+      ).map((item) => {
+        const { brand, category } = JSON.parse(item)
+        return {
+          brand,
+          slug: slugify(brand),
+          category: slugify(category),
+        }
+      })
       const topUpProductsData = await ctx.db.query.settings.findFirst({
         where: (setting, { eq }) =>
           eq(setting.key, "digiflazz_top_up_products"),
@@ -396,13 +408,46 @@ export const topUpRouter = createTRPCRouter({
         }
       }
 
-      return JSON.parse(
-        topUpProductsData?.value! ?? topUpProductsDataValue ?? null,
-      )
+      if (!topUpProductsData?.value || topUpProductsDataValue) {
+        return undefined
+      }
+
+      const data = JSON.parse(
+        topUpProductsData?.value! ?? topUpProductsDataValue,
+      ) as TopUpProducts[]
+
+      return data
     } catch (error) {
       console.error("Error:", error)
     }
   }),
+  digiflazzTopUpProductsByCategory: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      try {
+        const topUpProducts = await ctx.db.query.settings.findFirst({
+          where: (setting, { eq }) =>
+            eq(setting.key, "digiflazz_top_up_products"),
+        })
+
+        if (!topUpProducts?.value || typeof topUpProducts?.value !== "string") {
+          return undefined
+        }
+
+        const topUpProductsData = JSON.parse(topUpProducts?.value!)
+
+        const topUpProductsByCategory = topUpProductsData.filter(
+          (topUpProduct: { category: string }) =>
+            topUpProduct.category === input,
+        )
+
+        const data = topUpProductsByCategory as TopUpProducts[]
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }),
   digiflazzTopUpProductBySlug: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -413,7 +458,7 @@ export const topUpRouter = createTRPCRouter({
         })
 
         if (!topUpProducts?.value || typeof topUpProducts?.value !== "string") {
-          return null
+          return undefined
         }
 
         const topUpProductsData = JSON.parse(topUpProducts?.value!)
@@ -422,7 +467,7 @@ export const topUpRouter = createTRPCRouter({
           (topUpProduct: { slug: string }) => topUpProduct.slug === input,
         )
 
-        return topUpProductBySlug
+        return topUpProductBySlug as TopUpProducts
       } catch (error) {
         console.error("Error:", error)
       }
