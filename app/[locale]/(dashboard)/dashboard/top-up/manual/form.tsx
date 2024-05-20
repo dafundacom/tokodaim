@@ -79,6 +79,8 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
 
   const form = useForm<FormValues>()
 
+  if (!topUpPriceList) return null
+
   const { mutate: createTransaction } =
     api.topUp.digiflazzCreateTransaction.useMutation({
       onSuccess: (data) => {

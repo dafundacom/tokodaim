@@ -43,10 +43,6 @@ export default async function ManualTopUpDashboardPage() {
   const priceListPrePaid = await api.topUp.digiflazzPriceList("prepaid")
   const priceListPostPaid = await api.topUp.digiflazzPriceList("pasca")
 
-  if (!priceListPrePaid || !priceListPostPaid) {
-    notFound()
-  }
-
   return (
     <ManualTopUpForm
       priceListPrePaid={priceListPrePaid}
