@@ -1,7 +1,7 @@
-# Starter
+# Tokodaim
 
 ## TODO: 
-- [ ] send welcome email after registration
-- [ ] add dashboard search
-- [ ] styling amp
-- [x] add logo and icon
+- [ ] add data from settings db to all page (with amp too)
+- [ ] add amp promo
+- [ ] add isFeatured to edit top up product
+- [ ] sort top up product by isFeatured first at homepage
