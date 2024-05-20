@@ -229,12 +229,14 @@ export const topUpRouter = createTRPCRouter({
         digiflazzPriceListPrePaid.data.map((item) => ({
           ...item,
           slug: slugify(item.brand),
+          category: item.category,
         }))
 
       const digiflazzPriceListPostPaidWithSlugs =
         digiflazzPriceListPostPaid.data.map((item) => ({
           ...item,
           slug: slugify(item.brand),
+          category: item.category,
         }))
 
       if (Array.isArray(digiflazzPriceListPrePaid.data)) {
@@ -317,9 +319,10 @@ export const topUpRouter = createTRPCRouter({
             ) => item.brand,
           ),
         ),
-      ).map((brand) => ({
+      ).map((brand, category) => ({
         brand,
         slug: slugify(brand),
+        category: category,
       }))
 
       const topUpProductsData = await ctx.db.query.settings.findFirst({
