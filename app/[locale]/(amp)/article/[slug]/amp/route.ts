@@ -1,6 +1,7 @@
 //TODO:
 // 1. translate
 // 2. change font
+// 3. add amp ads
 
 import { notFound } from "next/navigation"
 import type { NextRequest } from "next/server"
@@ -26,17 +27,6 @@ export async function GET(
   if (!article) {
     return notFound()
   }
-
-  const adsBelowHeader = await api.ad.byPosition("article_below_header_amp")
-  const adsSingleArticleAbove = await api.ad.byPosition(
-    "single_article_above_content_amp",
-  )
-  const adsSingleArticleBelow = await api.ad.byPosition(
-    "single_article_below_content_amp",
-  )
-  const adsSingleArticleInline = await api.ad.byPosition(
-    "single_article_middle_content_amp",
-  )
 
   const htmlcontent = await convertArticleContentToAMP(article)
   //@ts-expect-error FIX: handle drizzle send null data
@@ -76,71 +66,6 @@ darkButton.addEventListener('click', () => {
 `
 
   const ampBoilerplateStyle = `<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>`
-
-  const adsBelowHeaderHtml = adsBelowHeader?.map((ad) => {
-    return `
-      <div class="amp-ad-header">
-        <amp-ad
-          width="100vw"
-          height="320"
-          type="adsense"
-          data-ad-client="${env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}"
-          data-ad-slot="${ad.content}"
-          data-auto-format="rspv"
-          data-full-width=""
-        >
-          <div overflow></div>
-        </amp-ad>
-      </div>
-    `
-  })
-
-  const adsSingleArticleAboveHtml = adsSingleArticleAbove?.map((ad) => {
-    return `
-    <div class="amp-ad-content">
-      <amp-ad
-        width="100vw"
-        height="320"
-        type="adsense"
-        data-ad-client="${env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}"
-        data-ad-slot="${ad.content}"
-        data-auto-format="rspv"
-        data-full-width=""
-        ><div overflow></div
-      ></amp-ad>
-    </div>`
-  })
-
-  const adsSingleArticleBelowHtml = adsSingleArticleBelow?.map((ad) => {
-    return `<div class="amp-ad-content">
-      <amp-ad
-        width="100vw"
-        height="320"
-        type="adsense"
-        data-ad-client="${env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}"
-        data-ad-slot="${ad.content}"
-        data-auto-format="rspv"
-        data-full-width=""
-        ><div overflow></div
-      ></amp-ad>
-    </div>`
-  })
-
-  const adsSingleArticleInlineHtml = adsSingleArticleInline?.map((ad) => {
-    return ` 
-    <div class="amp-ad-content">
-      <amp-ad
-        width="100vw"
-        height="320"
-        type="adsense"
-        data-ad-client="${env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}"
-        data-ad-slot="${ad.content}"
-        data-auto-format="rspv"
-        data-full-width=""
-        ><div overflow></div
-      ></amp-ad>
-    </div>`
-  })
 
   const ampShare = `
     <div class="amp-share-container">
@@ -381,15 +306,6 @@ darkButton.addEventListener('click', () => {
         </script>
       </head>
       <body>
-        <amp-auto-ads
-          class="amp-ad-content"
-          type="adsense"
-          data-ad-client="${env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}"
-          data-auto-format="rspv"
-          data-full-width=""
-        >
-          <div overflow></div>
-        </amp-auto-ads>
         <div id="amp-dark-mode-wrapper" class="ligth-mode" [class]="darkClass">
           <header id="#top" class="amp-header-container">
             <div class="amp-container">
@@ -419,7 +335,6 @@ darkButton.addEventListener('click', () => {
               </div>
             </div>
           </header>
-          ${adsBelowHeaderHtml.join("")}
           <main>
             <article class="amp-article">
               <header class="amp-article-header">
@@ -443,13 +358,10 @@ darkButton.addEventListener('click', () => {
                   alt="${article.title}"
                 ></amp-img>
               </figure>
-              ${adsSingleArticleAboveHtml.join("")}
               <section class="amp-article-content">
                 ${htmlcontent.firstCleanHtml}
-                ${adsSingleArticleInlineHtml.join("")}
                 ${htmlcontent.secondCleanHtml}
               </section>
-              ${adsSingleArticleBelowHtml.join("")}
                 <div class="amp-topic-list">
                   ${article.topics
                     .map((topic) => {

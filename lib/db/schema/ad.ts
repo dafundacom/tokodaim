@@ -1,12 +1,11 @@
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import { AD_POSITION, AD_TYPE } from "@/lib/validation/ad"
+import { AD_POSITION } from "@/lib/validation/ad"
 
 export const ads = pgTable("ads", {
   id: text("id").primaryKey(),
   title: text("title").unique().notNull(),
   content: text("content").notNull(),
-  type: text("type", { enum: AD_TYPE }).notNull().default("plain_ad"),
   position: text("position", { enum: AD_POSITION })
     .notNull()
     .default("home_below_header"),

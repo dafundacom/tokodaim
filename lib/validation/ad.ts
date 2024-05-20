@@ -16,10 +16,6 @@ export const AD_POSITION = [
 
 export const adPosition = z.enum(AD_POSITION)
 
-export const AD_TYPE = ["adsense", "plain_ad"] as const
-
-export const adType = z.enum(AD_TYPE)
-
 export const adInput = {
   title: z
     .string({
@@ -35,9 +31,6 @@ export const adInput = {
     .min(2),
   position: z.enum(AD_POSITION, {
     invalid_type_error: "Your Ad position doesnt exist on available option.",
-  }),
-  type: z.enum(AD_TYPE, {
-    invalid_type_error: "Your Ad type doesnt exist on available option.",
   }),
   active: z
     .boolean({
@@ -64,5 +57,4 @@ export const updateAdSchema = z.object({
   ...updateAdInput,
 })
 
-export type AdType = z.infer<typeof adType>
 export type AdPosition = z.infer<typeof adPosition>

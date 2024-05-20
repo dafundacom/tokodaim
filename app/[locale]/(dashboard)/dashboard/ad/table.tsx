@@ -67,9 +67,6 @@ export default function AdTable(props: AdTableProps) {
           <TableRow>
             <TableHead>{t("title")}</TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
-              {t("type")}
-            </TableHead>
-            <TableHead className="hidden whitespace-nowrap lg:table-cell">
               {t("position")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
@@ -88,13 +85,6 @@ export default function AdTable(props: AdTableProps) {
                       <span className="uppercase">{ad.position}</span>
                       <span className="pr-1">,</span>
                       <span>{ad.active}</span>
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
-                  <div className="flex">
-                    <span className="overflow-hidden text-ellipsis font-medium">
-                      {ad.type}
                     </span>
                   </div>
                 </TableCell>

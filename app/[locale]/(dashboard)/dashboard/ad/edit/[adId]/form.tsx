@@ -26,14 +26,13 @@ import { toast } from "@/components/ui/toast/use-toast"
 import type { InsertAd } from "@/lib/db/schema/ad"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
-import type { AdPosition, AdType } from "@/lib/validation/ad"
+import type { AdPosition } from "@/lib/validation/ad"
 
 interface FormValues {
   id: string
   title: string
   content: string
   position: AdPosition
-  type: AdType
   active: boolean
 }
 
@@ -86,12 +85,9 @@ export default function EditAdForm(props: EditAdFormProps) {
       title: ad?.title ?? "",
       content: ad?.content ?? "",
       position: ad?.position ?? "home_below_header",
-      type: ad?.type ?? "plain_ad",
       active: ad?.active ?? false,
     },
   })
-
-  const adType = form.watch("type")
 
   const onSubmit = (values: FormValues) => {
     setLoading(true)
@@ -123,72 +119,23 @@ export default function EditAdForm(props: EditAdFormProps) {
             />
             <FormField
               control={form.control}
-              name="type"
+              name="content"
               rules={{
-                required: ts("type_required"),
+                required: ts("content_required"),
               }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("type")}</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={ts("type_placeholder")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="adsense">Adsense</SelectItem>
-                      <SelectItem value="plain_ad">Plain Ad</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>{t("content")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={ts("content_script_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {adType !== "adsense" ? (
-              <FormField
-                control={form.control}
-                name="content"
-                rules={{
-                  required: ts("content_required"),
-                }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("content")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={ts("content_script_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ) : (
-              <FormField
-                control={form.control}
-                name="content"
-                rules={{
-                  required: ts("content_required"),
-                }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("content")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={ts("content_adsense_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
             <FormField
               control={form.control}
               name="position"

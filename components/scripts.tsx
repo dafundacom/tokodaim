@@ -1,13 +1,11 @@
 import Script from "next/script"
 
-import AdsenseScript from "@/components/ad/adsense-script"
 import env from "@/env.mjs"
 
 const Scripts = () => {
   if (process.env.APP_ENV === "production") {
     return (
       <>
-        <AdsenseScript />
         {process.env.ENABLE_GA && (
           <>
             <Script
