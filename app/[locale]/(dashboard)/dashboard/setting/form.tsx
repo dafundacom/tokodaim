@@ -13,13 +13,23 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 
 interface FormValues {
-  profit_percentage: string
+  site_title: string
+  site_tagline: string
+  site_description: string
   support_email: string
+  facebook_username: string
+  x_username: string
+  instagram_username: string
+  tiktok_username: string
+  whatsapp_channel: string
+  youtube_channel: string
+  profit_percentage: string
 }
 
 interface UpsertSettingFormProps {
@@ -87,17 +97,168 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
           <div className="flex max-w-2xl flex-col space-y-4">
             <FormField
               control={form.control}
-              name="profit_percentage"
+              name="site_title"
               rules={{
-                required: tsTopUp("profit_percentage_required"),
+                required: tsSetting("site_title_required"),
               }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tsTopUp("profit_percentage")}</FormLabel>
+                  <FormLabel>{tsSetting("site_title")}</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder={tsTopUp("profit_percentage_required")}
+                      placeholder={tsSetting("site_title_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="site_tagline"
+              rules={{
+                required: tsSetting("site_tagline_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("site_tagline")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("site_tagline_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="site_description"
+              rules={{
+                required: tsSetting("site_description_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("site_description")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={tsSetting("site_description_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="facebook_username"
+              rules={{
+                required: tsSetting("facebook_username_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("facebook_username")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("facebook_username_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="x_username"
+              rules={{
+                required: tsSetting("x_username_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("x_username")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("x_username_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="instagram_username"
+              rules={{
+                required: tsSetting("instagram_username_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("instagram_username")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("instagram_username_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tiktok_username"
+              rules={{
+                required: tsSetting("tiktok_username_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("tiktok_username")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("tiktok_username_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="whatsapp_channel"
+              rules={{
+                required: tsSetting("whatsapp_channel_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("whatsapp_channel")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("whatsapp_channel_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="youtube_channel"
+              rules={{
+                required: tsSetting("youtube_channel_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("youtube_channel")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("youtube_channel_placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -118,6 +279,26 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
                     <Input
                       type="email"
                       placeholder={t("support_email_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="profit_percentage"
+              rules={{
+                required: tsTopUp("profit_percentage_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsTopUp("profit_percentage")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder={tsTopUp("profit_percentage_required")}
                       {...field}
                     />
                   </FormControl>
