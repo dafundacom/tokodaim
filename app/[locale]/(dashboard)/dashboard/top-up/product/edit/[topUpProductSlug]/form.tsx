@@ -117,7 +117,7 @@ export default function EditTopUpProductForm(props: EditTopUpProductFormProps) {
         ...values,
         featuredImage: selectedFeaturedImage,
         icon: selectedIcon,
-         coverImage: selectedCoverImage,
+        coverImage: selectedCoverImage,
         infoIdImage: selectedInfoIdImage,
       }
 
