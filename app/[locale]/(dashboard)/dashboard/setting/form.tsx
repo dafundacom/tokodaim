@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
+import TextEditor from "@/components/text-editor/text-editor"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -23,6 +24,9 @@ interface FormValues {
   site_tagline: string
   site_description: string
   support_email: string
+  footer_description: string
+  footer_faq: string
+  footer_tagline: string
   facebook_username: string
   x_username: string
   instagram_username: string
@@ -266,6 +270,33 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="footer_tagline"
+              rules={{
+                required: tsSetting("footer_tagline_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tsSetting("footer_tagline")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tsSetting("footer_tagline_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="space-y-2">
+              <FormLabel>{tsSetting("footer_description")}</FormLabel>
+              <TextEditor control={form.control} name="footer_description" />
+            </div>
+            <div className="space-y-2">
+              <FormLabel>{tsSetting("footer_faq")}</FormLabel>
+              <TextEditor control={form.control} name="footer_faq" />
+            </div>
             <FormField
               control={form.control}
               name="support_email"
