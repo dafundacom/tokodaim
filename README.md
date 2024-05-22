@@ -1,5 +1,3 @@
-
-
 ## TODO: 
 - [ ] add data from settings db to all page (with amp too)
 - [ ] add amp promo
@@ -8,3 +6,4 @@
 - [ ] add isFeatured to promo
 - [ ] add featured promo banner to homepage
 - [ ] make text editor style like textarea style (not text editor extended)
+- [ ] add toolbar and html support to text editor
