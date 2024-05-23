@@ -24,6 +24,7 @@ interface FormValues {
   site_tagline: string
   site_description: string
   support_email: string
+  support_whatsapp: string
   footer_description: string
   footer_faq: string
   footer_tagline: string
@@ -310,6 +311,26 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
                     <Input
                       type="email"
                       placeholder={t("support_email_placeholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="support_whatsapp"
+              rules={{
+                required: t("support_whatsapp_required"),
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("support_whatsapp")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder={t("support_whatsapp_placeholder")}
                       {...field}
                     />
                   </FormControl>
