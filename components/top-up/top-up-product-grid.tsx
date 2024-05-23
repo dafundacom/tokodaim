@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/lib/locales/client"
 import TopUpCard from "./top-up-card"
 
 interface TopUpProductGridProps {
@@ -20,7 +21,9 @@ const TopUpProductGrid: React.FC<TopUpProductGridProps> = (props) => {
 
   const [visibleCount, setVisibleCount] = React.useState<number>(12)
 
-  const handleLoadMore = () => {
+  const t = useI18n()
+
+  const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 12)
   }
 
@@ -41,11 +44,11 @@ const TopUpProductGrid: React.FC<TopUpProductGridProps> = (props) => {
       {visibleCount < topUpProducts.length && (
         <div className="flex justify-center">
           <Button
-            onClick={handleLoadMore}
+            onClick={handleShowMore}
             variant="ghost"
             className="rounded-xl font-bold"
           >
-            Show More
+            {t("show_more")}
           </Button>
         </div>
       )}
@@ -56,7 +59,7 @@ const TopUpProductGrid: React.FC<TopUpProductGridProps> = (props) => {
             variant="ghost"
             className="rounded-xl font-bold"
           >
-            Show Less
+            {t("show_less")}
           </Button>
         </div>
       )}

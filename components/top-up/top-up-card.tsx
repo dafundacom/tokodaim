@@ -36,7 +36,7 @@ const TopUpCard: React.FunctionComponent<TopUpCardProps> = (props) => {
         )}
       </div>
       <article className="absolute inset-x-0 -bottom-12 z-10 flex transform flex-col px-3 transition-all duration-300 ease-in-out group-hover:bottom-3 sm:px-4 group-hover:sm:bottom-4">
-        <h2 className="text-sm font-semibold text-white sm:text-base">
+        <h2 className="text-xs font-semibold text-white md:text-sm lg:text-base">
           {brand}
         </h2>
       </article>

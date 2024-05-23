@@ -3,7 +3,7 @@
 import * as React from "react"
 import NextLink from "next/link"
 
-import LanguageSwitcher from "@/components/language-switcher"
+import LanguageSwitcherDashboard from "@/components/language/language-switcher-dashboard"
 import Sidebar from "@/components/layout/sidebar"
 import SidebarItem from "@/components/layout/sidebar-item"
 import ThemeSwitcher from "@/components/theme/theme-switcher"
@@ -87,7 +87,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
           </ul>
         </div>
         <div className="absolute bottom-0 left-0 z-20 flex w-full justify-center space-x-4 border-r border-border bg-background p-4">
-          <LanguageSwitcher />
+          <LanguageSwitcherDashboard />
           <ThemeSwitcher />
           <Button asChild variant="ghost">
             <NextLink href="/dashboard/setting">

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/popover"
 import { useChangeLocale, useCurrentLocale } from "@/lib/locales/client"
 
-const LanguageSwitcher: React.FunctionComponent = () => {
+const LanguageSwitcherDashboard: React.FunctionComponent = () => {
   const changeLocale = useChangeLocale()
   const locale = useCurrentLocale()
 
@@ -47,4 +47,4 @@ const LanguageSwitcher: React.FunctionComponent = () => {
   )
 }
 
-export default LanguageSwitcher
+export default LanguageSwitcherDashboard

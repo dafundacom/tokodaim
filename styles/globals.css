@@ -180,6 +180,16 @@
   @apply rounded-sm shadow-[0_0_0_3px_#68cef8];
 }
 
+/* Footer */
+
+.footer-content h2 {
+  @apply text-sm lg:text-base;
+}
+
+.footer-content p {
+  @apply text-xs lg:text-sm;
+}
+
 /* Youtube Embed */
 .yt-lite {
   @apply aspect-video h-auto w-full rounded-lg shadow-lg;

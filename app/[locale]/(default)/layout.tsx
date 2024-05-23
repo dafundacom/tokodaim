@@ -14,13 +14,9 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
   return (
     <>
       <GlobalNav />
-      <div className="w-[calc(100% - 92px)] layout-background-image relative ml-0 lg:ml-[92px]">
+      <div className="w-[calc(100% - 92px)] ml-0 lg:ml-[92px]">
         <TopNav />
-        <main className="w-[calc(100% - 92px)] layout-background-image relative ml-0 lg:ml-[92px]">
-          <div className="container mt-4 px-4 lg:mt-20 lg:px-48">
-            {children}
-          </div>
-        </main>
+        <main className="relative mt-4 px-4 lg:my-20 lg:px-64">{children}</main>
         <Footer />
       </div>
     </>
