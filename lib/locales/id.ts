@@ -170,6 +170,8 @@ export default {
   "search.placeholder": "Cari ...",
   search_game: "Cari Game ...",
   see_more: "Lihat Lebih Banyak",
+  server_placeholder: "Masukan Server",
+  server_placeholder_select: "Pilih Server",
   setting: "Pengaturan",
   "setting.facebook_username": "Nama Pengguna Facebook",
   "setting.facebook_username_placeholder": "Masukan Nama Pengguna Facebook",

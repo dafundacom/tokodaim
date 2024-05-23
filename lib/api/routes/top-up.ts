@@ -209,7 +209,7 @@ export const topUpRouter = createTRPCRouter({
         ] as unknown as (DigiflazzPriceListPostPaidResponse &
           DigiflazzPriceListPrePaidResponse)[]
 
-        const topUpPriceListBySlug = topUpPriceList.find((topUpProduct) => {
+        const topUpPriceListBySlug = topUpPriceList.filter((topUpProduct) => {
           const brand =
             typeof topUpProduct.brand === "string" &&
             slugify(topUpProduct.brand)

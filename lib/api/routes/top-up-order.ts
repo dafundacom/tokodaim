@@ -88,7 +88,7 @@ export const topUpOrderRouter = createTRPCRouter({
           id: cuid(),
           ...input,
         })
-        return data
+        return data[0]
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

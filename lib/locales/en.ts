@@ -167,6 +167,8 @@ export default {
   "search.placeholder": "Search ...",
   search_game: "Search Game ...",
   see_more: "See more",
+  server_placeholder: "Enter Server",
+  server_placeholder_select: "Select Server",
   setting: "Setting",
   "setting.facebook_username": "Facebook Username",
   "setting.facebook_username_placeholder": "Enter Facebook Username",

@@ -1,6 +1,5 @@
+// TODO: translate with useScopeI18n
 // TODO: styling link and youtube prompt
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client"
 
@@ -12,12 +11,19 @@ import {
   EditorContent as TextEditorContent,
   useEditor as useTextEditor,
 } from "@tiptap/react"
-import { useController } from "react-hook-form"
+import {
+  useController,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form"
 
-interface TextEditorProps {
-  control: any
+export interface TextEditorProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
+  control: Control<TFieldValues>
+  name: Path<TFieldValues>
   isClear?: boolean
-  name: string
 }
 
 const TextEditor = React.memo((props: TextEditorProps) => {

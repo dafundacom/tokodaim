@@ -3,7 +3,6 @@ import NextLink from "next/link"
 
 import Image from "@/components/image"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
 
 interface TopUpCardProps {
   topUpProduct: {
@@ -21,7 +20,7 @@ const TopUpCard: React.FunctionComponent<TopUpCardProps> = (props) => {
     <NextLink
       aria-label={brand}
       className="group relative transform overflow-hidden rounded-2xl duration-300 ease-in-out hover:shadow-2xl hover:ring-2 hover:ring-primary hover:ring-offset-2 hover:ring-offset-primary"
-      href={`${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`}
+      href={`/top-up/${slug}`}
     >
       <div className="relative aspect-[4/6]">
         {featuredImage ? (

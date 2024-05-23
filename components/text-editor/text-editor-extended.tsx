@@ -1,7 +1,5 @@
 // TODO: translate with useScopeI18n
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client"
 
 import * as React from "react"
@@ -11,16 +9,11 @@ import {
 } from "@tiptap/react"
 import { useController } from "react-hook-form"
 
+import type { TextEditorProps } from "./text-editor"
 import { TextEditorExtension } from "./text-editor-extension"
 import { TextEditorMenu } from "./text-editor-menu"
 
-interface TextEditorExtendedProps {
-  control: any
-  isClear?: boolean
-  name: string
-}
-
-const TextEditorExtended = React.memo((props: TextEditorExtendedProps) => {
+const TextEditorExtended = React.memo((props: TextEditorProps) => {
   const { control, isClear, name } = props
 
   const {
