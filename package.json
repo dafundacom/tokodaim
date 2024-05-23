@@ -15,7 +15,7 @@
     "db:pull": "drizzle-kit introspect",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx -r dotenv/config ./lib/db/migrate.ts",
-    "db:push": "drizzle-kit push:pg",
+    "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:check": "drizzle-kit check",
     "format:fix": "prettier --write \"**/*.{ts,tsx,js,jsx,css,md,mdx}\"",
