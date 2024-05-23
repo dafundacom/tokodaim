@@ -329,7 +329,6 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
                   <FormLabel>{t("support_whatsapp")}</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
                       placeholder={t("support_whatsapp_placeholder")}
                       {...field}
                     />
