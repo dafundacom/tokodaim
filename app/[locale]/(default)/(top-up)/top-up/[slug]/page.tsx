@@ -2,6 +2,7 @@ import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 
+import Image from "@/components/image"
 import env from "@/env.mjs"
 import { api } from "@/lib/trpc/server"
 
@@ -62,7 +63,6 @@ export default async function TopUpProductSlugPage({
   const topUpProduct = await api.topUp.digiflazzTopUpProductBySlug(slug)
   const topUpPriceList = await api.topUp.digiflazzPriceListBySlug(slug ?? "")
   const paymentChannel = await api.payment.tripayPaymentChannel()
-
   const cleanedText = topUpProduct?.brand.replace(/\d+(\.\d+)?/g, "")
 
   return (
@@ -88,11 +88,23 @@ export default async function TopUpProductSlugPage({
           <div className="sticky top-[70px] w-full rounded border p-4">
             {topUpProduct && (
               <>
-                <p>
+                <div className="mb-4 flex gap-2">
+                  {topUpProduct?.featuredImage && (
+                    <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
+                      <Image
+                        src={topUpProduct?.featuredImage}
+                        alt={topUpProduct.brand}
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <h1 className="text-base">{topUpProduct.brand}</h1>
+                </div>
+                <p className="text-sm">
                   Top Up {cleanedText} resmi legal 100% harga paling murah. Cara
                   top up {topUpProduct.brand} termurah :
                 </p>
-                <ol className="list-decimal px-4">
+                <ol className="list-decimal px-4 text-sm">
                   <li>Masukkan ID (SERVER)</li>
                   <li>Pilih Nominal</li>
                   <li>Pilih Pembayaran</li>
@@ -100,7 +112,7 @@ export default async function TopUpProductSlugPage({
                   <li>Klik Order Now &amp; lakukan Pembayaran</li>
                   <li>Tunggu 1 detik pesanan masuk otomatis ke akun Anda</li>
                 </ol>
-                <p className="text-bold text-center text-lg text-foreground">
+                <p className="text-bold text-center text-sm text-foreground">
                   Top Up Buka 24 Jam
                 </p>
               </>

@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import { FormControl, FormLabel } from "@/components/ui/form"
+import { FormLabel } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
@@ -88,7 +88,7 @@ const AddVoucher: React.FunctionComponent<AddVoucherProps> = ({
   }, [isSubmitted, voucherQuery, voucher, currentTime, calculatedDiscount])
 
   return (
-    <FormControl>
+    <div className="space-y-2">
       <FormLabel>Voucher</FormLabel>
       <div className="flex gap-2">
         <Input
@@ -120,7 +120,7 @@ const AddVoucher: React.FunctionComponent<AddVoucherProps> = ({
       <span>
         <p>{renderVoucherStatus}</p>
       </span>
-    </FormControl>
+    </div>
   )
 }
 
