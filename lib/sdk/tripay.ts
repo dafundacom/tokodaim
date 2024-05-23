@@ -87,7 +87,6 @@ export interface FeeCalculatorProps {
   amount: number
   code?: ClosedPaymentCode
 }
-
 export interface TransctionsProps {
   page: number
   per_page: number
@@ -126,6 +125,201 @@ export interface ClosedTransactionDetailProps {
 
 export interface OpenTransactionDetailProps {
   uuid: string
+}
+
+export interface InstructionReturnProps {
+  success: boolean
+  message: string
+  data: {
+    title: string
+    steps: string[]
+  }[]
+}
+
+export interface PaymentChannelReturnProps {
+  success: boolean
+  message: string
+  data: {
+    group: string
+    code: ClosedPaymentCode | OpenPaymentCode
+    name: string
+    type: string
+    fee_merchant?: {
+      flat: number
+      percent: number
+    }
+    fee_customer?: {
+      flat: number
+      percent: number
+    }
+    total_fee: {
+      flat: number
+      percent: number
+    }
+    minimum_fee: number
+    maximum_fee: number
+    icon_url: string
+    active: boolean
+  }[]
+}
+
+export interface FeeCalculatorReturnProps {
+  success: boolean
+  message: string
+  data: {
+    code: ClosedPaymentCode | OpenPaymentCode
+    name: string
+    fee: {
+      flat: number
+      percent: string
+      min: number | null
+      max: number | null
+    }
+    total_fee: {
+      merchant: number
+      customer: number
+    }
+  }[]
+}
+
+export interface TransactionsReturnProps {
+  success: boolean
+  message: string
+  data: {
+    reference: string
+    merchant_ref: string
+    payment_selection_type: string
+    payment_method: ClosedPaymentCode | OpenPaymentCode
+    payment_name: string
+    customer_name: string
+    customer_email: string
+    customer_phone: string | null
+    callback_url: string | null
+    return_url: string | null
+    amount: number
+    fee_merchant: number
+    fee_customer: number
+    total_fee: number
+    amount_received: number
+    pay_code: number
+    pay_url: string | null
+    checkout_url: string
+    order_items: [
+      {
+        sku: string | null
+        name: string
+        price: number
+        quantity: number
+        subtotal: number
+      },
+    ]
+    status: string
+    note: string | null
+    created_at: number
+    expired_at: number
+    paid_at: number | null
+  }[]
+  pagination: {
+    sort: string
+    offset: {
+      from: number
+      to: number
+    }
+    current_page: number
+    previous_page: number | null
+    next_page: number | null
+    last_page: number
+    per_page: number
+    total_records: number
+  }
+}
+
+export interface OpenTransactionsReturnProps {
+  success: boolean
+  message: string
+  data: {
+    reference: string
+    merchant_ref: string
+    payment_method: string
+    payment_name: string
+    customer_name: string
+    amount: number
+    fee_merchant: number
+    fee_customer: number
+    total_fee: number
+    amount_received: number
+    checkout_url: string
+    status: string
+    paid_at: number
+  }[]
+  pagination: {
+    total: number
+    data_from: number
+    data_to: number
+    per_page: number
+    current_page: number
+    last_page: number
+    next_page: number | null
+  }
+}
+
+export interface CreateOpenTransactionReturnProps {
+  success: boolean
+  message: string
+  data: {
+    uuid: string
+    merchant_ref: string
+    customer_name: string
+    payment_name: string
+    payment_method: string
+    pay_code: string
+    qr_string: string | null
+    qr_url: string | null
+  }
+}
+
+export interface CreateClosedTransactionReturnProps {
+  success: boolean
+  message: string
+  data: {
+    reference: string
+    merchant_ref: string
+    payment_selection_type: string
+    payment_method: string
+    payment_name: string
+    customer_name: string
+    customer_email: string
+    customer_phone: string
+    callback_url: string
+    return_url: string
+    amount: number
+    fee_merchant: number
+    fee_customer: number
+    total_fee: number
+    amount_received: number
+    pay_code: string
+    pay_url: string | null
+    checkout_url: string
+    status: string
+    expired_time: number
+    order_items: {
+      sku: string
+      name: string
+      price: number
+      quantity: number
+      subtotal: number
+      product_url: string
+      image_url: string
+    }[]
+    instructions: [
+      {
+        title: string
+        steps: string[]
+      },
+    ]
+    qr_string: string | null
+    qr_url: string | null
+  }
 }
 
 export default function createTripayConfig({

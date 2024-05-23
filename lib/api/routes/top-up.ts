@@ -216,11 +216,7 @@ export const topUpRouter = createTRPCRouter({
           return typeof brand === "string" && brand.includes(input)
         })
 
-        if (!topUpPriceListBySlug) {
-          return undefined
-        }
-
-        return topUpPriceListBySlug
+        return topUpPriceListBySlug ?? undefined
       } catch (error) {
         console.error("Error:", error)
       }
@@ -408,15 +404,11 @@ export const topUpRouter = createTRPCRouter({
         }
       }
 
-      if (!topUpProductsData?.value || topUpProductsDataValue) {
-        return undefined
-      }
-
       const data = JSON.parse(
         topUpProductsData?.value! ?? topUpProductsDataValue,
       ) as TopUpProducts[]
 
-      return data
+      return data ?? undefined
     } catch (error) {
       console.error("Error:", error)
     }
@@ -430,10 +422,6 @@ export const topUpRouter = createTRPCRouter({
             eq(setting.key, "digiflazz_top_up_products"),
         })
 
-        if (!topUpProducts?.value || typeof topUpProducts?.value !== "string") {
-          return undefined
-        }
-
         const topUpProductsData = JSON.parse(topUpProducts?.value!)
 
         const topUpProductsByCategory = topUpProductsData.filter(
@@ -443,7 +431,7 @@ export const topUpRouter = createTRPCRouter({
 
         const data = topUpProductsByCategory as TopUpProducts[]
 
-        return data
+        return data ?? undefined
       } catch (error) {
         console.error("Error:", error)
       }
@@ -457,17 +445,13 @@ export const topUpRouter = createTRPCRouter({
             eq(setting.key, "digiflazz_top_up_products"),
         })
 
-        if (!topUpProducts?.value || typeof topUpProducts?.value !== "string") {
-          return undefined
-        }
-
         const topUpProductsData = JSON.parse(topUpProducts?.value!)
 
         const topUpProductBySlug = topUpProductsData.find(
           (topUpProduct: { slug: string }) => topUpProduct.slug === input,
         )
 
-        return topUpProductBySlug as TopUpProducts
+        return (topUpProductBySlug as TopUpProducts) ?? undefined
       } catch (error) {
         console.error("Error:", error)
       }

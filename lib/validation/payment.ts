@@ -111,11 +111,11 @@ const paymentTripayOrderItemsInput = z.object(
       required_error: "Subtotal is required",
       invalid_type_error: "Subtotal must be a number",
     }),
-    productUrl: z.string({
+    product_url: z.string({
       required_error: "Product Url is required",
       invalid_type_error: "Product Url must be a string",
     }),
-    imageUrl: z.string({
+    image_url: z.string({
       required_error: "Image Url is required",
       invalid_type_error: "Image Url must be a string",
     }),
