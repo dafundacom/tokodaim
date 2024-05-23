@@ -42,8 +42,7 @@ export const paymentRouter = createTRPCRouter({
     try {
       const paymentChannel =
         (await ctx.tripay.paymentChannel()) as PaymentChannelReturnProps
-
-      if (Array.isArray(paymentChannel)) {
+      if (Array.isArray(paymentChannel?.data)) {
         const eWallet = paymentChannel?.data.filter((data) =>
           data.group.includes("E-Wallet"),
         )
@@ -137,7 +136,6 @@ export const paymentRouter = createTRPCRouter({
         })) as OpenTransactionsReturnProps
 
         const { data } = res
-
         return data ?? undefined
       } catch (error) {
         console.error("Error:", error)
@@ -164,7 +162,12 @@ export const paymentRouter = createTRPCRouter({
 
         const { data } = res
 
-        return data ?? undefined
+        if (res?.success) {
+          return data ?? undefined
+        } else {
+          console.error("Error:", res?.message)
+          return undefined
+        }
       } catch (error) {
         console.error("Error:", error)
       }

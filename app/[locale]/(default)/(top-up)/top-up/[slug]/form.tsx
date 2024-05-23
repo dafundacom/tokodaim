@@ -7,7 +7,7 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import Image from "@/components/image"
 import AddVoucher from "@/components/top-up/add-voucher"
 import InputAccountId from "@/components/top-up/input-account-id"
-import SelectPaymentMethod from "@/components/top-up/select-payment-method"
+import PaymentSelection from "@/components/top-up/payment-selection"
 import SelectProductPrice from "@/components/top-up/select-product-price"
 import TopUpServer from "@/components/top-up/top-up-server"
 import { Button } from "@/components/ui/button"
@@ -38,15 +38,8 @@ import type {
 } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
 import {
-  paymentMethodsEWallet,
-  paymentMethodsMart,
-  paymentMethodsVA,
-} from "@/lib/utils/payment"
-import {
-  calculateTotalPrice,
   calculateTotalPriceWithProfit,
   changePriceToIDR,
-  filterPaymentsByPrice,
   getTopUpInputAccountIdDetail,
   isTopInputTopUpAccountIdWithServer,
   removeNonDigitCharsBeforeNumber,
@@ -257,7 +250,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             topUpProvider: "digiflazz" as const,
             brands: topUpProduct.brand,
             amount: total,
-            feeAmount: total && total - amount?.price!,
+            feeAmount: data?.total_fee!,
             totalAmount: total,
             accountId: accountId,
             note: noteValue!,
@@ -438,186 +431,19 @@ const TopUpForm = (props: TopUpFormProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-4 rounded border p-4">
-            <div>
-              <h1 className="line-clamp-2 text-xl font-semibold">
-                Pilih Pembayaran
-              </h1>
-            </div>
-            {amount &&
-              paymentChannel?.eWallet &&
-              paymentMethodsEWallet.some(
-                (paymentMethod) => paymentMethod.maxAmount > amount?.price,
-              ) &&
-              paymentChannel.eWallet.length > 0 && (
-                <div className="rounded border p-2">
-                  <div
-                    className="mb-2 w-full cursor-pointer p-2"
-                    onClick={handleSelectEWallet}
-                  >
-                    <h2 className="line-clamp-2 text-xl font-semibold">
-                      E-Wallet
-                    </h2>
-                  </div>
-                  <div
-                    className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
-                      showEWalletList ? "grid" : "hidden"
-                    }`}
-                  >
-                    {paymentChannel.eWallet.map(
-                      (paymentMethod: TripayPaymentMethodsProps) => {
-                        const { totalPayment } = calculateTotalPrice(
-                          amount.price,
-                          paymentMethod?.fee_customer?.flat ?? 0,
-                          paymentMethod?.fee_customer?.percent ?? 0,
-                        )
-                        const filterpayment = filterPaymentsByPrice(
-                          paymentMethodsEWallet,
-                          paymentMethod.code,
-                          amount.price,
-                        )
-                        const idrPrice = changePriceToIDR(totalPayment)
-                        if (filterpayment)
-                          return (
-                            <SelectPaymentMethod
-                              key={paymentMethod.name}
-                              name="payment-methods"
-                              title={paymentMethod.name}
-                              imageUrl={paymentMethod.icon_url}
-                              onSelect={() => {
-                                handleSelectPaymentMethod(
-                                  { ...paymentMethod },
-                                  totalPayment,
-                                )
-                                setSelectedPaymentMethod(paymentMethod.name)
-                              }}
-                              amount={idrPrice}
-                              active={selectedPaymentMethod}
-                            />
-                          )
-                      },
-                    )}
-                  </div>
-                </div>
-              )}
-            {amount &&
-              paymentChannel?.virtualAccount &&
-              paymentMethodsVA.some(
-                (paymentMethod) => paymentMethod.minAmount < amount.price,
-              ) &&
-              paymentMethodsVA.some(
-                (paymentMethod) => paymentMethod.maxAmount > amount.price,
-              ) &&
-              paymentChannel.virtualAccount.length > 0 && (
-                <div className="rounded border p-2">
-                  <div
-                    className="mb-2 w-full cursor-pointer p-2"
-                    onClick={handleSelectVA}
-                  >
-                    <h2 className="line-clamp-2 text-xl font-semibold">
-                      Virtual Account
-                    </h2>
-                  </div>
-                  <div
-                    className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
-                      showVAList ? "grid" : "hidden"
-                    }`}
-                  >
-                    {paymentChannel.virtualAccount.map(
-                      (paymentMethod: TripayPaymentMethodsProps) => {
-                        const { totalPayment } = calculateTotalPrice(
-                          amount.price,
-                          paymentMethod?.fee_customer?.flat ?? 0,
-                          paymentMethod?.fee_customer?.percent ?? 0,
-                        )
-                        const filterpayment = filterPaymentsByPrice(
-                          paymentMethodsVA,
-                          paymentMethod.code,
-                          amount.price,
-                        )
-                        const priceIdr = changePriceToIDR(totalPayment)
-                        if (filterpayment)
-                          return (
-                            <SelectPaymentMethod
-                              key={paymentMethod.name}
-                              name="payment-methods"
-                              title={paymentMethod.name}
-                              imageUrl={paymentMethod.icon_url}
-                              onSelect={() => {
-                                handleSelectPaymentMethod(
-                                  { ...paymentMethod },
-                                  totalPayment,
-                                )
-                                setSelectedPaymentMethod(paymentMethod.name)
-                              }}
-                              amount={priceIdr}
-                              active={selectedPaymentMethod}
-                            />
-                          )
-                      },
-                    )}
-                  </div>
-                </div>
-              )}
-            {amount &&
-              paymentChannel?.convenienceShop &&
-              paymentMethodsMart.some(
-                (paymentMethod) => paymentMethod.minAmount < amount.price,
-              ) &&
-              paymentMethodsMart.some(
-                (paymentMethod) => paymentMethod.maxAmount > amount.price,
-              ) &&
-              paymentChannel.convenienceShop.length > 0 && (
-                <div className="rounded border p-2">
-                  <div
-                    className="mb-2 w-full cursor-pointer p-2"
-                    onClick={handleSelectMart}
-                  >
-                    <h2 className="line-clamp-2 text-xl font-semibold">
-                      Convenience Shop
-                    </h2>
-                  </div>
-                  <div
-                    className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
-                      showMartList ? "grid" : "hidden"
-                    }`}
-                  >
-                    {paymentChannel.convenienceShop.map(
-                      (paymentMethod: TripayPaymentMethodsProps) => {
-                        const { totalPayment } = calculateTotalPrice(
-                          amount.price,
-                          paymentMethod?.fee_customer?.flat ?? 0,
-                          paymentMethod?.fee_customer?.percent ?? 0,
-                        )
-
-                        const filterpayment = filterPaymentsByPrice(
-                          paymentMethodsMart,
-                          paymentMethod.code,
-                          amount.price,
-                        )
-                        const idrPrice = changePriceToIDR(totalPayment)
-                        if (filterpayment)
-                          return (
-                            <SelectPaymentMethod
-                              key={paymentMethod.name}
-                              name="payment-methods"
-                              title={paymentMethod.name}
-                              imageUrl={paymentMethod.icon_url}
-                              onSelect={() => {
-                                handleSelectPaymentMethod(
-                                  { ...paymentMethod },
-                                  totalPayment,
-                                )
-                                setSelectedPaymentMethod(paymentMethod.name)
-                              }}
-                              amount={idrPrice}
-                              active={selectedPaymentMethod}
-                            />
-                          )
-                      },
-                    )}
-                  </div>
-                </div>
-              )}
+            <PaymentSelection
+              paymentChannel={paymentChannel}
+              onSelectPaymentMethod={handleSelectPaymentMethod}
+              selectedPaymentMethod={selectedPaymentMethod}
+              amount={amount}
+              setSelectedPaymentMethod={setSelectedPaymentMethod}
+              showEWalletList={showEWalletList}
+              showVAList={showVAList}
+              showMartList={showMartList}
+              handleSelectEWallet={handleSelectEWallet}
+              handleSelectVA={handleSelectVA}
+              handleSelectMart={handleSelectMart}
+            />
           </div>
           <div className="flex gap-2 rounded border p-4">
             <FormField
@@ -678,52 +504,50 @@ const TopUpForm = (props: TopUpFormProps) => {
         Order Sekarang
       </Button>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogHeader>Create Order</DialogHeader>
-        <form>
-          <DialogContent>
+        <DialogContent>
+          <DialogHeader>Create Order</DialogHeader>
+          <form>
             <div>
-              <div>
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success">
-                  <Icon.Check aria-label="Create Order" />
-                </div>
-                <div className="mt-3 text-center sm:mt-5">
-                  <h3 className="text-lg font-semibold leading-6 text-background">
-                    Create Order
-                  </h3>
-                  <p className="pt-4">
-                    Make sure your account data and the product you choose are
-                    valid and appropriate.
-                  </p>
-                  <div className="mt-2">
-                    <div className="my-4 grid grid-cols-3 gap-4 rounded-md p-4 text-left">
-                      <div>Account ID</div>
-                      <div className="col-span-2">{`: ${queryAccountId}`}</div>
-                      <div>Item</div>
-                      <div className="col-span-2">{`: ${amount?.product_name}`}</div>
-                      <div>Product</div>
-                      <div className="col-span-2">{`: ${topUpProduct.brand}`}</div>
-                      <div>Payment</div>
-                      <div className="col-span-2">{`: ${paymentMethod?.name}`}</div>
-                    </div>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success">
+                <Icon.Check aria-label="Create Order" />
+              </div>
+              <div className="mt-3 text-center sm:mt-5">
+                <h3 className="text-lg font-semibold leading-6 text-background">
+                  Create Order
+                </h3>
+                <p className="pt-4">
+                  Make sure your account data and the product you choose are
+                  valid and appropriate.
+                </p>
+                <div className="mt-2">
+                  <div className="my-4 grid grid-cols-3 gap-4 rounded-md p-4 text-left">
+                    <div>Account ID</div>
+                    <div className="col-span-2">{`: ${queryAccountId}`}</div>
+                    <div>Item</div>
+                    <div className="col-span-2">{`: ${amount?.product_name}`}</div>
+                    <div>Product</div>
+                    <div className="col-span-2">{`: ${topUpProduct.brand}`}</div>
+                    <div>Payment</div>
+                    <div className="col-span-2">{`: ${paymentMethod?.name}`}</div>
                   </div>
                 </div>
               </div>
-              <div className="mt-5 flex justify-between sm:mt-6">
-                <Button
-                  type="submit"
-                  value="order sekarang"
-                  formMethod="Modal"
-                  aria-label="Order Sekarang"
-                  onClick={form.handleSubmit(onSubmit)}
-                  className="bg-shop text-foreground hover:bg-shop/70"
-                >
-                  Order Sekarang
-                </Button>
-                <Button value="cancel">Cancel</Button>
-              </div>
             </div>
-          </DialogContent>
-        </form>
+            <div className="mt-5 flex justify-between sm:mt-6">
+              <Button
+                type="submit"
+                value="order sekarang"
+                formMethod="Modal"
+                aria-label="Order Sekarang"
+                onClick={form.handleSubmit(onSubmit)}
+                className="bg-shop text-foreground hover:bg-shop/70"
+              >
+                Order Sekarang
+              </Button>
+              <Button value="cancel">Cancel</Button>
+            </div>
+          </form>
+        </DialogContent>
       </Dialog>
     </>
   )

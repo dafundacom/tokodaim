@@ -29,13 +29,13 @@ const Footer: React.FunctionComponent<FooterProps> = async (props) => {
     settingValues = { ...parsedSetting }
   }
 
-  const footerTagline = settingValues.footer_tagline
-  const footerDescription = settingValues.footer_description
-  const footerFAQ = settingValues.footer_faq
-  const siteTitle = settingValues.site_title ?? env.NEXT_PUBLIC_SITE_TITLE
-  const siteTagline = settingValues.site_tagline ?? env.NEXT_PUBLIC_SITE_TAGLINE
-  const supportEmail = settingValues.support_email ?? "support@toko.com"
-  const supportWhatsApp = settingValues.support_whatsapp ?? "6283112345678"
+  const footerTagline = settingValues?.footer_tagline
+  const footerDescription = settingValues?.footer_description
+  const footerFAQ = settingValues?.footer_faq
+  const siteTitle = settingValues?.site_title ?? env.NEXT_PUBLIC_SITE_TITLE
+  const siteTagline = settingValues?.site_tagline ?? env.NEXT_PUBLIC_SITE_TAGLINE
+  const supportEmail = settingValues?.support_email ?? "support@toko.com"
+  const supportWhatsApp = settingValues?.support_whatsapp ?? "6283112345678"
 
   return (
     <footer>

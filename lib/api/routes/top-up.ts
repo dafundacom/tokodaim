@@ -46,6 +46,7 @@ export interface DigiflazzPriceListPostPaidResponse
 }
 
 export interface TopUpProducts {
+  featuredImage?: string
   brand: string
   slug: string
   category: string
