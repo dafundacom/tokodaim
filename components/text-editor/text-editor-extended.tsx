@@ -7,13 +7,15 @@ import {
   EditorContent as TextEditorContent,
   useEditor as useTextEditor,
 } from "@tiptap/react"
-import { useController } from "react-hook-form"
+import { useController, type FieldValues } from "react-hook-form"
 
 import type { TextEditorProps } from "./text-editor"
 import { TextEditorExtension } from "./text-editor-extension"
 import { TextEditorMenu } from "./text-editor-menu"
 
-const TextEditorExtended = React.memo((props: TextEditorProps) => {
+const TextEditorExtended = <TFieldValues extends FieldValues = FieldValues>(
+  props: TextEditorProps<TFieldValues>,
+) => {
   const { control, isClear, name } = props
 
   const {
@@ -62,6 +64,6 @@ const TextEditorExtended = React.memo((props: TextEditorProps) => {
       </p>
     </>
   )
-})
+}
 
 export default TextEditorExtended

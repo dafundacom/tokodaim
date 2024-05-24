@@ -26,7 +26,9 @@ export interface TextEditorProps<
   isClear?: boolean
 }
 
-const TextEditor = React.memo((props: TextEditorProps) => {
+const TextEditor = <TFieldValues extends FieldValues = FieldValues>(
+  props: TextEditorProps<TFieldValues>,
+) => {
   const { control, isClear, name } = props
 
   const {
@@ -71,6 +73,6 @@ const TextEditor = React.memo((props: TextEditorProps) => {
       )}
     </>
   )
-})
+}
 
 export default TextEditor

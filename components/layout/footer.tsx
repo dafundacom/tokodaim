@@ -33,7 +33,8 @@ const Footer: React.FunctionComponent<FooterProps> = async (props) => {
   const footerDescription = settingValues?.footer_description
   const footerFAQ = settingValues?.footer_faq
   const siteTitle = settingValues?.site_title ?? env.NEXT_PUBLIC_SITE_TITLE
-  const siteTagline = settingValues?.site_tagline ?? env.NEXT_PUBLIC_SITE_TAGLINE
+  const siteTagline =
+    settingValues?.site_tagline ?? env.NEXT_PUBLIC_SITE_TAGLINE
   const supportEmail = settingValues?.support_email ?? "support@toko.com"
   const supportWhatsApp = settingValues?.support_whatsapp ?? "6283112345678"
 

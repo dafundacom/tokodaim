@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
-import { PaymentChannelReturnProps } from "@/lib/sdk/tripay"
+import type { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
+import type { PaymentChannelReturnProps } from "@/lib/sdk/tripay"
 import {
   paymentMethodsEWallet,
   paymentMethodsMart,
@@ -25,8 +25,8 @@ type DigiflazzPriceListPrePaidResponse =
 
 interface PaymentSelectionProps {
   onSelectPaymentMethod: (
-    data: TripayPaymentMethodsProps,
-    price: number,
+    _data: TripayPaymentMethodsProps,
+    _price: number,
   ) => void
   selectedPaymentMethod: string
   amount?: DigiflazzPriceListPrePaidResponse | null
