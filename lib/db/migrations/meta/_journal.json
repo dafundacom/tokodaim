@@ -29,6 +29,13 @@
       "when": 1716208408748,
       "tag": "0003_neat_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1716532229905,
+      "tag": "0004_regular_gorilla_man",
+      "breakpoints": true
     }
   ]
 }

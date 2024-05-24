@@ -171,3 +171,12 @@ export function isTopInputTopUpAccountIdWithServer(brand: string) {
       return { isTopUpServer: false }
   }
 }
+
+// TODO: populate all response from digiflazz to standalone table not to setting table
+export function populateTopUpProducts() {
+  return null
+}
+
+export function populateTopUpPriceList() {
+  return null
+}
