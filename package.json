@@ -23,7 +23,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.582.0",
+    "@aws-sdk/client-s3": "^3.583.0",
     "@hookform/resolvers": "^3.4.2",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@lucia-auth/adapter-postgresql": "^3.1.2",
@@ -121,7 +121,7 @@
     "@tanstack/react-query-devtools": "5.37.1",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.12.12",
-    "@types/react": "^18.3.2",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/sanitize-html": "^2.11.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
@@ -142,7 +142,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.3",
-    "tsx": "^4.10.5",
+    "tsx": "^4.11.0",
     "typescript": "^5.4.5"
   }
 }

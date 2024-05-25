@@ -13,7 +13,11 @@ export const topUpDigiflazzTransactionType = z.enum(
 
 export const TOPUP_DIGFLAZZ_PRICELIST_TYPE = ["prepaid", "pasca"] as const
 
+export const TOP_UP_COMMAND = ["prepaid", "postpaid"] as const
+
 export const topUpDigiflazzPricelistType = z.enum(TOPUP_DIGFLAZZ_PRICELIST_TYPE)
+
+export const topUpCommand = z.enum(TOP_UP_COMMAND)
 
 const topUpDigiflazzDepositInput = {
   amount: z
@@ -97,6 +101,56 @@ const topUpSavePriceListInput = {
     .min(1),
 }
 
+const topUpInput = {
+  brand: z
+    .string({
+      required_error: "Brand is required",
+      invalid_type_error: "Brand must be a string",
+    })
+    .min(1),
+  slug: z
+    .string({
+      required_error: "Slug is required",
+      invalid_type_error: "Slug must be a string",
+    })
+    .min(1),
+  category: z
+    .string({
+      required_error: "Category is required",
+      invalid_type_error: "Category must be a string",
+    })
+    .min(1),
+  featuredImage: z
+    .string({
+      invalid_type_error: "Featured Image must be a string",
+    })
+    .optional(),
+  coverImage: z
+    .string({
+      invalid_type_error: "Cover Image must be a string",
+    })
+    .optional(),
+  productIcon: z
+    .string({
+      invalid_type_error: "Product Icon must be a string",
+    })
+    .optional(),
+  description: z
+    .string({
+      invalid_type_error: "Description must be a string",
+    })
+    .optional(),
+  intruction: z
+    .string({
+      invalid_type_error: "Intruction must be a string",
+    })
+    .optional(),
+  featured: z.boolean({
+    required_error: "Featured is required",
+    invalid_type_error: "Featured must be a boolean",
+  }),
+}
+
 export const topUpDigiflazzCreateDepositSchema = z.object({
   ...topUpDigiflazzDepositInput,
 })
@@ -113,9 +167,28 @@ export const topUpSavePriceListSchema = z.object({
   ...topUpSavePriceListInput,
 })
 
+export const createTopUpSchema = z.object({
+  ...topUpInput,
+})
+
+export const updateTopUpSchema = z.object({
+  id: z
+    .string({
+      required_error: "ID is required",
+      invalid_type_error: "ID must be a string",
+    })
+    .min(1),
+  ...topUpInput,
+})
+
 export type TopUpDigiflazzTransactionType = z.infer<
   typeof topUpDigiflazzTransactionType
 >
+
 export type TopUpDigiflazzPricelistType = z.infer<
   typeof topUpDigiflazzPricelistType
 >
+
+export type CreateTopUp = z.infer<typeof createTopUpSchema>
+export type UpdateTopUp = z.infer<typeof updateTopUpSchema>
+export type TopUpCommand = z.infer<typeof topUpCommand>

@@ -1,0 +1,20 @@
+import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+
+export const topUps = pgTable("top_ups", {
+  id: text("id").primaryKey(),
+  brand: text("brand").notNull(),
+  slug: text("slug").unique().notNull(),
+  category: text("category").notNull(),
+  featuredImage: text("featured_image"),
+  coverImage: text("cover_image"),
+  guideImage: text("guide_image"),
+  productIcon: text("product_icon"),
+  description: text("description"),
+  intruction: text("intruction"),
+  featured: boolean("featured").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+})
+
+export type InsertTopUps = typeof topUps.$inferInsert
+export type SelectTopUps = typeof topUps.$inferSelect
