@@ -137,14 +137,19 @@ const topUpInput = {
       invalid_type_error: "Product Icon must be a string",
     })
     .optional(),
+  guideImage: z
+    .string({
+      invalid_type_error: "Guide Image must be a string",
+    })
+    .optional(),
   description: z
     .string({
       invalid_type_error: "Description must be a string",
     })
     .optional(),
-  intruction: z
+  instruction: z
     .string({
-      invalid_type_error: "Intruction must be a string",
+      invalid_type_error: "Instruction must be a string",
     })
     .optional(),
   featured: z.boolean({

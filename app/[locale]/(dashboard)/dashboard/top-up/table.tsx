@@ -12,36 +12,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import type { SelectTopUps } from "@/lib/db/schema/top-up"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 
-interface TopUpProductProps {
-  topUpProducts: {
-    brand: string
-    slug: string
-    featuredImage?: string
-    icon?: string
-    coverImage?: string
-    infoIdImage?: string
-  }[]
+interface TopUpTableProps {
+  topUps: SelectTopUps[]
   paramsName: string
   page: number
   lastPage: number
 }
 
-export default function TopUpProductTable(props: TopUpProductProps) {
-  const { topUpProducts, paramsName, page, lastPage } = props
+export default function TopUpTable(props: TopUpTableProps) {
+  const { topUps, paramsName, page, lastPage } = props
 
   const t = useI18n()
   const ts = useScopedI18n("top_up")
-
-  function sliceData() {
-    const indexOfLastData = page ? page * 10 : 1 * 10
-    const indexOfFirstData = indexOfLastData - 10
-
-    return topUpProducts?.slice(indexOfFirstData, indexOfLastData)
-  }
-
-  const topUpProductsData = sliceData()
 
   return (
     <div className="relative w-full overflow-auto">
@@ -56,31 +41,31 @@ export default function TopUpProductTable(props: TopUpProductProps) {
               {ts("product_icon")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
-              {ts("product_cover_image")}
+              {ts("cover_image")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
-              {ts("product_info_id_image")}
+              {ts("guide_image")}
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {topUpProductsData.map((product) => {
+          {topUps.map((topUp) => {
             return (
-              <TableRow key={product.brand}>
+              <TableRow key={topUp.brand}>
                 <TableCell className="max-w-[120px] align-middle">
                   <div className="flex flex-col">
                     <span className="line-clamp-3 font-medium">
-                      {product.brand}
+                      {topUp.brand}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                   <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {product.featuredImage ? (
+                    {topUp.featuredImage ? (
                       <Image
                         className="object-cover"
-                        src={product.featuredImage}
-                        alt={product.brand}
+                        src={topUp.featuredImage}
+                        alt={topUp.brand}
                       />
                     ) : (
                       <Icon.BrokenImage
@@ -92,11 +77,11 @@ export default function TopUpProductTable(props: TopUpProductProps) {
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                   <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {product.icon ? (
+                    {topUp.productIcon ? (
                       <Image
                         className="object-cover"
-                        src={product.icon}
-                        alt={product.brand}
+                        src={topUp.productIcon}
+                        alt={topUp.brand}
                       />
                     ) : (
                       <Icon.BrokenImage
@@ -108,11 +93,11 @@ export default function TopUpProductTable(props: TopUpProductProps) {
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                   <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {product.coverImage ? (
+                    {topUp.coverImage ? (
                       <Image
                         className="object-cover"
-                        src={product.coverImage}
-                        alt={product.brand}
+                        src={topUp.coverImage}
+                        alt={topUp.brand}
                       />
                     ) : (
                       <Icon.BrokenImage
@@ -124,11 +109,11 @@ export default function TopUpProductTable(props: TopUpProductProps) {
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                   <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {product.infoIdImage ? (
+                    {topUp.guideImage ? (
                       <Image
                         className="object-cover"
-                        src={product.infoIdImage}
-                        alt={product.brand}
+                        src={topUp.guideImage}
+                        alt={topUp.brand}
                       />
                     ) : (
                       <Icon.BrokenImage
@@ -140,8 +125,8 @@ export default function TopUpProductTable(props: TopUpProductProps) {
                 </TableCell>
                 <TableCell className="p-4 align-middle">
                   <DashboardShowOptions
-                    editUrl={`/dashboard/top-up/product/edit/${product.slug}`}
-                    description={product.brand!}
+                    editUrl={`/dashboard/top-up/edit/${topUp.slug}`}
+                    description={topUp.brand!}
                   />
                 </TableCell>
               </TableRow>

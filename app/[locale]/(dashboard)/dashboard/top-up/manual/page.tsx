@@ -27,25 +27,18 @@ export function generateMetadata({
     title: "Dashboard Manual Top Up",
     description: "Dashboard Manual Top Up",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/shop/manual-top-up/`,
+      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/top-up/manual`,
     },
     openGraph: {
       title: "Dashboard Manual Top Up",
       description: "Dashboard Manual Top Up",
-      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/shop/manual-top-up`,
+      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/top-up/manual`,
       locale: locale,
     },
   }
 }
 
 export default async function ManualTopUpDashboardPage() {
-  const priceListPrePaid = await api.topUp.digiflazzPriceList("prepaid")
-  const priceListPostPaid = await api.topUp.digiflazzPriceList("pasca")
-
-  return (
-    <ManualTopUpForm
-      priceListPrePaid={priceListPrePaid}
-      priceListPostPaid={priceListPostPaid}
-    />
-  )
+  const topUpProducts = await api.topUpProduct.byCommand("prepaid")
+  return <ManualTopUpForm topUpProducts={topUpProducts!} />
 }

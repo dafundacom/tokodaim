@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { eq, sql } from "drizzle-orm"
+import { count, eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
@@ -80,6 +80,26 @@ export const topUpRouter = createTRPCRouter({
       console.error("Error:", error)
     }
   }),
+  dashboard: adminProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        await populateTopUps()
+        const data = await ctx.db.query.topUps.findMany({
+          limit: input.perPage,
+          offset: (input.page - 1) * input.perPage,
+          orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+        })
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }),
   byCategorySlug: publicProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {

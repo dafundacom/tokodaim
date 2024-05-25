@@ -11,7 +11,7 @@ export const topUps = pgTable("top_ups", {
   guideImage: text("guide_image"),
   productIcon: text("product_icon"),
   description: text("description"),
-  intruction: text("intruction"),
+  instruction: text("instruction"),
   featured: boolean("featured").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

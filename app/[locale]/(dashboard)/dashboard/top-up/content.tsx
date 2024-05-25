@@ -5,10 +5,10 @@ import { useSearchParams } from "next/navigation"
 
 import { useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
-import DashboardTopUpProductHeader from "./header"
-import TopUpProductTable from "./table"
+import DashboardTopUpHeader from "./header"
+import TopUpTable from "./table"
 
-export default function DashboardTopUpProductContent() {
+export default function DashboardTopUpContent() {
   const searchParams = useSearchParams()
 
   const page = searchParams.get("page")
@@ -17,10 +17,12 @@ export default function DashboardTopUpProductContent() {
 
   const perPage = 10
 
-  const { data: topUpProducts, isLoading } =
-    api.topUp.digiflazzTopUpProducts.useQuery()
+  const { data: topUps, isLoading } = api.topUp.dashboard.useQuery({
+    page: page ? parseInt(page) : 1,
+    perPage: perPage,
+  })
 
-  const lastPage = topUpProducts && Math.ceil(topUpProducts.length / perPage)
+  const lastPage = topUps && Math.ceil(topUps.length / perPage)
 
   React.useEffect(() => {
     if (lastPage && page && parseInt(page) !== 1 && parseInt(page) > lastPage) {
@@ -30,19 +32,17 @@ export default function DashboardTopUpProductContent() {
 
   return (
     <>
-      <DashboardTopUpProductHeader />
-      {!isLoading && topUpProducts !== undefined && topUpProducts.length > 0 ? (
-        <TopUpProductTable
-          topUpProducts={topUpProducts}
+      <DashboardTopUpHeader />
+      {!isLoading && topUps !== undefined && topUps.length > 0 ? (
+        <TopUpTable
+          topUps={topUps}
           paramsName="page"
           page={page ? parseInt(page) : 1}
           lastPage={lastPage! ?? 1}
         />
       ) : (
         <div className="my-64 flex items-center justify-center">
-          <h3 className="text-center text-4xl font-bold">
-            {ts("product_not_found")}
-          </h3>
+          <h3 className="text-center text-4xl font-bold">{ts("not_found")}</h3>
         </div>
       )}
     </>

@@ -29,30 +29,11 @@ import {
 } from "@/components/ui/popover"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
+import type { SelectTopUpProducts } from "@/lib/db/schema/top-up-product"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
-import type {
-  DaftarHargaPostPaidReturnProps,
-  DaftarHargaPrePaidReturnProps,
-  TransaksiReturnProps,
-} from "@/lib/sdk/digiflazz"
+import type { TransaksiReturnProps } from "@/lib/sdk/digiflazz"
 import { api } from "@/lib/trpc/react"
 import { cn, slugify, uniqueCharacter } from "@/lib/utils"
-
-type DigiflazzPostPaidResponse = TransaksiReturnProps["data"]
-
-type DigiflazzPriceListPostPaidResponse =
-  DaftarHargaPostPaidReturnProps["data"][number] & {
-    featuredImage?: string
-    icon?: string
-    coverImage?: string
-  }
-
-type DigiflazzPriceListPrePaidResponse =
-  DaftarHargaPrePaidReturnProps["data"][number] & {
-    featuredImage?: string
-    icon?: string
-    coverImage?: string
-  }
 
 interface FormValues {
   sku: string
@@ -61,25 +42,21 @@ interface FormValues {
 }
 
 interface ManualTopUpFormProps {
-  priceListPrePaid?: DigiflazzPriceListPrePaidResponse[] | null
-  priceListPostPaid?: DigiflazzPriceListPostPaidResponse[] | null
+  topUpProducts: SelectTopUpProducts[]
 }
 
 export default function ManualTopUpForm(props: ManualTopUpFormProps) {
-  const { priceListPrePaid, priceListPostPaid } = props
+  const { topUpProducts } = props
 
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [statusTopUp, setStatusTopUp] =
-    React.useState<DigiflazzPostPaidResponse | null>(null)
+  const [statusTopUp, setStatusTopUp] = React.useState<
+    TransaksiReturnProps["data"] | null
+  >(null)
 
   const t = useI18n()
   const ts = useScopedI18n("top_up")
 
-  const topUpPriceList = [...priceListPrePaid!, ...priceListPostPaid!]
-
   const form = useForm<FormValues>()
-
-  if (!topUpPriceList) return null
 
   const { mutate: createTransaction } =
     api.topUp.digiflazzCreateTransaction.useMutation({
@@ -116,14 +93,14 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
   const onSubmit = (values: FormValues) => {
     setLoading(true)
     const methods = {
-      data: priceListPrePaid?.some(
-        (priceList) => priceList.buyer_sku_code === values.sku,
+      data: topUpProducts?.some(
+        (topUpProduct) => topUpProduct.sku === values.sku,
       )
         ? {
             ...values,
             message: values.message ?? "manual-top-up",
             sku: values.sku,
-            refId: slugify(values.sku + uniqueCharacter()),
+            refId: slugify(values.sku + "_" + uniqueCharacter()),
             testing: process.env.APP_ENV === "development",
             cmd: null,
           }
@@ -131,7 +108,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
             ...values,
             message: values.message ?? "manual-top-up",
             sku: values.sku,
-            refId: slugify(values.sku + uniqueCharacter()),
+            refId: slugify(values.sku + "_" + uniqueCharacter()),
             testing: process.env.APP_ENV === "development",
             cmd: "pay-pasca" as unknown as null,
           },
@@ -167,10 +144,10 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                           )}
                         >
                           {field.value
-                            ? topUpPriceList.find(
-                                (priceList) =>
-                                  field.value === priceList.buyer_sku_code,
-                              )?.product_name
+                            ? topUpProducts.find(
+                                (topUpProdcut) =>
+                                  field.value === topUpProdcut.sku,
+                              )?.productName
                             : ts("product_placeholder")}
                           <Icon.ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -184,24 +161,24 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                         <CommandEmpty>{ts("product_not_found")}</CommandEmpty>
                         <CommandGroup>
                           <CommandList>
-                            {topUpPriceList.map((priceList) => (
+                            {topUpProducts.map((topUpProduct) => (
                               <CommandItem
-                                value={priceList.buyer_sku_code}
-                                key={priceList.buyer_sku_code}
+                                value={topUpProduct.sku}
+                                key={topUpProduct.sku}
                                 className="cursor-pointer px-2 py-1 hover:bg-muted"
                                 onSelect={() => {
-                                  form.setValue("sku", priceList.buyer_sku_code)
+                                  form.setValue("sku", topUpProduct.sku)
                                 }}
                               >
                                 <Icon.Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    priceList.buyer_sku_code === field.value
+                                    topUpProduct.sku === field.value
                                       ? "opacity-100"
                                       : "opacity-0",
                                   )}
                                 />
-                                {priceList.product_name}
+                                {topUpProduct.productName}
                               </CommandItem>
                             ))}
                           </CommandList>
