@@ -196,7 +196,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
-        router.push(`/shop/top-up/transaction?reference=${data?.invoiceId}`)
+        router.push(`/top-up/transaction?reference=${data?.invoiceId}`)
       }
     },
     onError: (error) => {
@@ -306,9 +306,9 @@ const TopUpForm = (props: TopUpFormProps) => {
               {
                 sku: amount.buyer_sku_code,
                 name: amount.product_name,
-                price: totalAmount,
+                price: total,
                 quantity: 1,
-                subtotal: totalAmount,
+                subtotal: total,
                 product_url: topUpProduct.featuredImage ?? "",
                 image_url: topUpProduct.featuredImage ?? "",
               },
