@@ -233,20 +233,20 @@ export const topUpRouter = createTRPCRouter({
       )) as DaftarHargaPostPaidReturnProps
 
       const digiflazzPriceListPrePaidWithSlugs =
-        digiflazzPriceListPrePaid.data.map((item) => ({
+        digiflazzPriceListPrePaid?.data?.map((item) => ({
           ...item,
           slug: slugify(item.brand),
           category: slugify(item.category),
         }))
 
       const digiflazzPriceListPostPaidWithSlugs =
-        digiflazzPriceListPostPaid.data.map((item) => ({
+        digiflazzPriceListPostPaid?.data?.map((item) => ({
           ...item,
           slug: slugify(item.brand),
           category: slugify(item.category),
         }))
 
-      if (Array.isArray(digiflazzPriceListPrePaid.data)) {
+      if (Array.isArray(digiflazzPriceListPrePaid?.data)) {
         await ctx.db
           .insert(settings)
           .values({

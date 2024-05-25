@@ -67,7 +67,7 @@ export const voucherRouter = createTRPCRouter({
   byCode: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
       const data = await ctx.db.query.vouchers.findFirst({
-        where: (voucher, { eq }) => eq(voucher.id, input),
+        where: (voucher, { eq }) => eq(voucher.voucherCode, input),
       })
 
       return data

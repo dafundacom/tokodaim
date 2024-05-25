@@ -85,7 +85,7 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               <h2 className="line-clamp-2 text-xl font-semibold">E-Wallet</h2>
             </div>
             <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
+              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
                 showEWalletList ? "grid" : "hidden"
               }`}
             >
@@ -144,7 +144,7 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               </h2>
             </div>
             <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
+              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
                 showVAList ? "grid" : "hidden"
               }`}
             >
@@ -203,7 +203,7 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               </h2>
             </div>
             <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 ${
+              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
                 showMartList ? "grid" : "hidden"
               }`}
             >

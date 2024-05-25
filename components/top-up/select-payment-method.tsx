@@ -45,7 +45,7 @@ const SelectPaymentMethod: React.FunctionComponent<SelectPaymentMethodProps> = (
             </div>
           )}
           <div className="flex flex-wrap justify-between gap-2">
-            <div className="relative h-[15px] w-full max-w-[50px]">
+            <div className="relative h-[15px] w-full max-w-[55px]">
               <Image src={imageUrl} alt={title} />
             </div>
             <p className="text-foreground/60">{title}</p>
