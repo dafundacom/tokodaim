@@ -84,10 +84,13 @@ export const topUpOrderRouter = createTRPCRouter({
     .input(createTopUpOrderSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const data = await ctx.db.insert(topUpOrders).values({
-          id: cuid(),
-          ...input,
-        })
+        const data = await ctx.db
+          .insert(topUpOrders)
+          .values({
+            id: cuid(),
+            ...input,
+          })
+          .returning()
         return data[0]
       } catch (error) {
         console.error("Error:", error)

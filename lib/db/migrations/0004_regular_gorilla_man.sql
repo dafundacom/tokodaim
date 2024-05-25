@@ -1,1 +1,0 @@
-ALTER TABLE "top_up_orders" ADD COLUMN "product_name" text NOT NULL;

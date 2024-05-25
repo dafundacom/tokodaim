@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1715919981616,
-      "tag": "0000_bright_venom",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1716173741429,
-      "tag": "0001_neat_korg",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1716184908121,
-      "tag": "0002_clammy_whizzer",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1716208408748,
-      "tag": "0003_neat_swordsman",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1716532229905,
-      "tag": "0004_regular_gorilla_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1716629751561,
-      "tag": "0005_confused_jigsaw",
+      "when": 1716642292327,
+      "tag": "0000_flashy_fabian_cortez",
       "breakpoints": true
     }
   ]

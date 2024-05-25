@@ -7,6 +7,7 @@ import { promoRouter } from "./routes/promo"
 import { settingRouter } from "./routes/setting"
 import { topUpRouter } from "./routes/top-up"
 import { topUpOrderRouter } from "./routes/top-up-order"
+import { topUpProductRouter } from "./routes/top-up-product"
 import { topicRouter } from "./routes/topic"
 import { userRouter } from "./routes/user"
 import { userLinkRouter } from "./routes/user-link"
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   topic: topicRouter,
   topUp: topUpRouter,
   topUpOrder: topUpOrderRouter,
+  topUpProduct: topUpProductRouter,
   user: userRouter,
   userLink: userLinkRouter,
   voucher: voucherRouter,

@@ -1,4 +1,10 @@
 DO $$ BEGIN
+ CREATE TYPE "public"."ad_position" AS ENUM('home_below_header', 'article_below_header', 'topic_below_header', 'single_article_above_content', 'single_article_middle_content', 'single_article_below_content', 'single_article_pop_up', 'article_below_header_amp', 'single_article_above_content_amp', 'single_article_middle_content_amp', 'single_article_below_content_amp');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."article_visibility" AS ENUM('public', 'member');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -12,6 +18,36 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."status" AS ENUM('published', 'draft', 'rejected', 'in_review');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."payment_provider" AS ENUM('tripay', 'midtrans', 'duitku');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_payment_status" AS ENUM('unpaid', 'paid', 'failed', 'expired', 'error', 'refunded');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_provider" AS ENUM('digiflazz', 'apigames');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_status" AS ENUM('processing', 'success', 'failed', 'error');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_product_command" AS ENUM('prepaid', 'postpaid');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -38,8 +74,7 @@ CREATE TABLE IF NOT EXISTS "ads" (
 	"id" text PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"content" text NOT NULL,
-	"type" text DEFAULT 'plain_ad' NOT NULL,
-	"position" text DEFAULT 'home_below_header' NOT NULL,
+	"position" "ad_position" DEFAULT 'home_below_header' NOT NULL,
 	"active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
@@ -141,6 +176,67 @@ CREATE TABLE IF NOT EXISTS "settings" (
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "settings_key_unique" UNIQUE("key")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "top_up_orders" (
+	"id" text PRIMARY KEY NOT NULL,
+	"invoice_id" text NOT NULL,
+	"amount" integer NOT NULL,
+	"sku" text NOT NULL,
+	"account_id" text NOT NULL,
+	"product_name" text NOT NULL,
+	"customer_name" text,
+	"customer_email" text,
+	"customer_phone" text NOT NULL,
+	"quantity" integer NOT NULL,
+	"voucher_code" text,
+	"discount_amount" integer DEFAULT 0,
+	"fee_amount" integer NOT NULL,
+	"total_amount" integer NOT NULL,
+	"note" text,
+	"payment_method" text NOT NULL,
+	"payment_status" "top_up_payment_status" DEFAULT 'unpaid' NOT NULL,
+	"status" "top_up_status" DEFAULT 'processing' NOT NULL,
+	"top_up_provider" "top_up_provider" DEFAULT 'digiflazz' NOT NULL,
+	"payment_provider" "payment_provider" DEFAULT 'tripay' NOT NULL,
+	"userId" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "top_up_orders_invoice_id_unique" UNIQUE("invoice_id")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "top_up_products" (
+	"id" text PRIMARY KEY NOT NULL,
+	"product_name" text NOT NULL,
+	"sku" text NOT NULL,
+	"price" integer,
+	"type" text,
+	"command" "top_up_product_command" DEFAULT 'prepaid' NOT NULL,
+	"category" text NOT NULL,
+	"description" text,
+	"brand" text NOT NULL,
+	"brand_slug" text NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "top_up_products_sku_unique" UNIQUE("sku")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "top_ups" (
+	"id" text PRIMARY KEY NOT NULL,
+	"brand" text NOT NULL,
+	"slug" text NOT NULL,
+	"category" text NOT NULL,
+	"categorySlug" text NOT NULL,
+	"featured_image" text,
+	"cover_image" text,
+	"guide_image" text,
+	"product_icon" text,
+	"description" text,
+	"intruction" text,
+	"featured" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "top_ups_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "topic_translations" (
@@ -295,6 +391,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "promos" ADD CONSTRAINT "promos_featured_image_id_medias_id_fk" FOREIGN KEY ("featured_image_id") REFERENCES "public"."medias"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "top_up_orders" ADD CONSTRAINT "top_up_orders_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

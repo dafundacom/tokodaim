@@ -13,11 +13,7 @@ export const topUpDigiflazzTransactionType = z.enum(
 
 export const TOPUP_DIGFLAZZ_PRICELIST_TYPE = ["prepaid", "pasca"] as const
 
-export const TOP_UP_COMMAND = ["prepaid", "postpaid"] as const
-
 export const topUpDigiflazzPricelistType = z.enum(TOPUP_DIGFLAZZ_PRICELIST_TYPE)
-
-export const topUpCommand = z.enum(TOP_UP_COMMAND)
 
 const topUpDigiflazzDepositInput = {
   amount: z
@@ -120,6 +116,12 @@ const topUpInput = {
       invalid_type_error: "Category must be a string",
     })
     .min(1),
+  categorySlug: z
+    .string({
+      required_error: "Category Slug is required",
+      invalid_type_error: "Category Slug must be a string",
+    })
+    .min(1),
   featuredImage: z
     .string({
       invalid_type_error: "Featured Image must be a string",
@@ -191,4 +193,3 @@ export type TopUpDigiflazzPricelistType = z.infer<
 
 export type CreateTopUp = z.infer<typeof createTopUpSchema>
 export type UpdateTopUp = z.infer<typeof updateTopUpSchema>
-export type TopUpCommand = z.infer<typeof topUpCommand>

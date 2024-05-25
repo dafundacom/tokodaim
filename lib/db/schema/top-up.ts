@@ -5,6 +5,7 @@ export const topUps = pgTable("top_ups", {
   brand: text("brand").notNull(),
   slug: text("slug").unique().notNull(),
   category: text("category").notNull(),
+  categorySlug: text("categorySlug").notNull(),
   featuredImage: text("featured_image"),
   coverImage: text("cover_image"),
   guideImage: text("guide_image"),

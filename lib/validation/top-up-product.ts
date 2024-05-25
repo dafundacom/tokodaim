@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-export const TOP_UP_COMMAND = ["prepaid", "postpaid"] as const
+export const TOP_UP_PRODUCT_COMMAND = ["prepaid", "postpaid"] as const
 
-export const topUpCommand = z.enum(TOP_UP_COMMAND)
+export const topUpProductCommand = z.enum(TOP_UP_PRODUCT_COMMAND)
 
 const topUpProductInput = {
   proudctName: z.string({
@@ -13,15 +13,17 @@ const topUpProductInput = {
     required_error: "SKU is required",
     invalid_type_error: "SKU must be a string",
   }),
-  price: z.number({
-    required_error: "Price is required",
-    invalid_type_error: "Price must be a number",
-  }),
-  type: z.string({
-    required_error: "Type is required",
-    invalid_type_error: "Type must be a string",
-  }),
-  command: z.enum(TOP_UP_COMMAND, {
+  price: z
+    .number({
+      invalid_type_error: "Price must be a number",
+    })
+    .optional(),
+  type: z
+    .string({
+      invalid_type_error: "Type must be a string",
+    })
+    .optional(),
+  command: z.enum(TOP_UP_PRODUCT_COMMAND, {
     invalid_type_error: "Your command doesnt exist on available option.",
   }),
   category: z.string({
@@ -57,4 +59,4 @@ export const updateTopUpProductSchema = z.object({
 
 export type CreteTopUpProductCommand = z.infer<typeof createTopUpProductSchema>
 export type UpdateTopUpProductCommand = z.infer<typeof updateTopUpProductSchema>
-export type TopUpCommand = z.infer<typeof topUpCommand>
+export type TopUpCommand = z.infer<typeof topUpProductCommand>

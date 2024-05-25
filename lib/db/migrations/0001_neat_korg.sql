@@ -1,1 +1,0 @@
-ALTER TABLE "ads" DROP COLUMN IF EXISTS "type";
