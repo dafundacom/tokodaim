@@ -23,6 +23,7 @@ import {
   Dropcursor,
   type DropcursorOptions,
 } from "@tiptap/extension-dropcursor"
+import Focus from "@tiptap/extension-focus"
 import { Gapcursor } from "@tiptap/extension-gapcursor"
 import { HardBreak, type HardBreakOptions } from "@tiptap/extension-hard-break"
 import { Heading, type HeadingOptions } from "@tiptap/extension-heading"
@@ -41,6 +42,10 @@ import {
   type OrderedListOptions,
 } from "@tiptap/extension-ordered-list"
 import { Paragraph, type ParagraphOptions } from "@tiptap/extension-paragraph"
+import {
+  Placeholder,
+  type PlaceholderOptions,
+} from "@tiptap/extension-placeholder"
 import { Strike, type StrikeOptions } from "@tiptap/extension-strike"
 import Table from "@tiptap/extension-table"
 import TableCell from "@tiptap/extension-table-cell"
@@ -50,6 +55,11 @@ import { Text } from "@tiptap/extension-text"
 import TextStyle from "@tiptap/extension-text-style"
 import { Underline, type UnderlineOptions } from "@tiptap/extension-underline"
 import { Youtube, type YoutubeOptions } from "@tiptap/extension-youtube"
+
+import { TextEditorButton } from "./text-editor-button"
+import { TextEditorCommandMenu } from "./text-editor-command-menu"
+import { TextEditorFacebookEmbed } from "./text-editor-facebook-embed"
+import { TextEditorXEmbed } from "./text-editor-x-embed"
 
 export interface TextEditorExtensionOptions {
   blockquote: Partial<BlockquoteOptions> | false
@@ -70,14 +80,15 @@ export interface TextEditorExtensionOptions {
   listItem: Partial<ListItemOptions> | false
   orderedList: Partial<OrderedListOptions> | false
   paragraph: Partial<ParagraphOptions> | false
+  placeholder: Partial<PlaceholderOptions> | false
   strike: Partial<StrikeOptions> | false
   text: false
   underline: Partial<UnderlineOptions> | false
   youtube: Partial<YoutubeOptions> | false
 }
 
-export const TextEditorExtension = Extension.create<TextEditorExtensionOptions>(
-  {
+export const TextEditorExtendedExtension =
+  Extension.create<TextEditorExtensionOptions>({
     name: "TextEditorExtension",
 
     addExtensions() {
@@ -163,6 +174,14 @@ export const TextEditorExtension = Extension.create<TextEditorExtensionOptions>(
         extensions.push(Paragraph.configure(this.options?.paragraph))
       }
 
+      if (this.options.placeholder !== false) {
+        extensions.push(
+          Placeholder.configure({
+            placeholder: "Press '/' for commands",
+          }),
+        )
+      }
+
       if (this.options.strike !== false) {
         extensions.push(Strike.configure(this.options?.strike))
       }
@@ -179,6 +198,7 @@ export const TextEditorExtension = Extension.create<TextEditorExtensionOptions>(
         extensions.push(Youtube.configure(this.options?.youtube))
       }
 
+      extensions.push(TextEditorCommandMenu)
       extensions.push(
         Table.configure({
           resizable: true,
@@ -187,6 +207,15 @@ export const TextEditorExtension = Extension.create<TextEditorExtensionOptions>(
       extensions.push(TableRow)
       extensions.push(TableHeader)
       extensions.push(TableCell)
+      extensions.push(TextEditorButton)
+      extensions.push(TextEditorXEmbed)
+      extensions.push(
+        Focus.configure({
+          className: "has-focus",
+          mode: "shallowest",
+        }),
+      )
+      extensions.push(TextEditorFacebookEmbed)
       extensions.push(Color)
       extensions.push(TextStyle)
       extensions.push(
@@ -197,5 +226,4 @@ export const TextEditorExtension = Extension.create<TextEditorExtensionOptions>(
 
       return extensions
     },
-  },
-)
+  })

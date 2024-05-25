@@ -4,9 +4,6 @@
 "use client"
 
 import * as React from "react"
-import Document from "@tiptap/extension-document"
-import Paragraph from "@tiptap/extension-paragraph"
-import Text from "@tiptap/extension-text"
 import {
   EditorContent as TextEditorContent,
   useEditor as useTextEditor,
@@ -17,6 +14,9 @@ import {
   type FieldValues,
   type Path,
 } from "react-hook-form"
+
+import { TextEditorExtension } from "./text-editor-extension"
+import { TextEditorMenu } from "./text-editor-menu"
 
 export interface TextEditorProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -41,7 +41,7 @@ const TextEditor = <TFieldValues extends FieldValues = FieldValues>(
     editable: true,
     autofocus: true,
     content: value,
-    extensions: [Document, Paragraph, Text],
+    extensions: [TextEditorExtension],
     onUpdate({ editor }) {
       onChange(editor.getHTML())
     },
@@ -65,9 +65,10 @@ const TextEditor = <TFieldValues extends FieldValues = FieldValues>(
 
   return (
     <>
+      {editor && <TextEditorMenu editor={editor} />}
       {editor && (
         <TextEditorContent
-          className="text-editor flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="text-editor flex min-h-[80px] w-full"
           editor={editor}
         />
       )}

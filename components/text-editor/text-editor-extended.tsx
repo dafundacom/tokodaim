@@ -10,7 +10,7 @@ import {
 import { useController, type FieldValues } from "react-hook-form"
 
 import type { TextEditorProps } from "./text-editor"
-import { TextEditorExtension } from "./text-editor-extension"
+import { TextEditorExtendedExtension } from "./text-editor-extended-extension"
 import { TextEditorMenu } from "./text-editor-menu"
 
 const TextEditorExtended = <TFieldValues extends FieldValues = FieldValues>(
@@ -25,7 +25,7 @@ const TextEditorExtended = <TFieldValues extends FieldValues = FieldValues>(
   const prevLocaleRef = React.useRef(isClear)
 
   const editor = useTextEditor({
-    extensions: [TextEditorExtension],
+    extensions: [TextEditorExtendedExtension],
     editable: true,
     autofocus: true,
     content: value,
