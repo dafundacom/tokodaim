@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server"
+import { eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
@@ -5,6 +7,7 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
+import { topUps } from "@/lib/db/schema/top-up"
 import type {
   CekSaldoReturnProps,
   DepositReturnProps,
@@ -14,6 +17,7 @@ import { populateTopUps } from "@/lib/utils/top-up"
 import {
   topUpDigiflazzCreateDepositSchema,
   topUpDigiflazzCreateTransactionSchema,
+  updateTopUpSchema,
 } from "@/lib/validation/top-up"
 
 export const topUpRouter = createTRPCRouter({
@@ -101,4 +105,29 @@ export const topUpRouter = createTRPCRouter({
       console.error("Error:", error)
     }
   }),
+  update: adminProtectedProcedure
+    .input(updateTopUpSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .update(topUps)
+          .set({
+            ...input,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(topUps.id, input.id))
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
 })
