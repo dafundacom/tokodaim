@@ -87,10 +87,10 @@ export default async function TopUpPage({
         </div>
         <div className="order-1 mb-4 w-full lg:order-2 lg:w-1/3">
           <div className="sticky top-[70px] w-full rounded border p-4">
-            {topUp && (
+            {topUp !== undefined && (
               <>
                 <div className="mb-4 flex gap-2">
-                  {topUp?.featuredImage && (
+                  {topUp.featuredImage && (
                     <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
                       <Image
                         src={topUp?.featuredImage}
