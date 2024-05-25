@@ -3,18 +3,15 @@ import NextLink from "next/link"
 
 import Image from "@/components/image"
 import { Icon } from "@/components/ui/icon"
+import type { SelectTopUps } from "@/lib/db/schema/top-up"
 
 interface TopUpCardProps {
-  topUpProduct: {
-    slug: string
-    brand: string
-    featuredImage?: string
-  }
+  topUp: SelectTopUps
 }
 
 const TopUpCard: React.FunctionComponent<TopUpCardProps> = (props) => {
-  const { topUpProduct } = props
-  const { slug, brand, featuredImage } = topUpProduct
+  const { topUp } = props
+  const { slug, brand, featuredImage } = topUp
 
   return (
     <NextLink

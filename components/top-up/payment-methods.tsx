@@ -1,6 +1,5 @@
 import * as React from "react"
 
-import type { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
 import type { PaymentChannelReturnProps } from "@/lib/sdk/tripay"
 import {
   paymentMethodsEWallet,
@@ -16,20 +15,13 @@ import SelectPaymentMethod from "./select-payment-method"
 
 type TripayPaymentMethodsProps = PaymentChannelReturnProps["data"][number]
 
-type DigiflazzPriceListPrePaidResponse =
-  DaftarHargaPrePaidReturnProps["data"][number] & {
-    featuredImage?: string
-    infoIdImage?: string
-    icon?: string
-  }
-
-interface PaymentSelectionProps {
+interface PaymentMethodsProps {
   onSelectPaymentMethod: (
     _data: TripayPaymentMethodsProps,
     _price: number,
   ) => void
   selectedPaymentMethod: string
-  amount?: DigiflazzPriceListPrePaidResponse | null
+  amount?: number
   paymentChannel?: {
     eWallet: TripayPaymentMethodsProps[] | undefined
     virtualAccount: TripayPaymentMethodsProps[] | undefined
@@ -44,7 +36,7 @@ interface PaymentSelectionProps {
   handleSelectMart: () => void
 }
 
-const PaymentSelection = (props: PaymentSelectionProps) => {
+const PaymentMethods = (props: PaymentMethodsProps) => {
   const {
     onSelectPaymentMethod,
     selectedPaymentMethod,
@@ -74,7 +66,7 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
       {amount &&
         paymentChannel?.eWallet &&
         paymentMethodsEWallet.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount?.price,
+          (paymentMethod) => paymentMethod.maxAmount > amount,
         ) &&
         paymentChannel.eWallet.length > 0 && (
           <div className="rounded border p-2">
@@ -92,21 +84,21 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               {paymentChannel.eWallet.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
-                    amount.price,
+                    amount,
                     paymentMethod?.fee_customer?.flat ?? 0,
                     paymentMethod?.fee_customer?.percent ?? 0,
                   )
                   const filterpayment = filterPaymentsByPrice(
                     paymentMethodsEWallet,
                     paymentMethod.code,
-                    amount.price,
+                    amount,
                   )
                   const idrPrice = changePriceToIDR(totalPayment)
                   if (filterpayment)
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
-                        name="payment-methods"
+                        name="payment-method"
                         title={paymentMethod.name}
                         imageUrl={paymentMethod.icon_url}
                         onSelect={() => {
@@ -128,10 +120,10 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
       {amount &&
         paymentChannel?.virtualAccount &&
         paymentMethodsVA.some(
-          (paymentMethod) => paymentMethod.minAmount < amount.price,
+          (paymentMethod) => paymentMethod.minAmount < amount,
         ) &&
         paymentMethodsVA.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount.price,
+          (paymentMethod) => paymentMethod.maxAmount > amount,
         ) &&
         paymentChannel.virtualAccount.length > 0 && (
           <div className="rounded border p-2">
@@ -151,21 +143,21 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               {paymentChannel.virtualAccount.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
-                    amount.price,
+                    amount,
                     paymentMethod?.fee_customer?.flat ?? 0,
                     paymentMethod?.fee_customer?.percent ?? 0,
                   )
                   const filterpayment = filterPaymentsByPrice(
                     paymentMethodsVA,
                     paymentMethod.code,
-                    amount.price,
+                    amount,
                   )
                   const priceIdr = changePriceToIDR(totalPayment)
                   if (filterpayment)
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
-                        name="payment-methods"
+                        name="payment-method"
                         title={paymentMethod.name}
                         imageUrl={paymentMethod.icon_url}
                         onSelect={() => {
@@ -187,10 +179,10 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
       {amount &&
         paymentChannel?.convenienceShop &&
         paymentMethodsMart.some(
-          (paymentMethod) => paymentMethod.minAmount < amount.price,
+          (paymentMethod) => paymentMethod.minAmount < amount,
         ) &&
         paymentMethodsMart.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount.price,
+          (paymentMethod) => paymentMethod.maxAmount > amount,
         ) &&
         paymentChannel.convenienceShop.length > 0 && (
           <div className="rounded border p-2">
@@ -210,7 +202,7 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
               {paymentChannel.convenienceShop.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
-                    amount.price,
+                    amount,
                     paymentMethod?.fee_customer?.flat ?? 0,
                     paymentMethod?.fee_customer?.percent ?? 0,
                   )
@@ -218,14 +210,14 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
                   const filterpayment = filterPaymentsByPrice(
                     paymentMethodsMart,
                     paymentMethod.code,
-                    amount.price,
+                    amount,
                   )
                   const idrPrice = changePriceToIDR(totalPayment)
                   if (filterpayment)
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
-                        name="payment-methods"
+                        name="payment-method"
                         title={paymentMethod.name}
                         imageUrl={paymentMethod.icon_url}
                         onSelect={() => {
@@ -248,4 +240,4 @@ const PaymentSelection = (props: PaymentSelectionProps) => {
   )
 }
 
-export default PaymentSelection
+export default PaymentMethods

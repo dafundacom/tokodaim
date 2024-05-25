@@ -1,3 +1,5 @@
+// TODO: not yet translated
+
 "use client"
 
 import * as React from "react"
@@ -7,8 +9,8 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import Image from "@/components/image"
 import AddVoucher from "@/components/top-up/add-voucher"
 import InputAccountId from "@/components/top-up/input-account-id"
-import PaymentSelection from "@/components/top-up/payment-selection"
-import SelectProductPrice from "@/components/top-up/select-product-price"
+import PaymentMethods from "@/components/top-up/payment-methods"
+import SelectTopUpProduct from "@/components/top-up/select-top-up-product"
 import TopUpServer from "@/components/top-up/top-up-server"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,8 +32,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import env from "@/env.mjs"
+import type { SelectTopUps } from "@/lib/db/schema/top-up"
+import type { SelectTopUpProducts } from "@/lib/db/schema/top-up-product"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
-import type { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
 import type {
   PaymentChannelReturnProps,
   ClosedPaymentCode as PaymentMethodProps,
@@ -45,26 +48,11 @@ import {
   removeNonDigitCharsBeforeNumber,
 } from "@/lib/utils/top-up"
 
-type DigiflazzPriceListPrePaidResponse =
-  DaftarHargaPrePaidReturnProps["data"][number] & {
-    featuredImage?: string
-    infoIdImage?: string
-    icon?: string
-  }
-
 type TripayPaymentMethodsProps = PaymentChannelReturnProps["data"][number]
 
 interface TopUpFormProps {
-  topUpPriceList: DigiflazzPriceListPrePaidResponse[]
-  topUpProduct: {
-    brand: string
-    slug: string
-    category: string
-    featuredImage?: string
-    icon?: string
-    coverImage?: string
-    infoIdImage?: string
-  }
+  topUpProducts: SelectTopUpProducts[]
+  topUp: SelectTopUps
   paymentChannel?: {
     eWallet: TripayPaymentMethodsProps[] | undefined
     virtualAccount: TripayPaymentMethodsProps[] | undefined
@@ -84,14 +72,8 @@ interface FormValues {
 }
 
 const TopUpForm = (props: TopUpFormProps) => {
-  const {
-    topUpPriceList,
-    topUpProduct,
-    paymentChannel,
-    profit,
-    email,
-    merchant,
-  } = props
+  const { topUpProducts, topUp, paymentChannel, profit, email, merchant } =
+    props
 
   const [showEWalletList, setShowEWallet] = React.useState<boolean>(false)
   const [showVAList, setShowVAList] = React.useState<boolean>(false)
@@ -104,8 +86,8 @@ const TopUpForm = (props: TopUpFormProps) => {
   const [totalAmount, setTotalAmount] = React.useState<number>(0)
   const [fixedPrice, setFixedPrice] = React.useState<number>(0)
   const [voucher, setVoucher] = React.useState<SelectVoucher | null>(null)
-  const [amount, setAmount] =
-    React.useState<DigiflazzPriceListPrePaidResponse | null>(null)
+  const [selectedTopUpProduct, setSelectedTopUpProduct] =
+    React.useState<SelectTopUpProducts | null>(null)
   const [paymentMethod, setPaymentMethod] =
     React.useState<TripayPaymentMethodsProps | null>(null)
   const [queryAccountId, setQueryAccountId] = React.useState("")
@@ -116,8 +98,8 @@ const TopUpForm = (props: TopUpFormProps) => {
   const router = useRouter()
 
   const { isTopUpServer } = React.useMemo(
-    () => isTopInputTopUpAccountIdWithServer(topUpProduct.brand),
-    [topUpProduct?.brand],
+    () => isTopInputTopUpAccountIdWithServer(topUp.brand),
+    [topUp?.brand],
   )
 
   const handleTogglePriceList = React.useCallback(
@@ -125,7 +107,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       listStateSetter: React.Dispatch<React.SetStateAction<boolean>>,
       otherListStateSetters: React.Dispatch<React.SetStateAction<boolean>>[],
     ) => {
-      if (amount?.price) {
+      if (selectedTopUpProduct?.price) {
         listStateSetter(true)
         otherListStateSetters.forEach((setter) => setter(false))
       } else {
@@ -135,7 +117,7 @@ const TopUpForm = (props: TopUpFormProps) => {
         })
       }
     },
-    [amount],
+    [selectedTopUpProduct],
   )
 
   const handleSelectEWallet = React.useCallback(() => {
@@ -159,8 +141,8 @@ const TopUpForm = (props: TopUpFormProps) => {
   )
 
   const handleSelectPrice = React.useCallback(
-    (data: DigiflazzPriceListPrePaidResponse, price: number) => {
-      setAmount({ ...data, price: price })
+    (data: SelectTopUpProducts, price: number) => {
+      setSelectedTopUpProduct({ ...data, price: price })
     },
     [],
   )
@@ -170,7 +152,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       toast({ variant: "danger", description: "Silahkan Pilih Server" })
     } else if (!queryAccountId) {
       toast({ variant: "danger", description: "Silahkan Masukkan ID" })
-    } else if (!amount) {
+    } else if (!selectedTopUpProduct) {
       toast({
         variant: "danger",
         description: "Silahkan Pilih Metode Pembayaran",
@@ -180,7 +162,13 @@ const TopUpForm = (props: TopUpFormProps) => {
     } else {
       setOpenDialog(true)
     }
-  }, [amount, isTopUpServer, paymentMethod, queryAccountId, topUpServer])
+  }, [
+    selectedTopUpProduct,
+    isTopUpServer,
+    paymentMethod,
+    queryAccountId,
+    topUpServer,
+  ])
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -196,7 +184,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
-        router.push(`/top-up/transaction?reference=${data?.invoiceId}`)
+        router.push(`/top-up/order?reference=${data?.invoiceId}`)
       }
     },
     onError: (error) => {
@@ -224,9 +212,9 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: postTripayTransactionClosed } =
     api.payment.tripayCreateClosedTransaction.useMutation({
       onSuccess: (data) => {
-        if (data && paymentMethod && amount) {
+        if (data && paymentMethod && selectedTopUpProduct) {
           const { accountId } = getTopUpInputAccountIdDetail(
-            topUpProduct.brand,
+            topUp.brand,
             queryAccountId,
             topUpServer,
           )
@@ -234,10 +222,10 @@ const TopUpForm = (props: TopUpFormProps) => {
 
           const input = {
             invoiceId: data.reference!,
-            sku: amount?.buyer_sku_code ?? "",
+            sku: selectedTopUpProduct?.sku ?? "",
             merchantRef: data.merchant_ref,
             server: "",
-            productName: amount.product_name,
+            productName: selectedTopUpProduct.productName,
             customerName: data.customer_name,
             customerEmail: data.customer_email,
             customerPhone: data.customer_phone,
@@ -248,7 +236,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             status: "processing" as const,
             paymentStatus: "unpaid" as const,
             topUpProvider: "digiflazz" as const,
-            brands: topUpProduct.brand,
+            brands: topUp.brand,
             amount: total,
             feeAmount: data?.total_fee!,
             totalAmount: total,
@@ -287,14 +275,14 @@ const TopUpForm = (props: TopUpFormProps) => {
     (data) => {
       if (!queryAccountId) {
         toast({ variant: "danger", description: "Silahkan Masukkan ID" })
-      } else if (!amount) {
+      } else if (!selectedTopUpProduct) {
         toast({
           variant: "danger",
           description: "Silahkan Pilih Metode Pembayaran",
         })
       } else if (!paymentMethod) {
         toast({ variant: "danger", description: "Silahkan Pilih Nominal" })
-      } else if (amount && paymentMethod) {
+      } else if (selectedTopUpProduct && paymentMethod) {
         try {
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
           postTripayTransactionClosed({
@@ -304,17 +292,17 @@ const TopUpForm = (props: TopUpFormProps) => {
             amount: total,
             orderItems: [
               {
-                sku: amount.buyer_sku_code,
-                name: amount.product_name,
+                sku: selectedTopUpProduct.sku,
+                name: selectedTopUpProduct.productName,
                 price: total,
                 quantity: 1,
                 subtotal: total,
-                product_url: topUpProduct.featuredImage ?? "",
-                image_url: topUpProduct.featuredImage ?? "",
+                product_url: topUp.featuredImage ?? "",
+                image_url: topUp.featuredImage ?? "",
               },
             ],
             callbackUrl: env.NEXT_PUBLIC_API,
-            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/transaction`,
+            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
             expiredTime: Math.floor(new Date().getTime() / 1000) + 24 * 60 * 60,
           })
         } catch (error) {
@@ -325,12 +313,12 @@ const TopUpForm = (props: TopUpFormProps) => {
     },
     [
       queryAccountId,
-      amount,
+      selectedTopUpProduct,
       paymentMethod,
       fixedPrice,
       totalAmount,
       postTripayTransactionClosed,
-      topUpProduct.featuredImage,
+      topUp.featuredImage,
     ],
   )
 
@@ -351,50 +339,43 @@ const TopUpForm = (props: TopUpFormProps) => {
               <FormControl>
                 <InputAccountId
                   label={
-                    topUpProduct.category === "E-Money"
+                    topUp.category === "E-Money"
                       ? "Nomor E-Wallet"
-                      : topUpProduct.category === "Pulsa"
+                      : topUp.category === "Pulsa"
                         ? "Nomor HP"
                         : "ID"
                   }
                   id="server"
-                  brand={topUpProduct?.brand ?? ""}
+                  brand={topUp?.brand ?? ""}
                   setQueryAccountId={setQueryAccountId}
                   category={`${
-                    topUpProduct.category === "E-Money"
+                    topUp.category === "E-Money"
                       ? "Nomor E-Wallet"
-                      : topUpProduct.category === "Pulsa"
+                      : topUp.category === "Pulsa"
                         ? "Nomor HP"
                         : "ID"
                   }`}
                 />
               </FormControl>
               {isTopUpServer && (
-                <TopUpServer
-                  brand={topUpProduct.brand}
-                  topUpServer={setTopUpServer}
-                />
+                <TopUpServer brand={topUp.brand} topUpServer={setTopUpServer} />
               )}
             </div>
-            {topUpProduct.category === "Games" &&
-              topUpProduct.brand !== "GARENA" && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">
-                      <Icon.Help aria-label="Petunjuk" className="mr-2" />
-                      Petunjuk
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <div className="relative h-[250px] w-full max-w-[600px]">
-                      <Image
-                        src={topUpProduct.infoIdImage!}
-                        alt={topUpProduct.brand}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
+            {topUp.category === "Games" && topUp.brand !== "GARENA" && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Icon.Help aria-label="Petunjuk" className="mr-2" />
+                    Petunjuk
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <div className="relative h-[250px] w-full max-w-[600px]">
+                    <Image src={topUp.guideImage!} alt={topUp.brand} />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
           <div className="rounded border p-4">
             <div>
@@ -403,39 +384,39 @@ const TopUpForm = (props: TopUpFormProps) => {
               </h1>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {topUpPriceList.map((topUpPrice) => {
+              {topUpProducts.map((topUpProduct) => {
                 const priceWithProfit = calculateTotalPriceWithProfit(
-                  topUpPrice.price,
+                  topUpProduct.price!,
                   totalProfit,
                 )
                 const name = removeNonDigitCharsBeforeNumber(
-                  topUpPrice.product_name,
+                  topUpProduct.productName,
                 )
                 const idrPrice = changePriceToIDR(priceWithProfit)
                 return (
-                  <SelectProductPrice
-                    key={topUpPrice.product_name}
+                  <SelectTopUpProduct
+                    key={topUpProduct.productName}
                     label={name!}
                     price={idrPrice}
                     active={selectedProductPrice}
-                    brand={topUpProduct.brand}
-                    productName={topUpPrice.buyer_sku_code}
+                    brand={topUp.brand}
+                    productName={topUpProduct.sku}
                     onSelect={() => {
-                      handleSelectPrice(topUpPrice, priceWithProfit)
+                      handleSelectPrice(topUpProduct, priceWithProfit)
                       setSelectedProductPrice(name!)
                     }}
-                    icon={topUpProduct.icon ?? ""}
+                    productIcon={topUp.productIcon ?? ""}
                   />
                 )
               })}
             </div>
           </div>
           <div className="flex flex-col gap-4 rounded border p-4">
-            <PaymentSelection
+            <PaymentMethods
               paymentChannel={paymentChannel}
               onSelectPaymentMethod={handleSelectPaymentMethod}
               selectedPaymentMethod={selectedPaymentMethod}
-              amount={amount}
+              amount={selectedTopUpProduct?.price!}
               setSelectedPaymentMethod={setSelectedPaymentMethod}
               showEWalletList={showEWalletList}
               showVAList={showVAList}
@@ -524,9 +505,9 @@ const TopUpForm = (props: TopUpFormProps) => {
                     <div>Account ID</div>
                     <div className="col-span-2">{`: ${queryAccountId}`}</div>
                     <div>Item</div>
-                    <div className="col-span-2">{`: ${amount?.product_name}`}</div>
+                    <div className="col-span-2">{`: ${selectedTopUpProduct?.productName}`}</div>
                     <div>Product</div>
-                    <div className="col-span-2">{`: ${topUpProduct.brand}`}</div>
+                    <div className="col-span-2">{`: ${topUp.brand}`}</div>
                     <div>Payment</div>
                     <div className="col-span-2">{`: ${paymentMethod?.name}`}</div>
                   </div>

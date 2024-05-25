@@ -16,11 +16,9 @@ const Ad = dynamicFn(
   },
 )
 
-const TopUpProductGrid = dynamicFn(
+const TopUpGrid = dynamicFn(
   async () => {
-    const TopUpProductGrid = await import(
-      "@/components/top-up/top-up-product-grid"
-    )
+    const TopUpProductGrid = await import("@/components/top-up/top-up-grid")
     return TopUpProductGrid
   },
   {
@@ -68,12 +66,9 @@ export async function generateMetadata({
 
 export default async function Home() {
   const adsBelowHeader = await api.ad.byPosition("article_below_header")
-  const topUpProductsGames =
-    await api.topUp.digiflazzTopUpProductsByCategory("games")
-  const topUpProductsPulsa =
-    await api.topUp.digiflazzTopUpProductsByCategory("pulsa")
-  const topUpProductsEMoney =
-    await api.topUp.digiflazzTopUpProductsByCategory("e-money")
+  const topUpProductsGames = await api.topUp.byCategorySlug("games")
+  const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
+  const topUpProductsEMoney = await api.topUp.byCategorySlug("e-money")
 
   return (
     <>
@@ -103,12 +98,9 @@ export default async function Home() {
             return <Ad key={ad.id} ad={ad} />
           })}
         <div className="my-2 flex w-full flex-col space-y-4 lg:space-y-8">
-          <TopUpProductGrid title="Games" topUpProducts={topUpProductsGames!} />
-          <TopUpProductGrid title="Pulsa" topUpProducts={topUpProductsPulsa!} />
-          <TopUpProductGrid
-            title="e-Money"
-            topUpProducts={topUpProductsEMoney!}
-          />
+          <TopUpGrid title="Games" topUps={topUpProductsGames!} />
+          <TopUpGrid title="Pulsa" topUps={topUpProductsPulsa!} />
+          <TopUpGrid title="e-Money" topUps={topUpProductsEMoney!} />
         </div>
       </section>
     </>

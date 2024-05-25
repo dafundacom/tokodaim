@@ -5,20 +5,21 @@ import { FormLabel } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 
-interface SelectProductPriceProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SelectTopUpProductProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
   productName: string
   onSelect: () => void
   price: string
   brand: string
   active: string
-  icon: string
+  productIcon: string
 }
 
-const SelectProductPrice: React.FunctionComponent<SelectProductPriceProps> = (
+const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
   props,
 ) => {
-  const { active, productName, label, onSelect, price, brand, icon } = props
+  const { active, productName, label, onSelect, price, brand, productIcon } =
+    props
 
   return (
     <div
@@ -44,7 +45,7 @@ const SelectProductPrice: React.FunctionComponent<SelectProductPriceProps> = (
           </div>
         )}
         <div className="relative h-[25px] w-[25px]">
-          <Image src={icon} alt={brand} />
+          <Image src={productIcon} alt={brand} />
         </div>
         <div>
           <p className="font-bold">{label}</p>
@@ -55,4 +56,4 @@ const SelectProductPrice: React.FunctionComponent<SelectProductPriceProps> = (
   )
 }
 
-export default SelectProductPrice
+export default SelectTopUpProduct

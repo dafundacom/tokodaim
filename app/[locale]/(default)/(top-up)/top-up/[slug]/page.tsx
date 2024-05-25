@@ -1,3 +1,5 @@
+// TODO: not yet translated
+
 import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
@@ -23,12 +25,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = params
 
-  const topUpProduct = await api.topUp.digiflazzTopUpProductBySlug(slug)
+  const topUp = await api.topUp.bySlug(slug)
 
   return {
-    title: `Top Up ${topUpProduct?.brand}`,
-    description: `${env.NEXT_PUBLIC_SITE_TITLE} Top Up ${topUpProduct?.brand}`,
-    robots: "noindex",
+    title: `Top Up ${topUp?.brand}`,
+    description: `${env.NEXT_PUBLIC_SITE_TITLE} Top Up ${topUp?.brand}`,
     alternates: {
       canonical: `${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`,
       languages: {
@@ -36,15 +37,15 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `Top Up ${topUpProduct?.brand}`,
-      description: `Gamerode Top Up ${topUpProduct?.brand}`,
+      title: `Top Up ${topUp?.brand}`,
+      description: `Gamerode Top Up ${topUp?.brand}`,
       url: `${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`,
       locale: "en",
     },
   }
 }
 
-export default async function TopUpProductSlugPage({
+export default async function TopUpPage({
   params,
 }: {
   params: { slug: string }
@@ -60,19 +61,19 @@ export default async function TopUpProductSlugPage({
     settingValues = { ...parsedSetting }
   }
 
-  const topUpProduct = await api.topUp.digiflazzTopUpProductBySlug(slug)
-  const topUpPriceList = await api.topUp.digiflazzPriceListBySlug(slug ?? "")
+  const topUp = await api.topUp.bySlug(slug)
+  const topUpProducts = await api.topUpProduct.byBrandSlug(slug)
   const paymentChannel = await api.payment.tripayPaymentChannel()
-  const cleanedText = topUpProduct?.brand.replace(/\d+(\.\d+)?/g, "")
+  const cleanedText = topUp?.brand.replace(/\d+(\.\d+)?/g, "")
 
   return (
     <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 px-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] min-[1200px]:max-w-[1170px]">
       <div className="flex flex-col lg:flex-row lg:space-x-2">
         <div className="order-2 w-full lg:order-1 lg:w-2/3">
-          {topUpProduct && topUpPriceList ? (
+          {topUp && topUpProducts ? (
             <TopUpForm
-              topUpPriceList={topUpPriceList}
-              topUpProduct={topUpProduct}
+              topUpProducts={topUpProducts}
+              topUp={topUp}
               paymentChannel={paymentChannel}
               profit={settingValues?.profit_percentage ?? "15"}
               email={settingValues?.support_email ?? ""}
@@ -86,23 +87,23 @@ export default async function TopUpProductSlugPage({
         </div>
         <div className="order-1 mb-4 w-full lg:order-2 lg:w-1/3">
           <div className="sticky top-[70px] w-full rounded border p-4">
-            {topUpProduct && (
+            {topUp && (
               <>
                 <div className="mb-4 flex gap-2">
-                  {topUpProduct?.featuredImage && (
+                  {topUp?.featuredImage && (
                     <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
                       <Image
-                        src={topUpProduct?.featuredImage}
-                        alt={topUpProduct.brand}
+                        src={topUp?.featuredImage}
+                        alt={topUp.brand}
                         className="object-cover"
                       />
                     </div>
                   )}
-                  <h1 className="text-base">{topUpProduct.brand}</h1>
+                  <h1 className="text-base">{topUp.brand}</h1>
                 </div>
                 <p className="text-sm">
                   Top Up {cleanedText} resmi legal 100% harga paling murah. Cara
-                  top up {topUpProduct.brand} termurah :
+                  top up {topUp.brand} termurah :
                 </p>
                 <ol className="list-decimal px-4 text-sm">
                   <li>Masukkan ID (SERVER)</li>
