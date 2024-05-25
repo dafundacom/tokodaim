@@ -144,19 +144,6 @@ export function CheckTransactionContent() {
                     </div>
                   </div>
                 </dl>
-                {/* <div className="mt-8 print:hidden">
-                  {data[0]?.checkout_url && (
-                    <a
-                      aria-label="Lanjutkan Pembayaran"
-                      href={data[0]?.checkout_url}
-                      target="_blank"
-                    >
-                      <Button aria-label="Lanjutkan Pembayaran">
-                        Lanjutkan Pembayaran
-                      </Button>
-                    </a>
-                  )}
-                </div> */}
               </div>
             </div>
             <div>
