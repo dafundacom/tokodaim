@@ -405,7 +405,7 @@ export function DetailTransactionContent() {
                 </div>
               </div>
             </div>
-            {isPaid && (
+            {tripayTransactionData?.status === "UNPAID" && (
               <div>
                 <dl className="space-y-6 py-6 text-sm">
                   <div className="flex justify-between">
@@ -449,7 +449,7 @@ export function DetailTransactionContent() {
                 </dl>
               </div>
             )}
-            {isPaid && (
+            {tripayTransactionData?.status === "UNPAID" && (
               <div className="flex-grow rounded-md p-5 shadow-md">
                 <h2 className="mb-3 text-xl font-bold">Cara Membayar</h2>
                 <div className="space-y-4">
