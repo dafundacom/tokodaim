@@ -2,14 +2,14 @@ import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { topUps } from "@/lib/db/schema/top-up"
+import { topUpProducts } from "@/lib/db/schema/top-up-product"
 import { digiflazz } from "@/lib/digiflazz"
 import type {
   DaftarHargaPostPaidReturnProps,
   DaftarHargaPrePaidReturnProps,
 } from "@/lib/sdk/digiflazz"
 import { cuid, slugify } from "@/lib/utils"
-import { topUpProducts } from "../db/schema/top-up-product"
-import { TopUpCommand } from "../validation/top-up-product"
+import type { TopUpCommand } from "@/lib/validation/top-up-product"
 
 export const calculateTotalPriceWithProfit = (
   price: number,

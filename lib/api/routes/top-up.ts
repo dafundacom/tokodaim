@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { count, eq, sql } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
