@@ -69,7 +69,7 @@ export default async function TopUpPage({
   return (
     <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 px-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] min-[1200px]:max-w-[1170px]">
       <div className="flex flex-col lg:flex-row lg:space-x-2">
-        <div className="order-2 w-full lg:order-1 lg:w-2/3">
+        <div className="order-2 w-full lg:w-2/3">
           {topUp && topUpProducts ? (
             <TopUpForm
               topUpProducts={topUpProducts}
@@ -85,8 +85,8 @@ export default async function TopUpPage({
             </div>
           )}
         </div>
-        <div className="order-1 mb-4 w-full lg:order-2 lg:w-1/3">
-          <div className="sticky top-[70px] w-full rounded border p-4">
+        <div className="order-1 mb-4 w-full lg:w-1/3">
+          <div className="sticky top-[70px] w-full rounded-lg border p-4">
             {topUp !== undefined && (
               <>
                 <div className="mb-4 flex gap-2">

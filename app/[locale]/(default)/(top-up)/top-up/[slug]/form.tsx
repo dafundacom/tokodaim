@@ -295,7 +295,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           className="mb-[60px] flex flex-col gap-4"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 1
@@ -305,6 +305,36 @@ const TopUpForm = (props: TopUpFormProps) => {
                   Masukan Data Akun
                 </h2>
               </div>
+              {topUp.category === "Games" && topUp.brand !== "GARENA" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
+                      <svg
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        height="16"
+                        width="16"
+                        className="ml-2 text-xs"
+                      >
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path>
+                      </svg>
+                      <p className="text-custom-primary ml-1 text-sm font-bold">
+                        Panduan
+                      </p>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <div className="relative h-[250px] w-full max-w-[600px]">
+                      <Image
+                        src={topUp.guideImage!}
+                        className="object-contain"
+                        alt={topUp.brand}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex gap-2">
               <FormControl>
@@ -332,23 +362,8 @@ const TopUpForm = (props: TopUpFormProps) => {
                 <TopUpServer brand={topUp.brand} topUpServer={setTopUpServer} />
               )}
             </div>
-            {topUp.category === "Games" && topUp.brand !== "GARENA" && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <Icon.Help aria-label="Petunjuk" className="mr-2" />
-                    Petunjuk
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <div className="relative h-[250px] w-full max-w-[600px]">
-                    <Image src={topUp.guideImage!} alt={topUp.brand} />
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
           </div>
-          <div className="p-4 lg:rounded-md lg:border">
+          <div className="p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 2
@@ -387,7 +402,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               })}
             </div>
           </div>
-          <div className="flex flex-col gap-4 p-4 lg:rounded-md lg:border">
+          <div className="flex flex-col gap-4 p-4 lg:rounded-lg lg:border">
             <PaymentMethods
               paymentChannel={paymentChannel}
               onSelectPaymentMethod={handleSelectPaymentMethod}
@@ -396,7 +411,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               setSelectedPaymentMethod={setSelectedPaymentMethod}
             />
           </div>
-          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 4
@@ -428,7 +443,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               )}
             />
           </div>
-          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 5
@@ -457,7 +472,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             />
           </div>
           {totalAmount > 0 && (
-            <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+            <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
               <AddVoucher
                 normalPrice={totalAmount}
                 setVoucherData={setVoucher}
@@ -491,7 +506,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                   valid and appropriate.
                 </p>
                 <div className="mt-2">
-                  <div className="my-4 grid grid-cols-3 gap-4 rounded-md p-4 text-left">
+                  <div className="my-4 grid grid-cols-3 gap-4 rounded-lg p-4 text-left">
                     <div>Account ID</div>
                     <div className="col-span-2">{`: ${queryAccountId}`}</div>
                     <div>Item</div>
