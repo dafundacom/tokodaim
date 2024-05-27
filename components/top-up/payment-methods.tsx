@@ -28,12 +28,6 @@ interface PaymentMethodsProps {
     convenienceShop: TripayPaymentMethodsProps[] | undefined
   } | null
   setSelectedPaymentMethod: React.Dispatch<React.SetStateAction<string>>
-  showEWalletList: boolean
-  showVAList: boolean
-  showMartList: boolean
-  handleSelectEWallet: () => void
-  handleSelectVA: () => void
-  handleSelectMart: () => void
 }
 
 const PaymentMethods = (props: PaymentMethodsProps) => {
@@ -43,12 +37,6 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
     amount,
     paymentChannel,
     setSelectedPaymentMethod,
-    handleSelectEWallet,
-    showEWalletList,
-    handleSelectVA,
-    showVAList,
-    showMartList,
-    handleSelectMart,
   } = props
 
   const handleSelectPaymentMethod = (
@@ -61,26 +49,23 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
   return (
     <>
       <div>
-        <h1 className="line-clamp-2 text-xl font-semibold">Pilih Pembayaran</h1>
+        <div className="mb-4 flex items-center md:mb-5">
+          <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+            3
+          </div>
+          <div className="flex flex-col">
+            <h2 className="text-base font-bold md:text-xl">Pilih Pembayaran</h2>
+          </div>
+        </div>
       </div>
       {amount &&
         paymentChannel?.eWallet &&
-        paymentMethodsEWallet.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount,
-        ) &&
         paymentChannel.eWallet.length > 0 && (
-          <div className="rounded border p-2">
-            <div
-              className="mb-2 w-full cursor-pointer p-2"
-              onClick={handleSelectEWallet}
-            >
+          <div className="rounded p-2">
+            <div className="mb-2 w-full cursor-pointer p-2">
               <h2 className="line-clamp-2 text-xl font-semibold">E-Wallet</h2>
             </div>
-            <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
-                showEWalletList ? "grid" : "hidden"
-              }`}
-            >
+            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
               {paymentChannel.eWallet.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
@@ -94,7 +79,7 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                     amount,
                   )
                   const idrPrice = changePriceToIDR(totalPayment)
-                  if (filterpayment)
+                  if (filterpayment) {
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
@@ -108,10 +93,24 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                           )
                           setSelectedPaymentMethod(paymentMethod.name)
                         }}
+                        isPriceInRange={true}
                         amount={idrPrice}
                         active={selectedPaymentMethod}
                       />
                     )
+                  } else {
+                    return (
+                      <SelectPaymentMethod
+                        key={paymentMethod.name}
+                        name="payment-method"
+                        title={paymentMethod.name}
+                        imageUrl={paymentMethod.icon_url}
+                        isPriceInRange={false}
+                        amount={idrPrice}
+                        active={selectedPaymentMethod}
+                      />
+                    )
+                  }
                 },
               )}
             </div>
@@ -119,27 +118,14 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
         )}
       {amount &&
         paymentChannel?.virtualAccount &&
-        paymentMethodsVA.some(
-          (paymentMethod) => paymentMethod.minAmount < amount,
-        ) &&
-        paymentMethodsVA.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount,
-        ) &&
         paymentChannel.virtualAccount.length > 0 && (
-          <div className="rounded border p-2">
-            <div
-              className="mb-2 w-full cursor-pointer p-2"
-              onClick={handleSelectVA}
-            >
+          <div className="rounded p-2">
+            <div className="mb-2 w-full cursor-pointer p-2">
               <h2 className="line-clamp-2 text-xl font-semibold">
                 Virtual Account
               </h2>
             </div>
-            <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
-                showVAList ? "grid" : "hidden"
-              }`}
-            >
+            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
               {paymentChannel.virtualAccount.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
@@ -152,8 +138,8 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                     paymentMethod.code,
                     amount,
                   )
-                  const priceIdr = changePriceToIDR(totalPayment)
-                  if (filterpayment)
+                  const idrPrice = changePriceToIDR(totalPayment)
+                  if (filterpayment) {
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
@@ -167,10 +153,24 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                           )
                           setSelectedPaymentMethod(paymentMethod.name)
                         }}
-                        amount={priceIdr}
+                        isPriceInRange={true}
+                        amount={idrPrice}
                         active={selectedPaymentMethod}
                       />
                     )
+                  } else {
+                    return (
+                      <SelectPaymentMethod
+                        key={paymentMethod.name}
+                        name="payment-method"
+                        title={paymentMethod.name}
+                        imageUrl={paymentMethod.icon_url}
+                        isPriceInRange={false}
+                        amount={idrPrice}
+                        active={selectedPaymentMethod}
+                      />
+                    )
+                  }
                 },
               )}
             </div>
@@ -178,27 +178,14 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
         )}
       {amount &&
         paymentChannel?.convenienceShop &&
-        paymentMethodsMart.some(
-          (paymentMethod) => paymentMethod.minAmount < amount,
-        ) &&
-        paymentMethodsMart.some(
-          (paymentMethod) => paymentMethod.maxAmount > amount,
-        ) &&
         paymentChannel.convenienceShop.length > 0 && (
-          <div className="rounded border p-2">
-            <div
-              className="mb-2 w-full cursor-pointer p-2"
-              onClick={handleSelectMart}
-            >
+          <div className="rounded p-2">
+            <div className="mb-2 w-full cursor-pointer p-2">
               <h2 className="line-clamp-2 text-xl font-semibold">
                 Convenience Shop
               </h2>
             </div>
-            <div
-              className={`grid-cols-1 gap-4 transition-all md:grid-cols-2 ${
-                showMartList ? "grid" : "hidden"
-              }`}
-            >
+            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
               {paymentChannel.convenienceShop.map(
                 (paymentMethod: TripayPaymentMethodsProps) => {
                   const { totalPayment } = calculateTotalPrice(
@@ -213,7 +200,7 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                     amount,
                   )
                   const idrPrice = changePriceToIDR(totalPayment)
-                  if (filterpayment)
+                  if (filterpayment) {
                     return (
                       <SelectPaymentMethod
                         key={paymentMethod.name}
@@ -227,10 +214,24 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                           )
                           setSelectedPaymentMethod(paymentMethod.name)
                         }}
+                        isPriceInRange={true}
                         amount={idrPrice}
                         active={selectedPaymentMethod}
                       />
                     )
+                  } else {
+                    return (
+                      <SelectPaymentMethod
+                        key={paymentMethod.name}
+                        name="payment-method"
+                        title={paymentMethod.name}
+                        imageUrl={paymentMethod.icon_url}
+                        isPriceInRange={false}
+                        amount={idrPrice}
+                        active={selectedPaymentMethod}
+                      />
+                    )
+                  }
                 },
               )}
             </div>

@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
+import { changePriceToIDR } from "@/lib/top-up"
 import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
-import { changePriceToIDR } from "@/lib/utils/top-up"
 
 interface FormData {
   queryInvoice: string

@@ -74,9 +74,6 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { topUpProducts, topUp, paymentChannel, profit, email, merchant } =
     props
 
-  const [showEWalletList, setShowEWallet] = React.useState<boolean>(false)
-  const [showVAList, setShowVAList] = React.useState<boolean>(false)
-  const [showMartList, setShowMartList] = React.useState<boolean>(false)
   const [selectedProductPrice, setSelectedProductPrice] =
     React.useState<string>("")
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -100,36 +97,6 @@ const TopUpForm = (props: TopUpFormProps) => {
     () => isTopInputTopUpAccountIdWithServer(topUp.brand),
     [topUp?.brand],
   )
-
-  const handleTogglePriceList = React.useCallback(
-    (
-      listStateSetter: React.Dispatch<React.SetStateAction<boolean>>,
-      otherListStateSetters: React.Dispatch<React.SetStateAction<boolean>>[],
-    ) => {
-      if (selectedTopUpProduct?.price) {
-        listStateSetter(true)
-        otherListStateSetters.forEach((setter) => setter(false))
-      } else {
-        toast({
-          variant: "danger",
-          description: "Silahkan pilih nominal terlebih dahulu",
-        })
-      }
-    },
-    [selectedTopUpProduct],
-  )
-
-  const handleSelectEWallet = React.useCallback(() => {
-    handleTogglePriceList(setShowEWallet, [setShowVAList, setShowMartList])
-  }, [handleTogglePriceList])
-
-  const handleSelectVA = React.useCallback(() => {
-    handleTogglePriceList(setShowVAList, [setShowEWallet, setShowMartList])
-  }, [handleTogglePriceList])
-
-  const handleSelectMart = React.useCallback(() => {
-    handleTogglePriceList(setShowMartList, [setShowEWallet, setShowVAList])
-  }, [handleTogglePriceList])
 
   const handleSelectPaymentMethod = React.useCallback(
     (data: TripayPaymentMethodsProps, price: number) => {
@@ -328,11 +295,16 @@ const TopUpForm = (props: TopUpFormProps) => {
           className="mb-[60px] flex flex-col gap-4"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="flex flex-col gap-2 rounded border p-4">
-            <div>
-              <h1 className="line-clamp-2 text-xl font-semibold">
-                Masukkan Data Akun
-              </h1>
+          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+            <div className="mb-4 flex items-center md:mb-5">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+                1
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-base font-bold md:text-xl">
+                  Masukan Data Akun
+                </h2>
+              </div>
             </div>
             <div className="flex gap-2">
               <FormControl>
@@ -376,11 +348,16 @@ const TopUpForm = (props: TopUpFormProps) => {
               </Dialog>
             )}
           </div>
-          <div className="rounded border p-4">
-            <div>
-              <h1 className="line-clamp-2 text-xl font-semibold">
-                Pilih Nominal
-              </h1>
+          <div className="p-4 lg:rounded-md lg:border">
+            <div className="mb-4 flex items-center md:mb-5">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+                2
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-base font-bold md:text-xl">
+                  Pilih nominal
+                </h2>
+              </div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {topUpProducts.map((topUpProduct) => {
@@ -410,22 +387,26 @@ const TopUpForm = (props: TopUpFormProps) => {
               })}
             </div>
           </div>
-          <div className="flex flex-col gap-4 rounded border p-4">
+          <div className="flex flex-col gap-4 p-4 lg:rounded-md lg:border">
             <PaymentMethods
               paymentChannel={paymentChannel}
               onSelectPaymentMethod={handleSelectPaymentMethod}
               selectedPaymentMethod={selectedPaymentMethod}
               amount={selectedTopUpProduct?.price!}
               setSelectedPaymentMethod={setSelectedPaymentMethod}
-              showEWalletList={showEWalletList}
-              showVAList={showVAList}
-              showMartList={showMartList}
-              handleSelectEWallet={handleSelectEWallet}
-              handleSelectVA={handleSelectVA}
-              handleSelectMart={handleSelectMart}
             />
           </div>
-          <div className="flex gap-2 rounded border p-4">
+          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+            <div className="mb-4 flex items-center md:mb-5">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+                4
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-base font-bold md:text-xl">
+                  Informasi Kontak
+                </h2>
+              </div>
+            </div>
             <FormField
               control={form.control}
               name="customerPhone"
@@ -447,7 +428,17 @@ const TopUpForm = (props: TopUpFormProps) => {
               )}
             />
           </div>
-          <div className="flex gap-2 rounded border p-4">
+          <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
+            <div className="mb-4 flex items-center md:mb-5">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+                5
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-base font-bold md:text-xl">
+                  Informasi Pesanan
+                </h2>
+              </div>
+            </div>
             <FormField
               control={form.control}
               name="note"
@@ -466,7 +457,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             />
           </div>
           {totalAmount > 0 && (
-            <div className="flex gap-2 rounded border p-4">
+            <div className="flex flex-col gap-2 p-4 lg:rounded-md lg:border">
               <AddVoucher
                 normalPrice={totalAmount}
                 setVoucherData={setVoucher}

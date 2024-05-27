@@ -13,7 +13,7 @@ import type {
   DepositReturnProps,
   TransaksiReturnProps,
 } from "@/lib/sdk/digiflazz"
-import { populateTopUps } from "@/lib/utils/top-up"
+import { populateTopUps } from "@/lib/top-up"
 import {
   topUpDigiflazzCreateDepositSchema,
   topUpDigiflazzCreateTransactionSchema,
