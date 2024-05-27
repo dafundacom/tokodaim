@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { createTRPCRouter, publicProcedure } from "@/lib/api/trpc"
-import { populateTopUpProducts } from "@/lib/utils/top-up"
+import { populateTopUpProducts } from "@/lib/top-up"
 import { topUpProductCommand } from "@/lib/validation/top-up-product"
 
 export const topUpProductRouter = createTRPCRouter({
@@ -28,7 +28,6 @@ export const topUpProductRouter = createTRPCRouter({
           where: (topUpProducts, { eq }) => eq(topUpProducts.brandSlug, input),
           orderBy: (topUpProducts, { asc }) => [asc(topUpProducts.price)],
         })
-
         return data
       } catch (error) {
         console.error("Error:", error)

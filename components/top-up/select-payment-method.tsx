@@ -4,53 +4,72 @@ import Image from "@/components/image"
 import { FormLabel } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 interface SelectPaymentMethodProps
   extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   imageUrl: string
   name: string
-  onSelect: () => void
+  onSelect?: () => void
   active: string
-  amount: string
+  amount?: string
+  isPriceInRange?: boolean
 }
 
 const SelectPaymentMethod: React.FunctionComponent<SelectPaymentMethodProps> = (
   props,
 ) => {
-  const { active, title, imageUrl, onSelect, name, amount } = props
+  const {
+    active,
+    title,
+    imageUrl,
+    onSelect,
+    name,
+    amount,
+    isPriceInRange = false,
+  } = props
 
   return (
     <div
-      className={`${
-        active === title ? "bg-success/25" : "bg-background"
-      } flex h-full w-full items-center rounded-[8px] shadow-md`}
+      className={cn(
+        isPriceInRange
+          ? "cursor-pointer"
+          : "cursor-not-allowed grayscale filter hover:cursor-not-allowed",
+        `flex h-full w-full items-center`,
+      )}
       onClick={onSelect}
     >
-      <div className="relative h-full w-full cursor-pointer">
+      <div className="relative h-full w-full">
         <Input
           type="radio"
           name={name}
-          className="absolute h-full w-full cursor-pointer opacity-0"
+          className="absolute h-full w-full opacity-0"
           id={name}
         />
         <FormLabel
-          className={`${
-            active === title ? "ring-2 ring-success" : ""
-          } item-price relative flex h-full w-full cursor-pointer items-center justify-between gap-2 overflow-hidden rounded-md p-4 hover:shadow-lg`}
-        >
-          {active === title && (
-            <div className="absolute right-0 top-0 rounded-bl-full bg-success p-1 pb-2 pl-2 text-background opacity-50">
-              <Icon.Check aria-label="Checked" />
-            </div>
+          className={cn(
+            `${
+              active === title ? "ring-2 ring-primary" : ""
+            } item-price border-custom-black relative flex h-[71px] flex-wrap overflow-hidden rounded-2xl border bg-background p-4 py-1 shadow-md md:h-[81px]`,
+            isPriceInRange
+              ? ""
+              : "cursor-not-allowed bg-muted grayscale filter hover:cursor-not-allowed",
           )}
-          <div className="flex flex-wrap justify-between gap-2">
-            <div className="relative h-[15px] w-full max-w-[55px]">
-              <Image src={imageUrl} alt={title} />
-            </div>
-            <p className="text-foreground/60">{title}</p>
+        >
+          <div className="flex w-7/12 items-center justify-start">
+            <span className="relative h-[20px] w-[65px]">
+              <Image alt={title} src={imageUrl} className="object-contain" />
+            </span>
+            <p className="ml-2 mt-1 text-xs">{title}</p>
           </div>
-          <h3 className="text-sm font-medium">{amount}</h3>
+          <div className="flex w-5/12 items-center justify-end">
+            <div className="text-right">
+              <p className={cn(isPriceInRange ? "" : "text-xs", "font-medium")}>
+                {isPriceInRange ? amount : "Nominal tidak memenuhi syarat"}
+              </p>
+            </div>
+          </div>
         </FormLabel>
       </div>
       <div></div>

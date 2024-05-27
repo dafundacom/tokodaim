@@ -91,7 +91,14 @@ const AddVoucher: React.FunctionComponent<AddVoucherProps> = ({
 
   return (
     <div className="space-y-2">
-      <FormLabel>Voucher</FormLabel>
+      <div className="mb-4 flex items-center md:mb-5">
+        <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+          6
+        </div>
+        <div className="flex flex-col">
+          <h2 className="text-base font-bold md:text-xl">Voucher</h2>
+        </div>
+      </div>
       <div className="flex gap-2">
         <Input
           type="text"
