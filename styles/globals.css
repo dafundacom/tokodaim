@@ -86,7 +86,7 @@
 }
 
 .layout-background-image {
-  background-image: url(/static/images/background-repeat.svg);
+  background-image: url(/background/background-repeat.svg);
   background-repeat: repeat-y;
   background-size: 100% auto;
   background-color: #fff;
