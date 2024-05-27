@@ -53,18 +53,18 @@ export async function POST(request: NextRequest) {
 
   if (data.is_closed_payment === 1) {
     try {
-      const invoice = await db.query.topUpOrders.findFirst({
+      const order = await db.query.topUpOrders.findFirst({
         where: (topUpOrder, { and, eq }) =>
           and(
             eq(topUpOrder.invoiceId, invoiceId),
-            eq(topUpOrder.merchantRef, tripayReference),
+            eq(topUpOrder.paymentMerchantRef, tripayReference),
             eq(topUpOrder.paymentStatus, "unpaid"),
           ),
       })
 
-      if (!invoice) {
+      if (!order) {
         return NextResponse.json(
-          `Invoice not found or already paid ${invoiceId}`,
+          `Order not found or already paid ${invoiceId}`,
           { status: 400 },
         )
       }

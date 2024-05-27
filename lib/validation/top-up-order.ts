@@ -27,9 +27,13 @@ const topUpOrderInput = {
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
-  merchantRef: z.string({
-    required_error: "Merchant Ref is required",
-    invalid_type_error: "Merchant Ref must be a string",
+  paymentMerchantRef: z.string({
+    required_error: "Payment Merchant Ref is required",
+    invalid_type_error: "Payment Merchant Ref must be a string",
+  }),
+  topUpRefId: z.string({
+    required_error: "Top Up Ref Id is required",
+    invalid_type_error: "Top Up Ref Id must be a string",
   }),
   amount: z.number({
     required_error: "Amount is required",
@@ -139,10 +143,8 @@ export const updateTopUpOrderStatusSchema = z.object({
   ...topUpOrderStatusInput,
 })
 
-export type TopUpOrderType = z.infer<typeof createTopUpOrderSchema>
-export type TopUpOrderStatusType = z.infer<typeof updateTopUpOrderStatusSchema>
-export type TopUpOrderStatusInputType = z.infer<typeof updateTopUpOrderSchema>
-export type TopUpOrderInputType = z.infer<typeof createTopUpOrderSchema>
+export type TopUpStatusType = z.infer<typeof topUpStatusType>
+export type TopUpPaymentStatusType = z.infer<typeof topUpPaymentStatusType>
 
 export type CreateTopUpOrder = z.infer<typeof createTopUpOrderSchema>
 export type UpdateTopUpOrder = z.infer<typeof updateTopUpOrderSchema>
