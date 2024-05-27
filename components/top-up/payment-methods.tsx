@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { Button } from "@/components/ui/button"
+import { useI18n } from "@/lib/locales/client"
 import type { PaymentChannelReturnProps } from "@/lib/sdk/tripay"
 import {
   paymentMethodsEWallet,
@@ -39,6 +41,10 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
     setSelectedPaymentMethod,
   } = props
 
+  const [isVisible, setIsVisible] = React.useState<boolean>(false)
+
+  const t = useI18n()
+
   const handleSelectPaymentMethod = (
     data: TripayPaymentMethodsProps,
     price: number,
@@ -47,197 +53,217 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
   }
 
   return (
-    <>
-      <div>
-        <div className="mb-4 flex items-center md:mb-5">
-          <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
-            3
-          </div>
-          <div className="flex flex-col">
-            <h2 className="text-base font-bold md:text-xl">Pilih Pembayaran</h2>
+    <div>
+      <div
+        className={`${amount && isVisible ? "h-auto" : amount ? "h-[550px] overflow-hidden" : ""}`}
+      >
+        <div>
+          <div className="mb-4 flex items-center md:mb-5">
+            <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+              3
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-base font-bold md:text-xl">
+                Pilih Pembayaran
+              </h2>
+            </div>
           </div>
         </div>
-      </div>
-      {amount &&
-        paymentChannel?.eWallet &&
-        paymentChannel.eWallet.length > 0 && (
-          <div className="rounded p-2">
-            <div className="mb-2 w-full cursor-pointer p-2">
-              <h2 className="line-clamp-2 text-xl font-semibold">E-Wallet</h2>
-            </div>
-            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
-              {paymentChannel.eWallet.map(
-                (paymentMethod: TripayPaymentMethodsProps) => {
-                  const { totalPayment } = calculateTotalPrice(
-                    amount,
-                    paymentMethod?.fee_customer?.flat ?? 0,
-                    paymentMethod?.fee_customer?.percent ?? 0,
-                  )
-                  const filterpayment = filterPaymentsByPrice(
-                    paymentMethodsEWallet,
-                    paymentMethod.code,
-                    amount,
-                  )
-                  const idrPrice = changePriceToIDR(totalPayment)
-                  if (filterpayment) {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        onSelect={() => {
-                          handleSelectPaymentMethod(
-                            { ...paymentMethod },
-                            totalPayment,
-                          )
-                          setSelectedPaymentMethod(paymentMethod.name)
-                        }}
-                        isPriceInRange={true}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
+        {amount &&
+          paymentChannel?.eWallet &&
+          paymentChannel.eWallet.length > 0 && (
+            <div className="rounded p-2">
+              <div className="mb-2 w-full cursor-pointer p-2">
+                <h2 className="line-clamp-2 text-xl font-semibold">E-Wallet</h2>
+              </div>
+              <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
+                {paymentChannel.eWallet.map(
+                  (paymentMethod: TripayPaymentMethodsProps) => {
+                    const { totalPayment } = calculateTotalPrice(
+                      amount,
+                      paymentMethod?.fee_customer?.flat ?? 0,
+                      paymentMethod?.fee_customer?.percent ?? 0,
                     )
-                  } else {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        isPriceInRange={false}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
+                    const filterpayment = filterPaymentsByPrice(
+                      paymentMethodsEWallet,
+                      paymentMethod.code,
+                      amount,
                     )
-                  }
-                },
-              )}
+                    const idrPrice = changePriceToIDR(totalPayment)
+                    if (filterpayment) {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          onSelect={() => {
+                            handleSelectPaymentMethod(
+                              { ...paymentMethod },
+                              totalPayment,
+                            )
+                            setSelectedPaymentMethod(paymentMethod.name)
+                          }}
+                          isPriceInRange={true}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    } else {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          isPriceInRange={false}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    }
+                  },
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      {amount &&
-        paymentChannel?.virtualAccount &&
-        paymentChannel.virtualAccount.length > 0 && (
-          <div className="rounded p-2">
-            <div className="mb-2 w-full cursor-pointer p-2">
-              <h2 className="line-clamp-2 text-xl font-semibold">
-                Virtual Account
-              </h2>
-            </div>
-            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
-              {paymentChannel.virtualAccount.map(
-                (paymentMethod: TripayPaymentMethodsProps) => {
-                  const { totalPayment } = calculateTotalPrice(
-                    amount,
-                    paymentMethod?.fee_customer?.flat ?? 0,
-                    paymentMethod?.fee_customer?.percent ?? 0,
-                  )
-                  const filterpayment = filterPaymentsByPrice(
-                    paymentMethodsVA,
-                    paymentMethod.code,
-                    amount,
-                  )
-                  const idrPrice = changePriceToIDR(totalPayment)
-                  if (filterpayment) {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        onSelect={() => {
-                          handleSelectPaymentMethod(
-                            { ...paymentMethod },
-                            totalPayment,
-                          )
-                          setSelectedPaymentMethod(paymentMethod.name)
-                        }}
-                        isPriceInRange={true}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
+          )}
+        {amount &&
+          paymentChannel?.virtualAccount &&
+          paymentChannel.virtualAccount.length > 0 && (
+            <div className="rounded p-2">
+              <div className="mb-2 w-full cursor-pointer p-2">
+                <h2 className="line-clamp-2 text-xl font-semibold">
+                  Virtual Account
+                </h2>
+              </div>
+              <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
+                {paymentChannel.virtualAccount.map(
+                  (paymentMethod: TripayPaymentMethodsProps) => {
+                    const { totalPayment } = calculateTotalPrice(
+                      amount,
+                      paymentMethod?.fee_customer?.flat ?? 0,
+                      paymentMethod?.fee_customer?.percent ?? 0,
                     )
-                  } else {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        isPriceInRange={false}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
+                    const filterpayment = filterPaymentsByPrice(
+                      paymentMethodsVA,
+                      paymentMethod.code,
+                      amount,
                     )
-                  }
-                },
-              )}
+                    const idrPrice = changePriceToIDR(totalPayment)
+                    if (filterpayment) {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          onSelect={() => {
+                            handleSelectPaymentMethod(
+                              { ...paymentMethod },
+                              totalPayment,
+                            )
+                            setSelectedPaymentMethod(paymentMethod.name)
+                          }}
+                          isPriceInRange={true}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    } else {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          isPriceInRange={false}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    }
+                  },
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      {amount &&
-        paymentChannel?.convenienceShop &&
-        paymentChannel.convenienceShop.length > 0 && (
-          <div className="rounded p-2">
-            <div className="mb-2 w-full cursor-pointer p-2">
-              <h2 className="line-clamp-2 text-xl font-semibold">
-                Convenience Shop
-              </h2>
-            </div>
-            <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
-              {paymentChannel.convenienceShop.map(
-                (paymentMethod: TripayPaymentMethodsProps) => {
-                  const { totalPayment } = calculateTotalPrice(
-                    amount,
-                    paymentMethod?.fee_customer?.flat ?? 0,
-                    paymentMethod?.fee_customer?.percent ?? 0,
-                  )
+          )}
+        {amount &&
+          paymentChannel?.convenienceShop &&
+          paymentChannel.convenienceShop.length > 0 && (
+            <div className="rounded p-2">
+              <div className="mb-2 w-full cursor-pointer p-2">
+                <h2 className="line-clamp-2 text-xl font-semibold">
+                  Convenience Shop
+                </h2>
+              </div>
+              <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
+                {paymentChannel.convenienceShop.map(
+                  (paymentMethod: TripayPaymentMethodsProps) => {
+                    const { totalPayment } = calculateTotalPrice(
+                      amount,
+                      paymentMethod?.fee_customer?.flat ?? 0,
+                      paymentMethod?.fee_customer?.percent ?? 0,
+                    )
 
-                  const filterpayment = filterPaymentsByPrice(
-                    paymentMethodsMart,
-                    paymentMethod.code,
-                    amount,
-                  )
-                  const idrPrice = changePriceToIDR(totalPayment)
-                  if (filterpayment) {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        onSelect={() => {
-                          handleSelectPaymentMethod(
-                            { ...paymentMethod },
-                            totalPayment,
-                          )
-                          setSelectedPaymentMethod(paymentMethod.name)
-                        }}
-                        isPriceInRange={true}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
+                    const filterpayment = filterPaymentsByPrice(
+                      paymentMethodsMart,
+                      paymentMethod.code,
+                      amount,
                     )
-                  } else {
-                    return (
-                      <SelectPaymentMethod
-                        key={paymentMethod.name}
-                        name="payment-method"
-                        title={paymentMethod.name}
-                        imageUrl={paymentMethod.icon_url}
-                        isPriceInRange={false}
-                        amount={idrPrice}
-                        active={selectedPaymentMethod}
-                      />
-                    )
-                  }
-                },
-              )}
+                    const idrPrice = changePriceToIDR(totalPayment)
+                    if (filterpayment) {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          onSelect={() => {
+                            handleSelectPaymentMethod(
+                              { ...paymentMethod },
+                              totalPayment,
+                            )
+                            setSelectedPaymentMethod(paymentMethod.name)
+                          }}
+                          isPriceInRange={true}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    } else {
+                      return (
+                        <SelectPaymentMethod
+                          key={paymentMethod.name}
+                          name="payment-method"
+                          title={paymentMethod.name}
+                          imageUrl={paymentMethod.icon_url}
+                          isPriceInRange={false}
+                          amount={idrPrice}
+                          active={selectedPaymentMethod}
+                        />
+                      )
+                    }
+                  },
+                )}
+              </div>
             </div>
-          </div>
-        )}
-    </>
+          )}
+      </div>
+
+      {amount && (
+        <div className="flex justify-center">
+          <Button
+            onClick={() => {
+              setIsVisible((prev) => !prev)
+            }}
+            variant="ghost"
+            className="rounded-xl font-bold"
+          >
+            {t(isVisible ? "show_less" : "show_more")}
+          </Button>
+        </div>
+      )}
+    </div>
   )
 }
 
