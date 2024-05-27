@@ -75,6 +75,36 @@
   }
 }
 
+.layout-background-image.hide-repeating-bg {
+  background-image: none;
+}
+
+@media (min-width: 768px) {
+  .layout-background-image:before {
+    height: 100vh;
+  }
+}
+
+.layout-background-image {
+  background-image: url(/static/images/background-repeat.svg);
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+  background-color: #fff;
+}
+
+.layout-background-image:before {
+  content: "";
+  background-image: url(/background/background-top.svg);
+  background-repeat: no-repeat;
+  background-color: #fff;
+  background-size: 100% auto;
+  width: 100%;
+  height: 45vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 /* Editor */
 .text-editor-extended > .ProseMirror {
   @apply min-h-screen min-w-0 items-center space-y-2 px-3 py-2 text-base text-foreground outline-none;

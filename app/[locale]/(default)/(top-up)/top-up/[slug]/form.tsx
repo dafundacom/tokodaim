@@ -198,6 +198,8 @@ const TopUpForm = (props: TopUpFormProps) => {
             invoiceId: data.reference!,
             sku: selectedTopUpProduct?.sku ?? "",
             merchantRef: data.merchant_ref,
+            paymentMerchantRef: data.merchant_ref,
+            topUpRefId: data.reference!,
             server: "",
             productName: selectedTopUpProduct.productName,
             customerName: data.customer_name,
@@ -459,7 +461,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           </div>
           <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-accent/80 px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 5
               </div>
               <div className="flex flex-col">
