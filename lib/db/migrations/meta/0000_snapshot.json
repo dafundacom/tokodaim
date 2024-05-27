@@ -1,5 +1,5 @@
 {
-  "id": "69f42b80-65e1-42a6-98d1-291887f40b68",
+  "id": "561e546e-2f47-4c42-ac30-9457c276bb6f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -801,26 +801,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "merchant_ref": {
-          "name": "merchant_ref",
+        "account_id": {
+          "name": "account_id",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "sku": {
           "name": "sku",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -868,14 +856,14 @@
           "notNull": false,
           "default": 0
         },
-        "fee_amount": {
-          "name": "fee_amount",
+        "fee": {
+          "name": "fee",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "total_amount": {
-          "name": "total_amount",
+        "total": {
+          "name": "total",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -886,43 +874,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "payment_method": {
-          "name": "payment_method",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "payment_status": {
-          "name": "payment_status",
-          "type": "top_up_payment_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'unpaid'"
-        },
         "status": {
           "name": "status",
-          "type": "top_up_status",
+          "type": "top_up_order_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'processing'"
         },
-        "top_up_provider": {
-          "name": "top_up_provider",
-          "type": "top_up_provider",
+        "provider": {
+          "name": "provider",
+          "type": "top_up_order_provider",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'digiflazz'"
-        },
-        "payment_provider": {
-          "name": "payment_provider",
-          "type": "payment_provider",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'tripay'"
         },
         "userId": {
           "name": "userId",
@@ -969,12 +935,148 @@
           "columns": [
             "invoice_id"
           ]
+        }
+      }
+    },
+    "public.top_up_payments": {
+      "name": "top_up_payments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
         },
-        "top_up_orders_merchant_ref_unique": {
-          "name": "top_up_orders_merchant_ref_unique",
+        "invoice_id": {
+          "name": "invoice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "top_up_payment_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customer_name": {
+          "name": "customer_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer_email": {
+          "name": "customer_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer_phone": {
+          "name": "customer_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fee": {
+          "name": "fee",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "top_up_payment_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unpaid'"
+        },
+        "provider": {
+          "name": "provider",
+          "type": "top_up_payment_provider",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'tripay'"
+        },
+        "paid_at": {
+          "name": "paid_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "expired_at": {
+          "name": "expired_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "top_up_payments_userId_users_id_fk": {
+          "name": "top_up_payments_userId_users_id_fk",
+          "tableFrom": "top_up_payments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "top_up_payments_invoice_id_unique": {
+          "name": "top_up_payments_invoice_id_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "merchant_ref"
+            "invoice_id"
           ]
         }
       }
@@ -1735,8 +1837,53 @@
         "in_review"
       ]
     },
-    "public.payment_provider": {
-      "name": "payment_provider",
+    "public.top_up_order_provider": {
+      "name": "top_up_order_provider",
+      "schema": "public",
+      "values": [
+        "digiflazz",
+        "apigames"
+      ]
+    },
+    "public.top_up_order_status": {
+      "name": "top_up_order_status",
+      "schema": "public",
+      "values": [
+        "processing",
+        "success",
+        "failed",
+        "error"
+      ]
+    },
+    "public.top_up_payment_method": {
+      "name": "top_up_payment_method",
+      "schema": "public",
+      "values": [
+        "MYBVA",
+        "PERMATAVA",
+        "BNIVA",
+        "BRIVA",
+        "MANDIRIVA",
+        "BCAVA",
+        "SMSVA",
+        "MUAMALATVA",
+        "CIMBVA",
+        "SAMPOERNAVA",
+        "BSIVA",
+        "DANAMONVA",
+        "ALFAMART",
+        "INDOMARET",
+        "ALFAMIDI",
+        "OVO",
+        "QRIS",
+        "QRIS2",
+        "QRISC",
+        "QRISD",
+        "SHOPEEPAY"
+      ]
+    },
+    "public.top_up_payment_provider": {
+      "name": "top_up_payment_provider",
       "schema": "public",
       "values": [
         "tripay",
@@ -1754,24 +1901,6 @@
         "expired",
         "error",
         "refunded"
-      ]
-    },
-    "public.top_up_provider": {
-      "name": "top_up_provider",
-      "schema": "public",
-      "values": [
-        "digiflazz",
-        "apigames"
-      ]
-    },
-    "public.top_up_status": {
-      "name": "top_up_status",
-      "schema": "public",
-      "values": [
-        "processing",
-        "success",
-        "failed",
-        "error"
       ]
     },
     "public.top_up_product_command": {

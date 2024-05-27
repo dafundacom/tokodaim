@@ -7,15 +7,15 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { topUpOrders } from "@/lib/db/schema/top-up-order"
+import { topUpPayments } from "@/lib/db/schema/top-up-payment"
 import { cuid } from "@/lib/utils"
 import {
-  createTopUpOrderSchema,
-  updateTopUpOrderSchema,
-  updateTopUpOrderStatusSchema,
-} from "@/lib/validation/top-up-order"
+  createTopUpPaymentSchema,
+  updateTopUpPaymentSchema,
+  updateTopUpPaymentStatusSchema,
+} from "@/lib/validation/top-up-payment"
 
-export const topUpOrderRouter = createTRPCRouter({
+export const topUpPaymentRouter = createTRPCRouter({
   dashboard: adminProtectedProcedure
     .input(
       z.object({
@@ -25,10 +25,10 @@ export const topUpOrderRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       try {
-        const data = await ctx.db.query.topUpOrders.findMany({
+        const data = await ctx.db.query.topUpPayments.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
-          orderBy: (topUpOrders, { desc }) => [desc(topUpOrders.createdAt)],
+          orderBy: (topUpPayments, { desc }) => [desc(topUpPayments.createdAt)],
         })
         return data
       } catch (error) {
@@ -47,9 +47,9 @@ export const topUpOrderRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const data = await ctx.db.query.topUpOrders.findMany({
-          where: (topUpOrder, { eq }) => eq(topUpOrder.invoiceId, input),
-          orderBy: (topUpOrder, { desc }) => [desc(topUpOrder.createdAt)],
+        const data = await ctx.db.query.topUpPayments.findMany({
+          where: (topUpPayment, { eq }) => eq(topUpPayment.invoiceId, input),
+          orderBy: (topUpPayment, { desc }) => [desc(topUpPayment.createdAt)],
         })
         return data
       } catch (error) {
@@ -66,7 +66,7 @@ export const topUpOrderRouter = createTRPCRouter({
     }),
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
-      const data = await ctx.db.select({ value: count() }).from(topUpOrders)
+      const data = await ctx.db.select({ value: count() }).from(topUpPayments)
       return data
     } catch (error) {
       console.error("Error:", error)
@@ -81,11 +81,11 @@ export const topUpOrderRouter = createTRPCRouter({
     }
   }),
   create: publicProcedure
-    .input(createTopUpOrderSchema)
+    .input(createTopUpPaymentSchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const data = await ctx.db
-          .insert(topUpOrders)
+          .insert(topUpPayments)
           .values({
             id: cuid(),
             ...input,
@@ -105,16 +105,16 @@ export const topUpOrderRouter = createTRPCRouter({
       }
     }),
   update: adminProtectedProcedure
-    .input(updateTopUpOrderSchema)
+    .input(updateTopUpPaymentSchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const data = await ctx.db
-          .update(topUpOrders)
+          .update(topUpPayments)
           .set({
             ...input,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(topUpOrders.id, input.id))
+          .where(eq(topUpPayments.id, input.id))
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -129,16 +129,16 @@ export const topUpOrderRouter = createTRPCRouter({
       }
     }),
   updateStatus: publicProcedure
-    .input(updateTopUpOrderStatusSchema)
+    .input(updateTopUpPaymentStatusSchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const data = await ctx.db
-          .update(topUpOrders)
+          .update(topUpPayments)
           .set({
             status: input.status,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(topUpOrders.invoiceId, input.invoiceId))
+          .where(eq(topUpPayments.invoiceId, input.invoiceId))
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -157,8 +157,8 @@ export const topUpOrderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db
-          .delete(topUpOrders)
-          .where(eq(topUpOrders.id, input))
+          .delete(topUpPayments)
+          .where(eq(topUpPayments.id, input))
         return data
       } catch (error) {
         console.error("Error:", error)

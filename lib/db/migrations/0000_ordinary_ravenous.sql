@@ -23,25 +23,31 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."payment_provider" AS ENUM('tripay', 'midtrans', 'duitku');
+ CREATE TYPE "public"."top_up_order_provider" AS ENUM('digiflazz', 'apigames');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_order_status" AS ENUM('processing', 'success', 'failed', 'error');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_payment_method" AS ENUM('MYBVA', 'PERMATAVA', 'BNIVA', 'BRIVA', 'MANDIRIVA', 'BCAVA', 'SMSVA', 'MUAMALATVA', 'CIMBVA', 'SAMPOERNAVA', 'BSIVA', 'DANAMONVA', 'ALFAMART', 'INDOMARET', 'ALFAMIDI', 'OVO', 'QRIS', 'QRIS2', 'QRISC', 'QRISD', 'SHOPEEPAY');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."top_up_payment_provider" AS ENUM('tripay', 'midtrans', 'duitku');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."top_up_payment_status" AS ENUM('unpaid', 'paid', 'failed', 'expired', 'error', 'refunded');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."top_up_provider" AS ENUM('digiflazz', 'apigames');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."top_up_status" AS ENUM('processing', 'success', 'failed', 'error');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -181,10 +187,8 @@ CREATE TABLE IF NOT EXISTS "settings" (
 CREATE TABLE IF NOT EXISTS "top_up_orders" (
 	"id" text PRIMARY KEY NOT NULL,
 	"invoice_id" text NOT NULL,
-	"merchant_ref" text NOT NULL,
-	"amount" integer NOT NULL,
-	"sku" text NOT NULL,
 	"account_id" text NOT NULL,
+	"sku" text NOT NULL,
 	"product_name" text NOT NULL,
 	"customer_name" text,
 	"customer_email" text,
@@ -192,19 +196,36 @@ CREATE TABLE IF NOT EXISTS "top_up_orders" (
 	"quantity" integer NOT NULL,
 	"voucher_code" text,
 	"discount_amount" integer DEFAULT 0,
-	"fee_amount" integer NOT NULL,
-	"total_amount" integer NOT NULL,
+	"fee" integer NOT NULL,
+	"total" integer NOT NULL,
 	"note" text,
-	"payment_method" text NOT NULL,
-	"payment_status" "top_up_payment_status" DEFAULT 'unpaid' NOT NULL,
-	"status" "top_up_status" DEFAULT 'processing' NOT NULL,
-	"top_up_provider" "top_up_provider" DEFAULT 'digiflazz' NOT NULL,
-	"payment_provider" "payment_provider" DEFAULT 'tripay' NOT NULL,
+	"status" "top_up_order_status" DEFAULT 'processing' NOT NULL,
+	"provider" "top_up_order_provider" DEFAULT 'digiflazz' NOT NULL,
 	"userId" text,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "top_up_orders_invoice_id_unique" UNIQUE("invoice_id"),
-	CONSTRAINT "top_up_orders_merchant_ref_unique" UNIQUE("merchant_ref")
+	CONSTRAINT "top_up_orders_invoice_id_unique" UNIQUE("invoice_id")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "top_up_payments" (
+	"id" text PRIMARY KEY NOT NULL,
+	"invoice_id" text NOT NULL,
+	"payment_method" "top_up_payment_method" NOT NULL,
+	"customer_name" text,
+	"customer_email" text,
+	"customer_phone" text NOT NULL,
+	"amount" integer NOT NULL,
+	"fee" integer NOT NULL,
+	"total" integer NOT NULL,
+	"note" text,
+	"status" "top_up_payment_status" DEFAULT 'unpaid' NOT NULL,
+	"provider" "top_up_payment_provider" DEFAULT 'tripay' NOT NULL,
+	"paid_at" timestamp DEFAULT now(),
+	"expired_at" timestamp DEFAULT now(),
+	"userId" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "top_up_payments_invoice_id_unique" UNIQUE("invoice_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "top_up_products" (
@@ -399,6 +420,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "top_up_orders" ADD CONSTRAINT "top_up_orders_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "top_up_payments" ADD CONSTRAINT "top_up_payments_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
