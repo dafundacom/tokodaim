@@ -6,6 +6,7 @@ import dynamicFn from "next/dynamic"
 
 import Image from "@/components/image"
 import env from "@/env.mjs"
+import { getSession } from "@/lib/auth/utils"
 import { api } from "@/lib/trpc/server"
 
 const TopUpForm = dynamicFn(
@@ -51,6 +52,8 @@ export default async function TopUpPage({
   params: { slug: string }
 }) {
   const { slug } = params
+
+  const { session } = await getSession()
 
   const data = await api.setting.byKey("settings")
 
@@ -118,6 +121,7 @@ export default async function TopUpPage({
         <div className="w-full lg:w-2/3">
           {topUp && topUpProducts ? (
             <TopUpForm
+              session={session}
               topUpProducts={topUpProducts}
               topUp={topUp}
               paymentChannel={paymentChannel}

@@ -98,7 +98,8 @@
   background-repeat: no-repeat;
   background-color: #fff;
   background-size: 100% auto;
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
   height: 45vw;
   position: absolute;
   top: 0;

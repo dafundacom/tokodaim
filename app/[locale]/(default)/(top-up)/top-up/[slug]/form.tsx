@@ -31,10 +31,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import env from "@/env.mjs"
+import { AuthSession } from "@/lib/auth/utils"
 import type { SelectTopUps } from "@/lib/db/schema/top-up"
 import type { SelectTopUpProducts } from "@/lib/db/schema/top-up-product"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
 import type {
+  ClosedPaymentCode,
   PaymentChannelReturnProps,
   ClosedPaymentCode as PaymentMethodProps,
 } from "@/lib/sdk/tripay"
@@ -60,6 +62,7 @@ interface TopUpFormProps {
   profit: string | null
   email: string
   merchant: string
+  session: AuthSession["session"]
 }
 
 interface FormValues {
@@ -71,8 +74,15 @@ interface FormValues {
 }
 
 const TopUpForm = (props: TopUpFormProps) => {
-  const { topUpProducts, topUp, paymentChannel, profit, email, merchant } =
-    props
+  const {
+    topUpProducts,
+    topUp,
+    paymentChannel,
+    profit,
+    email,
+    merchant,
+    session,
+  } = props
 
   const [selectedProductPrice, setSelectedProductPrice] =
     React.useState<string>("")
@@ -183,6 +193,29 @@ const TopUpForm = (props: TopUpFormProps) => {
     },
   })
 
+  const { mutate: createTopUpPayment } = api.topUpPayment.create.useMutation({
+    onError: (error) => {
+      const errorData = error?.data?.zodError?.fieldErrors
+      if (errorData) {
+        for (const field in errorData) {
+          if (errorData.hasOwnProperty(field)) {
+            errorData[field]?.forEach((errorMessage) => {
+              toast({
+                variant: "danger",
+                description: errorMessage,
+              })
+            })
+          }
+        }
+      } else {
+        toast({
+          variant: "danger",
+          description: "Failed to top up! Please try again later",
+        })
+      }
+    },
+  })
+
   const { mutate: postTripayTransactionClosed } =
     api.payment.tripayCreateClosedTransaction.useMutation({
       onSuccess: (data) => {
@@ -194,35 +227,44 @@ const TopUpForm = (props: TopUpFormProps) => {
           )
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
 
-          const input = {
+          const orderInput = {
             invoiceId: data.reference!,
+            accountId: accountId,
             sku: selectedTopUpProduct?.sku ?? "",
-            merchantRef: data.merchant_ref,
-            paymentMerchantRef: data.merchant_ref,
-            topUpRefId: data.reference!,
-            server: "",
             productName: selectedTopUpProduct.productName,
+            price: total - data?.total_fee!,
             customerName: data.customer_name,
             customerEmail: data.customer_email,
             customerPhone: data.customer_phone,
-            voucherCode: voucher?.voucherCode ?? "",
-            discountAmount: fixedPrice > 0 ? total - fixedPrice : 0,
-            paymentMethod: paymentMethod.code,
-            paymentProvider: "tripay" as const,
-            status: "processing" as const,
-            paymentStatus: "unpaid" as const,
-            topUpProvider: "digiflazz" as const,
-            brands: topUp.brand,
-            amount: total,
-            feeAmount: data?.total_fee!,
-            totalAmount: total,
-            accountId: accountId,
-            note: noteValue!,
-            voucher: fixedPrice > 0 ? voucher : null,
-            // TODO: handle this after quantity feature is active
             quantity: 1,
+            fee: data?.total_fee!,
+            total: total,
+            provider: "digiflazz" as const,
+            userId: session?.user?.id,
+            voucherCode: voucher?.voucherCode ?? "",
+            discountAmount: fixedPrice > 0 ? total - fixedPrice : undefined,
+            note: noteValue!,
+            status: "processing" as const,
           }
-          createTopUpOrder(input)
+
+          const paymentInput = {
+            invoiceId: data.reference!,
+            paymentMethod: paymentMethod.code as ClosedPaymentCode,
+            customerName: data.customer_name,
+            customerEmail: data.customer_email,
+            customerPhone: data.customer_phone,
+            amount: total,
+            fee: data?.total_fee!,
+            total: total,
+            paymentProvider: "tripay" as const,
+            expiredAt: new Date(data.expired_time),
+            status: "unpaid" as const,
+            userId: session?.user?.id,
+            paidAt: new Date(),
+          }
+
+          createTopUpPayment(paymentInput)
+          createTopUpOrder(orderInput)
         }
       },
       onError: (error) => {
