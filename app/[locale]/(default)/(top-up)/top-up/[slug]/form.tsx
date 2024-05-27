@@ -102,6 +102,10 @@ const TopUpForm = (props: TopUpFormProps) => {
     (data: TripayPaymentMethodsProps, price: number) => {
       setPaymentMethod(data)
       setTotalAmount(price)
+      const userIdSection = document.getElementById("input-user-id")
+      if (userIdSection) {
+        userIdSection.scrollIntoView({ behavior: "smooth" })
+      }
     },
     [],
   )
@@ -109,6 +113,10 @@ const TopUpForm = (props: TopUpFormProps) => {
   const handleSelectPrice = React.useCallback(
     (data: SelectTopUpProducts, price: number) => {
       setSelectedTopUpProduct({ ...data, price: price })
+      const methodsSection = document.getElementById("select-payment-methods")
+      if (methodsSection) {
+        methodsSection.scrollIntoView({ behavior: "smooth" })
+      }
     },
     [],
   )
@@ -295,78 +303,10 @@ const TopUpForm = (props: TopUpFormProps) => {
           className="mb-[60px] flex flex-col gap-4"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
-            <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
-                1
-              </div>
-              <div className="flex flex-col">
-                <h2 className="text-base font-bold md:text-xl">
-                  Masukan Data Akun
-                </h2>
-              </div>
-              {topUp.category === "Games" && topUp.brand !== "GARENA" && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
-                      <svg
-                        focusable="false"
-                        aria-hidden="true"
-                        viewBox="0 0 24 24"
-                        height="16"
-                        width="16"
-                        className="ml-2 text-xs"
-                      >
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path>
-                      </svg>
-                      <p className="text-custom-primary ml-1 text-sm font-bold">
-                        Panduan
-                      </p>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <div className="relative h-[250px] w-full max-w-[600px]">
-                      <Image
-                        src={topUp.guideImage!}
-                        className="object-contain"
-                        alt={topUp.brand}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <FormControl>
-                <InputAccountId
-                  label={
-                    topUp.category === "E-Money"
-                      ? "Nomor E-Wallet"
-                      : topUp.category === "Pulsa"
-                        ? "Nomor HP"
-                        : "ID"
-                  }
-                  id="server"
-                  brand={topUp?.brand ?? ""}
-                  setQueryAccountId={setQueryAccountId}
-                  category={`${
-                    topUp.category === "E-Money"
-                      ? "Nomor E-Wallet"
-                      : topUp.category === "Pulsa"
-                        ? "Nomor HP"
-                        : "ID"
-                  }`}
-                />
-              </FormControl>
-              {isTopUpServer && (
-                <TopUpServer brand={topUp.brand} topUpServer={setTopUpServer} />
-              )}
-            </div>
-          </div>
           <div className="p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
-                2
+                1
               </div>
               <div className="flex flex-col">
                 <h2 className="text-base font-bold md:text-xl">
@@ -402,7 +342,10 @@ const TopUpForm = (props: TopUpFormProps) => {
               })}
             </div>
           </div>
-          <div className="flex flex-col gap-4 p-4 lg:rounded-lg lg:border">
+          <div
+            id="select-payment-methods"
+            className="flex flex-col gap-4 p-4 lg:rounded-lg lg:border"
+          >
             <PaymentMethods
               paymentChannel={paymentChannel}
               onSelectPaymentMethod={handleSelectPaymentMethod}
@@ -410,6 +353,77 @@ const TopUpForm = (props: TopUpFormProps) => {
               amount={selectedTopUpProduct?.price!}
               setSelectedPaymentMethod={setSelectedPaymentMethod}
             />
+          </div>
+          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
+            <div className="mb-4 flex items-center md:mb-5">
+              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+                3
+              </div>
+              <div className="flex flex-col">
+                <h2 className="text-base font-bold md:text-xl">
+                  Masukan Data Akun
+                </h2>
+              </div>
+              {topUp.category === "Games" && topUp.brand !== "GARENA" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
+                      <svg
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        height="16"
+                        width="16"
+                        className="ml-2 text-xs"
+                      >
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path>
+                      </svg>
+                      <p className="text-custom-primary ml-1 text-sm font-bold">
+                        Panduan
+                      </p>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>User Id</DialogHeader>
+                    {topUp.guideImage && (
+                      <div className="relative h-[250px] w-full max-w-[600px]">
+                        <Image
+                          src={topUp.guideImage!}
+                          className="object-contain"
+                          alt={topUp.brand}
+                        />
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+            <div id="input-user-id" className="flex gap-2">
+              <FormControl>
+                <InputAccountId
+                  label={
+                    topUp.category === "E-Money"
+                      ? "Nomor E-Wallet"
+                      : topUp.category === "Pulsa"
+                        ? "Nomor HP"
+                        : "ID"
+                  }
+                  id="server"
+                  brand={topUp?.brand ?? ""}
+                  setQueryAccountId={setQueryAccountId}
+                  category={`${
+                    topUp.category === "E-Money"
+                      ? "Nomor E-Wallet"
+                      : topUp.category === "Pulsa"
+                        ? "Nomor HP"
+                        : "ID"
+                  }`}
+                />
+              </FormControl>
+              {isTopUpServer && (
+                <TopUpServer brand={topUp.brand} topUpServer={setTopUpServer} />
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
@@ -445,7 +459,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           </div>
           <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 rounded-full bg-accent/80 px-3 py-1 text-xs font-bold md:text-sm">
                 5
               </div>
               <div className="flex flex-col">
@@ -482,13 +496,42 @@ const TopUpForm = (props: TopUpFormProps) => {
           )}
         </form>
       </Form>
-      <Button
-        aria-label="Order Sekarang"
-        onClick={form.handleSubmit(handleDialogToast)}
-        className="bg-shop text-foreground hover:bg-shop/70"
-      >
-        Order Sekarang
-      </Button>
+      <div className="fixed bottom-0 right-0 z-[100] w-full pl-0 shadow-md md:pl-[92px]">
+        <div className="cursor-pointer">
+          <div className="bg-white">
+            <div className="lg-container flex justify-end">
+              <div className="flex w-full py-4 md:p-5 lg:max-w-[716px]">
+                <div className="flex w-full items-center justify-between">
+                  <div>
+                    <div className="flex items-center">
+                      <div className="flex-1">
+                        <p className="text-custom-secondary text-base font-bold md:text-[20px]">
+                          {changePriceToIDR(
+                            fixedPrice > 0 ? fixedPrice : totalAmount,
+                          )}
+                        </p>
+                        <p className="text-xs font-medium md:text-sm">
+                          {selectedProductPrice},{selectedPaymentMethod}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="">
+                    <Button
+                      variant="ghost"
+                      aria-label="Order Sekarang"
+                      onClick={form.handleSubmit(handleDialogToast)}
+                      className="rounded-full bg-primary text-primary-foreground hover:bg-primary/70"
+                    >
+                      Order Sekarang
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>Create Order</DialogHeader>
