@@ -1,5 +1,5 @@
 {
-  "id": "9de61e56-48ca-4503-8097-9aa8fecd7d26",
+  "id": "69f42b80-65e1-42a6-98d1-291887f40b68",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -801,6 +801,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "merchant_ref": {
+          "name": "merchant_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "amount": {
           "name": "amount",
           "type": "integer",
@@ -963,6 +969,13 @@
           "columns": [
             "invoice_id"
           ]
+        },
+        "top_up_orders_merchant_ref_unique": {
+          "name": "top_up_orders_merchant_ref_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "merchant_ref"
+          ]
         }
       }
     },
@@ -1124,8 +1137,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "intruction": {
-          "name": "intruction",
+        "instruction": {
+          "name": "instruction",
           "type": "text",
           "primaryKey": false,
           "notNull": false

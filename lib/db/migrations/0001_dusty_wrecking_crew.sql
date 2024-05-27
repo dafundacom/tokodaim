@@ -1,1 +1,0 @@
-ALTER TABLE "top_ups" RENAME COLUMN "intruction" TO "instruction";

@@ -1,6 +1,6 @@
 {
-  "id": "7d8b6263-b65e-4c5b-82c1-16e46a15bf51",
-  "prevId": "9de61e56-48ca-4503-8097-9aa8fecd7d26",
+  "id": "17e9cd5b-aaa4-4b65-9c4e-de787be82ec1",
+  "prevId": "69f42b80-65e1-42a6-98d1-291887f40b68",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -801,6 +801,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "payment_merchant_ref": {
+          "name": "payment_merchant_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "top_up_ref_id": {
+          "name": "top_up_ref_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "amount": {
           "name": "amount",
           "type": "integer",
@@ -962,6 +974,20 @@
           "nullsNotDistinct": false,
           "columns": [
             "invoice_id"
+          ]
+        },
+        "top_up_orders_payment_merchant_ref_unique": {
+          "name": "top_up_orders_payment_merchant_ref_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "payment_merchant_ref"
+          ]
+        },
+        "top_up_orders_top_up_ref_id_unique": {
+          "name": "top_up_orders_top_up_ref_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "top_up_ref_id"
           ]
         }
       }
