@@ -26,6 +26,7 @@ export const topUpProviderEnum = pgEnum("top_up_provider", TOP_UP_PROVIDER_TYPE)
 export const topUpOrders = pgTable("top_up_orders", {
   id: text("id").primaryKey(),
   invoiceId: text("invoice_id").unique().notNull(),
+  merchantRef: text("merchant_ref").unique().notNull(),
   amount: integer("amount").notNull(),
   sku: text("sku").notNull(),
   accountId: text("account_id").notNull(),

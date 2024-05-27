@@ -27,6 +27,10 @@ const topUpOrderInput = {
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
+  merchantRef: z.string({
+    required_error: "Merchant Ref is required",
+    invalid_type_error: "Merchant Ref must be a string",
+  }),
   amount: z.number({
     required_error: "Amount is required",
     invalid_type_error: "Amount must be a number",

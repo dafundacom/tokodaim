@@ -1,0 +1,111 @@
+import crypto from "crypto"
+import { headers } from "next/headers"
+import { NextResponse, type NextRequest } from "next/server"
+import { eq } from "drizzle-orm"
+
+import env from "@/env.mjs"
+import { db } from "@/lib/db"
+import { topUpOrders } from "@/lib/db/schema/top-up-order"
+import type { PaymentStatus } from "@/lib/validation/payment"
+
+const privateKey =
+  env.APP_ENV === "development"
+    ? env.TRIPAY_PRIVATE_KEY_DEV
+    : env.TRIPAY_PRIVATE_KEY_PROD
+
+export async function POST(request: NextRequest) {
+  if (request.method !== "POST") {
+    return NextResponse.json("Method not Allowed", { status: 405 })
+  }
+
+  const json = JSON.stringify(request.body)
+
+  const callbackSignature = headers().get("x-callback-signature") ?? ""
+
+  const signature = crypto
+    .createHmac("sha256", privateKey)
+    .update(json)
+    .digest("hex")
+
+  if (callbackSignature !== signature) {
+    return NextResponse.json("Invalid Signature", { status: 400 })
+  }
+
+  const data = await request.json()
+
+  if (!data || typeof data !== "object") {
+    return NextResponse.json("Invalid data sent by payment gateway", {
+      status: 400,
+    })
+  }
+
+  // Stop if the callback event is not payment_status
+  if (headers().get("x-callback-event") !== "payment_status") {
+    return NextResponse.json(
+      `Unrecognizedc callback event: ${headers().get("x-callback-event")}`,
+      { status: 400 },
+    )
+  }
+
+  const invoiceId = data.merchant_ref
+  const tripayReference = data.reference
+  const status = String(data.status)
+
+  if (data.is_closed_payment === 1) {
+    try {
+      const invoice = await db.query.topUpOrders.findFirst({
+        where: (topUpOrder, { and, eq }) =>
+          and(
+            eq(topUpOrder.invoiceId, invoiceId),
+            eq(topUpOrder.merchantRef, tripayReference),
+            eq(topUpOrder.paymentStatus, "unpaid"),
+          ),
+      })
+
+      if (!invoice) {
+        return NextResponse.json(
+          `Invoice not found or already paid ${invoiceId}`,
+          { status: 400 },
+        )
+      }
+
+      let updateStatus: PaymentStatus = "unpaid"
+
+      switch (status) {
+        case "paid":
+          updateStatus = "paid"
+          break
+        case "expired":
+          updateStatus = "expired"
+          break
+        case "failed":
+          updateStatus = "failed"
+          break
+        default:
+          return NextResponse.json(
+            { success: false, message: "Unrecognized payment status" },
+            { status: 400 },
+          )
+      }
+
+      await db
+        .update(topUpOrders)
+        .set({
+          paymentStatus: updateStatus,
+        })
+        .where(eq(topUpOrders.invoiceId, invoiceId))
+
+      return NextResponse.json({ success: true }, { status: 200 })
+    } catch (err) {
+      return NextResponse.json(
+        { success: false, message: err },
+        { status: 500 },
+      )
+    }
+  } else {
+    return NextResponse.json(
+      { success: false, message: "Invalid data" },
+      { status: 400 },
+    )
+  }
+}

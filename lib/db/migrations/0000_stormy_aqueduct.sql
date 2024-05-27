@@ -181,6 +181,7 @@ CREATE TABLE IF NOT EXISTS "settings" (
 CREATE TABLE IF NOT EXISTS "top_up_orders" (
 	"id" text PRIMARY KEY NOT NULL,
 	"invoice_id" text NOT NULL,
+	"merchant_ref" text NOT NULL,
 	"amount" integer NOT NULL,
 	"sku" text NOT NULL,
 	"account_id" text NOT NULL,
@@ -202,7 +203,8 @@ CREATE TABLE IF NOT EXISTS "top_up_orders" (
 	"userId" text,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "top_up_orders_invoice_id_unique" UNIQUE("invoice_id")
+	CONSTRAINT "top_up_orders_invoice_id_unique" UNIQUE("invoice_id"),
+	CONSTRAINT "top_up_orders_merchant_ref_unique" UNIQUE("merchant_ref")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "top_up_products" (
@@ -232,7 +234,7 @@ CREATE TABLE IF NOT EXISTS "top_ups" (
 	"guide_image" text,
 	"product_icon" text,
 	"description" text,
-	"intruction" text,
+	"instruction" text,
 	"featured" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
