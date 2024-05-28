@@ -75,7 +75,9 @@
   }
 }
 
-.layout-background-image.hide-repeating-bg {
+.layout-background-image.hide-repeating-bg,
+.dark .layout-background-image,
+.dark .layout-background-image::before {
   background-image: none;
 }
 

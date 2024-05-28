@@ -1,4 +1,4 @@
-type Game =
+export type Game =
   | "Arena of Valor"
   | "Call of Duty Mobile"
   | "Free Fire"

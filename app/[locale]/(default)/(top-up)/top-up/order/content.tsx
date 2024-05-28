@@ -7,7 +7,6 @@ import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import { toast } from "@/components/ui/toast/use-toast"
 import { SelectTopUpOrder } from "@/lib/db/schema"
 import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
@@ -19,8 +18,6 @@ export function DetailTransactionContent() {
   const params = useSearchParams()
   const reference = params?.get("reference")
 
-  const [isPaid, setIsPaid] = React.useState<boolean>(false)
-  const [transactionStatus, setTransactionStatus] = React.useState("Pending")
   const [orderDetails, setOrderDetails] =
     React.useState<OrderDetailsProps | null>(null)
 
@@ -40,142 +37,10 @@ export function DetailTransactionContent() {
     }
   }, [isOrderSuccess, orderData, reference])
 
-  const { data: tripayTransactionData, isSuccess: isTripayTransactionSuccess } =
+  const { data: tripayTransactionData } =
     api.payment.tripayClosedTransactionDetail.useQuery(reference ?? "", {
       refetchInterval: 1000,
     })
-
-  React.useEffect(() => {
-    if (
-      isTripayTransactionSuccess &&
-      tripayTransactionData?.status === "PAID"
-    ) {
-      setIsPaid(true)
-    }
-  }, [isTripayTransactionSuccess, tripayTransactionData])
-
-  const { mutate: createDigiflazzTopUpTransaction } =
-    api.topUp.digiflazzCreateTransaction.useMutation({
-      onSuccess: (response) => {
-        if (response?.status === "Sukses") {
-          setTransactionStatus("Success")
-          toast({ variant: "success", description: response?.status })
-        } else if (response?.status === "Pending") {
-          setTransactionStatus("Pending")
-          toast({ variant: "danger", description: response?.status })
-        } else if (response?.status === "Gagal") {
-          setTransactionStatus("Fail")
-          toast({ variant: "danger", description: response?.status })
-        }
-      },
-      onError: (error) => {
-        const errorMessages = error?.data?.zodError?.fieldErrors
-        if (errorMessages) {
-          for (const field in errorMessages) {
-            if (errorMessages.hasOwnProperty(field)) {
-              errorMessages[field]?.forEach((message) => {
-                toast({ variant: "danger", description: message })
-              })
-            }
-          }
-        } else {
-          toast({
-            variant: "danger",
-            description: "Failed to top up! Please try again later",
-          })
-        }
-      },
-    })
-
-  const { mutate: updateTopUpStatus } = api.topUpOrder.updateStatus.useMutation(
-    {
-      onError: (error) => {
-        const errorMessages = error?.data?.zodError?.fieldErrors
-        if (errorMessages) {
-          for (const field in errorMessages) {
-            if (errorMessages.hasOwnProperty(field)) {
-              errorMessages[field]?.forEach((message) => {
-                toast({ variant: "danger", description: message })
-              })
-            }
-          }
-        } else {
-          toast({
-            variant: "danger",
-            description: "Failed to update! Please try again later",
-          })
-        }
-      },
-    },
-  )
-
-  React.useEffect(() => {
-    const statusUpdateData = {
-      status: "success" as const,
-      paymentStatus: "paid" as const,
-    }
-
-    const initiateDigiflazzTopUpTransaction = () => {
-      const topUpPayload = {
-        sku: orderDetails?.sku ?? "",
-        testing: process.env.APP_ENV === "development" ? true : false,
-        customerNo: `${orderDetails?.accountId}`,
-        refId: tripayTransactionData?.merchant_ref ?? "",
-        message: "TopUp",
-      }
-      createDigiflazzTopUpTransaction(topUpPayload)
-    }
-
-    if (
-      isPaid &&
-      transactionStatus === "Pending" &&
-      orderDetails?.invoiceId === reference
-    ) {
-      updateTopUpStatus({
-        ...statusUpdateData,
-        invoiceId: orderDetails?.invoiceId ?? "",
-      })
-
-      const interval = setInterval(() => {
-        initiateDigiflazzTopUpTransaction()
-      }, 2000)
-
-      return () => clearInterval(interval)
-    }
-  }, [
-    tripayTransactionData,
-    isPaid,
-    orderDetails,
-    reference,
-    transactionStatus,
-    createDigiflazzTopUpTransaction,
-    updateTopUpStatus,
-  ])
-
-  const { mutate: updateVoucher } = api.voucher.update.useMutation()
-  const { data: voucherData } = api.voucher.byCode.useQuery(
-    orderDetails?.voucherCode ?? "",
-    {
-      enabled: !!orderDetails?.voucherCode,
-    },
-  )
-
-  React.useEffect(() => {
-    if (voucherData && isPaid) {
-      const updatedVoucherAmount = voucherData.voucherAmount - 1
-      const updateVoucherDetails = () => {
-        updateVoucher({
-          ...voucherData,
-          voucherAmount: updatedVoucherAmount,
-          id: voucherData.id,
-          name: voucherData.name,
-          description: voucherData.description ?? "",
-          expirationDate: voucherData.expirationDate as unknown as string,
-        })
-      }
-      updateVoucherDetails()
-    }
-  }, [isPaid, updateVoucher, voucherData])
 
   React.useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -310,14 +175,14 @@ export function DetailTransactionContent() {
                         <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
                           <Badge
                             variant={
-                              transactionStatus === "Success"
+                              orderDetails?.status === "success"
                                 ? "success"
-                                : transactionStatus === "Fail"
+                                : orderDetails?.status === "failed"
                                   ? "danger"
                                   : "warning"
                             }
                           >
-                            {transactionStatus}
+                            {orderDetails?.status}
                           </Badge>
                         </span>
                       </div>

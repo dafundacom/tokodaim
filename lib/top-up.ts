@@ -21,9 +21,8 @@ export async function populateTopUps() {
   )) as DaftarHargaPostPaidReturnProps
 
   if (
-    Array.isArray(
-      digiflazzPriceListPrePaid.data && digiflazzPriceListPostPaid.data,
-    )
+    Array.isArray(digiflazzPriceListPrePaid.data) &&
+    Array.isArray(digiflazzPriceListPostPaid.data)
   ) {
     const digiflazzPriceListPrePaidData = digiflazzPriceListPrePaid.data.map(
       (item) => ({

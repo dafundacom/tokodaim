@@ -44,10 +44,12 @@ import { api } from "@/lib/trpc/react"
 import {
   calculateTotalPriceWithProfit,
   changePriceToIDR,
+  getFormattedGameNameIfAvailable,
   getTopUpInputAccountIdDetail,
   isTopInputTopUpAccountIdWithServer,
   removeNonDigitCharsBeforeNumber,
 } from "@/lib/utils/top-up"
+import { handleCheckIgn } from "./action"
 
 type TripayPaymentMethodsProps = PaymentChannelReturnProps["data"][number]
 
@@ -98,7 +100,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     React.useState<TripayPaymentMethodsProps | null>(null)
   const [queryAccountId, setQueryAccountId] = React.useState("")
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-
+  const [nickname, setNickname] = React.useState("")
   const totalProfit = profit !== null ? parseInt(profit) : 15
 
   const router = useRouter()
@@ -131,7 +133,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     [],
   )
 
-  const handleDialogToast = React.useCallback(() => {
+  const handleDialogToast = React.useCallback(async () => {
     if (isTopUpServer && !topUpServer) {
       toast({ variant: "danger", description: "Silahkan Pilih Server" })
     } else if (!queryAccountId) {
@@ -144,7 +146,30 @@ const TopUpForm = (props: TopUpFormProps) => {
     } else if (!paymentMethod) {
       toast({ variant: "danger", description: "Silahkan Pilih Nominal" })
     } else {
-      setOpenDialog(true)
+      if (
+        queryAccountId &&
+        getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)
+      ) {
+        try {
+          const inputIgn = {
+            game: getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)!,
+            id: queryAccountId,
+            zone: topUpServer ?? undefined,
+          }
+          const results = await handleCheckIgn(inputIgn)
+          if (results?.success) {
+            setOpenDialog(true)
+            setNickname(results?.name)
+          }
+        } catch (error) {
+          toast({
+            description: "informasi akun anda tidak ditemukan",
+            variant: "danger",
+          })
+        }
+      } else {
+        setOpenDialog(true)
+      }
     }
   }, [
     selectedTopUpProduct,
@@ -290,7 +315,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     })
 
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
-    (data) => {
+    async (data) => {
       if (!queryAccountId) {
         toast({ variant: "danger", description: "Silahkan Masukkan ID" })
       } else if (!selectedTopUpProduct) {
@@ -398,7 +423,10 @@ const TopUpForm = (props: TopUpFormProps) => {
               setSelectedPaymentMethod={setSelectedPaymentMethod}
             />
           </div>
-          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
+          <div
+            id="input-user-id"
+            className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border"
+          >
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 rounded-full bg-[rgba(255,57,86,0.2)] px-3 py-1 text-xs font-bold md:text-sm">
                 3
@@ -442,7 +470,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                 </Dialog>
               )}
             </div>
-            <div id="input-user-id" className="flex gap-2">
+            <div className="flex gap-2">
               <FormControl>
                 <InputAccountId
                   label={
@@ -542,7 +570,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       </Form>
       <div className="fixed bottom-0 right-0 z-[100] w-full pl-0 shadow-md md:pl-[92px]">
         <div className="cursor-pointer">
-          <div className="bg-white">
+          <div className="bg-background">
             <div className="lg-container flex justify-end">
               <div className="flex w-full py-4 md:p-5 lg:max-w-[716px]">
                 <div className="flex w-full items-center justify-between">
@@ -594,6 +622,12 @@ const TopUpForm = (props: TopUpFormProps) => {
                 </p>
                 <div className="mt-2">
                   <div className="my-4 grid grid-cols-3 gap-4 rounded-lg p-4 text-left">
+                    {nickname && (
+                      <>
+                        <div>Nickname</div>
+                        <div className="col-span-2">{`: ${nickname}`}</div>
+                      </>
+                    )}
                     <div>Account ID</div>
                     <div className="col-span-2">{`: ${queryAccountId}`}</div>
                     <div>Item</div>
