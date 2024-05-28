@@ -5,8 +5,9 @@ import { eq } from "drizzle-orm"
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
 import { topUpOrders } from "@/lib/db/schema/top-up-order"
+import { topUpPayments } from "@/lib/db/schema/top-up-payment"
 import type { PaymentStatus } from "@/lib/validation/payment"
-import type { TopUpStatusType } from "@/lib/validation/top-up-order"
+import type { TopUpPaymentStatus } from "@/lib/validation/top-up-payment"
 
 const privateKeyDigiflazz =
   env.APP_ENV === "development"
@@ -34,11 +35,11 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
     const status = String(data.status).toLowerCase()
 
-    let updateStatus: TopUpStatusType = "processing"
+    let updateStatus: TopUpPaymentStatus = "unpaid"
 
     switch (status) {
-      case "success":
-        updateStatus = "success"
+      case "paid":
+        updateStatus = "paid"
         break
       case "failed":
         updateStatus = "failed"
@@ -54,9 +55,9 @@ export async function POST(request: NextRequest) {
     }
 
     await db
-      .update(topUpOrders)
+      .update(topUpPayments)
       .set({ status: updateStatus })
-      .where(eq(topUpOrders.topUpRefId, data.ref_id))
+      .where(eq(topUpPayments.invoiceId, data.reference))
 
     return NextResponse.json(
       { message: "Webhook received and verified" },
@@ -86,12 +87,12 @@ export async function POST(request: NextRequest) {
 
     if (data.is_closed_payment === 1) {
       try {
-        const order = await db.query.topUpOrders.findFirst({
-          where: (topUpOrder, { and, eq }) =>
+        const order = await db.query.topUpPayments.findFirst({
+          where: (topUpPayment, { and, eq }) =>
             and(
-              eq(topUpOrder.invoiceId, invoiceId),
-              eq(topUpOrder.paymentMerchantRef, tripayReference),
-              eq(topUpOrder.paymentStatus, "unpaid"),
+              eq(topUpPayment.invoiceId, invoiceId),
+              eq(topUpPayment.invoiceId, tripayReference),
+              eq(topUpPayment.status, "unpaid"),
             ),
         })
 

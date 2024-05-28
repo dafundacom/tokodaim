@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm"
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
 import { topUpOrders } from "@/lib/db/schema/top-up-order"
-import type { TopUpStatusType } from "@/lib/validation/top-up-order"
+import type { TopUpOrderStatus } from "@/lib/validation/top-up-order"
 
 const privateKey =
   env.APP_ENV === "development"
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   if (requestSignature === `sha1=${signature}`) {
     const status = String(data.status).toLowerCase()
 
-    let updateStatus: TopUpStatusType = "processing"
+    let updateStatus: TopUpOrderStatus = "processing"
 
     switch (status) {
       case "success":
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       .set({
         status: updateStatus,
       })
-      .where(eq(topUpOrders.topUpRefId, data.ref_id))
+      .where(eq(topUpOrders.invoiceId, data.ref_id))
 
     return NextResponse.json(
       { message: "Webhook received and verified" },
