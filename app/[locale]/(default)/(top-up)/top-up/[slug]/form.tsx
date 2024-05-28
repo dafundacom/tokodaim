@@ -31,7 +31,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import env from "@/env.mjs"
-import { AuthSession } from "@/lib/auth/utils"
+import type { AuthSession } from "@/lib/auth/utils"
 import type { SelectTopUps } from "@/lib/db/schema/top-up"
 import type { SelectTopUpProducts } from "@/lib/db/schema/top-up-product"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
@@ -265,7 +265,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             fee: data?.total_fee!,
             total: total,
             provider: "digiflazz" as const,
-            userId: session?.user?.id ?? null,
+            ...(session?.user?.id && { userId: session.user.id }),
             voucherCode: voucher?.voucherCode ?? "",
             discountAmount: fixedPrice > 0 ? total - fixedPrice : undefined,
             note: noteValue!,
@@ -284,7 +284,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             paymentProvider: "tripay" as const,
             expiredAt: new Date(data.expired_time),
             status: "unpaid" as const,
-            userId: session?.user?.id ?? null,
+            ...(session?.user?.id && { userId: session.user.id }),
             paidAt: new Date(),
           }
 
@@ -315,7 +315,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     })
 
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
-    async (data) => {
+    (data) => {
       if (!queryAccountId) {
         toast({ variant: "danger", description: "Silahkan Masukkan ID" })
       } else if (!selectedTopUpProduct) {

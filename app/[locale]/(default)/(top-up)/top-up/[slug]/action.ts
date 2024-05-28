@@ -1,6 +1,6 @@
 "use server"
 
-import { checkIgn, Game } from "@/lib/check-ign"
+import { checkIgn, type Game } from "@/lib/check-ign"
 
 export async function handleCheckIgn({
   game,
