@@ -14,7 +14,7 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
   return (
     <>
       <GlobalNav />
-      <div className="w-[calc(100% - 92px)] layout-background-image hide-repeating-bg ml-0 lg:ml-[92px]">
+      <div className="w-[calc(100% - 92px)] layout-background-image hide-repeating-bg ml-0 !bg-background before:!bg-background lg:ml-[92px]">
         <TopNav />
         <main className="relative mt-4 px-4 lg:my-20 lg:px-64">{children}</main>
         <Footer />

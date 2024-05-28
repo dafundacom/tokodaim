@@ -1,3 +1,5 @@
+import { Game } from "@/lib/check-ign"
+
 export const calculateTotalPriceWithProfit = (
   price: number,
   profitPercentage: number,
@@ -170,4 +172,48 @@ export function isTopInputTopUpAccountIdWithServer(brand: string) {
     default:
       return { isTopUpServer: false }
   }
+}
+
+export function getFormattedGameNameIfAvailable(
+  game: string,
+): Game | undefined {
+  let data
+  switch (game.toLocaleLowerCase()) {
+    case "arena of valor":
+      data = "Arena of Valor" as const
+      break
+    case "call of duty mobile":
+      data = "Call of Duty Mobile" as const
+      break
+    case "free fire":
+      data = "Free Fire" as const
+      break
+    case "genshin impact":
+      data = "Genshin Impact" as const
+      break
+    case "honkai impact":
+      data = "Honkai Impact" as const
+      break
+    case "honkai star rail":
+      data = "Honkai Star Rail" as const
+      break
+    case "mobile legends":
+      data = "Mobile Legends" as const
+      break
+    case "punishing: gray raven":
+      data = "Punishing: Gray Raven" as const
+      break
+    case "sausage man":
+      data = "Sausage Man" as const
+      break
+    case "super sus":
+      data = "Super SUS" as const
+      break
+    case "valorant":
+      data = "Valorant" as const
+      break
+    default:
+      data = undefined
+  }
+  return data
 }
