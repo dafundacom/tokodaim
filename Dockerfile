@@ -19,7 +19,7 @@ RUN pnpm install
 # Copy the rest of the application code
 COPY . .
 
-# Generate Prisma Types
+# Migrate DB
 RUN npm run db:migrate
 
 # Build the Next.js application
@@ -37,9 +37,9 @@ WORKDIR /app
 # Copy the built files from the previous stage
 COPY --from=build /app/ ./
 
-# Install only production dependencies
+# Install dependencies
 RUN npm install -g pnpm
-RUN pnpm install --prod
+RUN pnpm install
 
 # Expose the port
 EXPOSE 3000
