@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm"
 
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
-import { topUpOrders } from "@/lib/db/schema/top-up-order"
+import { topUpPayments } from "@/lib/db/schema/top-up-payment"
 import type { PaymentStatus } from "@/lib/validation/payment"
 
 const privateKey =
@@ -48,17 +48,15 @@ export async function POST(request: NextRequest) {
   }
 
   const invoiceId = data.merchant_ref
-  const tripayReference = data.reference
   const status = String(data.status)
 
   if (data.is_closed_payment === 1) {
     try {
-      const order = await db.query.topUpOrders.findFirst({
-        where: (topUpOrder, { and, eq }) =>
+      const order = await db.query.topUpPayments.findFirst({
+        where: (topUpPayment, { and, eq }) =>
           and(
-            eq(topUpOrder.invoiceId, invoiceId),
-            eq(topUpOrder.paymentMerchantRef, tripayReference),
-            eq(topUpOrder.paymentStatus, "unpaid"),
+            eq(topUpPayment.invoiceId, invoiceId),
+            eq(topUpPayment.status, "unpaid"),
           ),
       })
 
@@ -89,11 +87,11 @@ export async function POST(request: NextRequest) {
       }
 
       await db
-        .update(topUpOrders)
+        .update(topUpPayments)
         .set({
-          paymentStatus: updateStatus,
+          status: updateStatus,
         })
-        .where(eq(topUpOrders.invoiceId, invoiceId))
+        .where(eq(topUpPayments.invoiceId, invoiceId))
 
       return NextResponse.json({ success: true }, { status: 200 })
     } catch (err) {
