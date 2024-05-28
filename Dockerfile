@@ -17,7 +17,6 @@ RUN npm run build
 # RUNNER
 FROM node:20-alpine AS runner
 WORKDIR /app
-RUN npm install --global pnpm prisma
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
