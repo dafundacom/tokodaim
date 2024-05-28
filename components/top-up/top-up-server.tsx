@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { FormControl, FormLabel } from "@/components/ui/form"
+import { FormLabel } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -65,11 +65,9 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
           onValueChange={() => handleSelectChange}
           value={queryTopUpServer}
         >
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder={t("server_placeholder_select")} />
-            </SelectTrigger>
-          </FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder={t("server_placeholder_select")} />
+          </SelectTrigger>
           <SelectContent>
             {topUpServerList.gameServers.map((gameServer) => (
               <SelectItem key={gameServer.value} value={gameServer.value}>
@@ -82,7 +80,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
     )
   }
   return (
-    <FormControl>
+    <div>
       <FormLabel>Server</FormLabel>
       <Input
         onChange={handleInputChange}
@@ -90,7 +88,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
         value={queryTopUpServer}
         placeholder={t("server_placeholder")}
       />
-    </FormControl>
+    </div>
   )
 }
 

@@ -8,30 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { toast } from "@/components/ui/toast/use-toast"
+import { SelectTopUpOrder } from "@/lib/db/schema"
 import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
-interface OrderDetailsProps {
-  id: string | null
-  invoiceId: string | null
-  amount: number | null
-  paymentMethod: string | null
-  paymentProvider: string | null
-  topUpProvider: string | null
-  sku: string | null
-  accountId: string | null
-  customerName: string | null
-  customerEmail: string | null
-  customerPhone: string | null
-  voucherCode: string | null
-  discountAmount: number | null
-  feeAmount: number | null
-  totalAmount: number | null
-  note: string | null
-  status: string | null
-  paymentStatus: string | null
-}
+type OrderDetailsProps = SelectTopUpOrder
 
 export function DetailTransactionContent() {
   const params = useSearchParams()
@@ -413,13 +395,13 @@ export function DetailTransactionContent() {
                     <dd>
                       {changePriceToIDR(
                         tripayTransactionData?.amount -
-                          (orderDetails?.feeAmount ?? 0),
+                          (orderDetails?.fee ?? 0),
                       )}
                     </dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="font-medium">Fee</dt>
-                    <dd>{changePriceToIDR(orderDetails?.feeAmount ?? 0)}</dd>
+                    <dd>{changePriceToIDR(orderDetails?.fee ?? 0)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-xl font-bold md:text-2xl print:text-sm">
