@@ -1,51 +1,33 @@
-# Use Node.js 20-alpine as the base image for building
-FROM node:20-alpine AS build
-
-# Install necessary packages
+#INSTALLER
+FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat
+RUN apk update
 
-# Set the working directory
 WORKDIR /app
-
-# Copy package.json and pnpm-lock.yaml files to install dependencies
-COPY package.json pnpm-lock.yaml ./
-
-# Install pnpm globally
-RUN npm install -g pnpm
-
-# Install dependencies using pnpm
-RUN pnpm install
-
-# Copy the rest of the application code
+RUN npm install --global pnpm
 COPY . .
 
-# Migrate DB
-RUN npm run db:migrate
+RUN pnpm install --frozen-lockfile
 
-# Build the Next.js application
-RUN pnpm run build
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Use a slim base image for the production build
-FROM node:20-alpine
+# RUN npm run db:migrate
+RUN npm run build
 
-# Install necessary packages
-RUN apk add --no-cache libc6-compat
-
-# Set the working directory
+# RUNNER
+FROM node:20-alpine AS runner
 WORKDIR /app
+RUN npm install --global pnpm prisma
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Copy the built files from the previous stage
-COPY --from=build /app/ ./
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-# Install pnpm globally
-RUN npm install -g pnpm
+COPY --chown=nextjs:nodejs --from=builder /app/ ./
 
-# Install dependencies
-RUN pnpm install
+USER nextjs
 
-# Expose the port
-EXPOSE 3000
+ENV PORT 3000
 
-# Start the application
-CMD ["pnpm", "start"]
-
+CMD ["npm", "run","start"]

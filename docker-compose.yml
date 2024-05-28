@@ -1,9 +1,28 @@
+version: "3"
+
 services:
+  # db:
+  #   image: postgres
+  #   container_name: db_container
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   networks:
+  #     - app_network
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   restart: unless-stopped
+
   web:
     container_name: web_container
     build:
       context: .
       dockerfile: ./Dockerfile
+    # depends_on:
+    #   - db
     env_file:
       - ./.env
     ports:
@@ -12,8 +31,11 @@ services:
       - app_network
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    restart: always
+    restart: unless-stopped
 
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  pgdata:
