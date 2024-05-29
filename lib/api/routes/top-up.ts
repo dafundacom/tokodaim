@@ -13,7 +13,6 @@ import type {
   DepositReturnProps,
   TransaksiReturnProps,
 } from "@/lib/sdk/digiflazz"
-import { populateTopUps } from "@/lib/top-up"
 import {
   topUpDigiflazzCreateDepositSchema,
   topUpDigiflazzCreateTransactionSchema,
@@ -71,7 +70,6 @@ export const topUpRouter = createTRPCRouter({
     }),
   all: publicProcedure.query(async ({ ctx }) => {
     try {
-      await populateTopUps()
       const data = await ctx.db.query.topUps.findMany({
         orderBy: (topUps, { asc }) => [asc(topUps.brand)],
       })
@@ -89,7 +87,6 @@ export const topUpRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        await populateTopUps()
         const data = await ctx.db.query.topUps.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
@@ -104,7 +101,6 @@ export const topUpRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        await populateTopUps()
         const data = await ctx.db.query.topUps.findMany({
           where: (topUps, { eq }) => eq(topUps.categorySlug, input),
           orderBy: (topUps, { asc }) => [asc(topUps.brand)],
@@ -116,7 +112,6 @@ export const topUpRouter = createTRPCRouter({
     }),
   bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
-      await populateTopUps()
       const data = await ctx.db.query.topUps.findFirst({
         where: (topUp, { eq }) => eq(topUp.slug, input),
       })
