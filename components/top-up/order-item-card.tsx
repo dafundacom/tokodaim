@@ -9,9 +9,9 @@ import { api } from "@/lib/trpc/react"
 import { formatDate } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
-type TransactionItemProps = SelectTopUpPayment
+type OrderItemProps = SelectTopUpPayment
 
-const TransactionItemCard = (props: TransactionItemProps) => {
+const OrderItemCard = (props: OrderItemProps) => {
   const { status, invoiceId, expiredAt, total } = props
   const [timeLeft, setTimeLeft] = React.useState(getTimeLeft(expiredAt!))
 
@@ -87,4 +87,4 @@ const TransactionItemCard = (props: TransactionItemProps) => {
   )
 }
 
-export default TransactionItemCard
+export default OrderItemCard
