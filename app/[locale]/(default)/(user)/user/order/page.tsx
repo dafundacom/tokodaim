@@ -1,6 +1,8 @@
+import NextLink from "next/link"
 import { notFound } from "next/navigation"
 
 import OrderItemCard from "@/components/top-up/order-item-card"
+import { Button } from "@/components/ui/button"
 import { getSession } from "@/lib/auth/utils"
 import { api } from "@/lib/trpc/server"
 
@@ -20,9 +22,20 @@ export default async function UserOrderPage() {
             Daftar Transaksi
           </h2>
         </div>
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-4">
-          {orders?.map((order) => <OrderItemCard key={order.id} {...order} />)}
-        </div>
+        {orders.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-4">
+            {orders.map((order) => (
+              <OrderItemCard key={order.id} {...order} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-[400px] flex-col items-center justify-center space-y-4">
+            <p className="text-xl lg:text-4xl">Tidak ada transaksi</p>
+            <Button asChild className="rounded-full text-xs lg:text-sm">
+              <NextLink href="/top-up">Cari produk top up</NextLink>
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   )
