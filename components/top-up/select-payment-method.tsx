@@ -50,7 +50,7 @@ const SelectPaymentMethod: React.FunctionComponent<SelectPaymentMethodProps> = (
           className={cn(
             `${
               active === title ? "ring-2 ring-primary" : ""
-            } item-price border-custom-black relative flex h-[71px] flex-wrap overflow-hidden rounded-2xl border bg-background p-4 py-1 shadow-md md:h-[81px]`,
+            } item-price relative flex h-[71px] flex-wrap overflow-hidden rounded-2xl border border-border bg-background p-4 py-1 shadow-md md:h-[81px]`,
             isPriceInRange
               ? ""
               : "cursor-not-allowed bg-muted grayscale filter hover:cursor-not-allowed",

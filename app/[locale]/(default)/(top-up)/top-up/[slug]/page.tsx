@@ -70,7 +70,7 @@ export default async function TopUpPage({
   const paymentChannel = await api.payment.tripayPaymentChannel()
   const cleanedText = topUp?.brand.replace(/\d+(\.\d+)?/g, "")
 
-  if (!topUp && !topUpProducts) {
+  if (!topUp && !Array.isArray(topUpProducts)) {
     redirect("/")
   }
   return (
@@ -122,7 +122,7 @@ export default async function TopUpPage({
                 </div>
               )}
             </div>
-            <div className="w-full overflow-hidden rounded-lg bg-background lg:w-2/3">
+            <div className="w-full overflow-hidden rounded-lg border bg-background lg:w-2/3 lg:p-5">
               <TopUpForm
                 session={session}
                 topUpProducts={topUpProducts}
@@ -134,36 +134,42 @@ export default async function TopUpPage({
               />
             </div>
           </div>
-          {topUp && (
-            <div className="mt-40">
-              <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
-                Kamu Punya Pertanyaan?
-              </h2>
-              <details open className="mb-4 overflow-hidden rounded-2xl border">
-                <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
-                  <span>
-                    Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
-                  </span>
-                </summary>
-                <div className="p-4 text-sm">
-                  {topUp?.instruction && (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: topUp?.instruction! }}
-                    />
-                  )}
-                  {topUp?.guideImage && (
-                    <div className="relative h-[200px] w-full">
-                      <Image
-                        src={topUp?.guideImage!}
-                        alt={topUp.brand}
-                        className="object-contain"
+          {topUp.instruction ??
+            (topUp.guideImage && (
+              <div className="mt-40">
+                <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
+                  Kamu Punya Pertanyaan?
+                </h2>
+                <details
+                  open
+                  className="mb-4 overflow-hidden rounded-2xl border"
+                >
+                  <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
+                    <span>
+                      Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
+                    </span>
+                  </summary>
+                  <div className="p-4 text-sm">
+                    {topUp?.instruction && (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: topUp?.instruction!,
+                        }}
                       />
-                    </div>
-                  )}
-                </div>
-              </details>
-            </div>
-          )}
+                    )}
+                    {topUp?.guideImage && (
+                      <div className="relative h-[200px] w-full">
+                        <Image
+                          src={topUp?.guideImage!}
+                          alt={topUp.brand}
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </details>
+              </div>
+            ))}
           <hr className="border-t" />
         </>
       ) : (

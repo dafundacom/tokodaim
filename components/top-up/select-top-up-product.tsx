@@ -11,7 +11,7 @@ interface SelectTopUpProductProps extends React.HTMLAttributes<HTMLDivElement> {
   price: string
   brand: string
   active: string
-  productIcon: string
+  productIcon?: string
 }
 
 const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
@@ -31,7 +31,7 @@ const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
       <FormLabel
         className={`${
           active === label ? "ring-2 ring-primary" : ""
-        } item-price border-custom-black-subtle relative flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl border px-2 py-3 shadow-md transition-all`}
+        } item-price relative flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-border px-2 py-3 shadow-md transition-all`}
       >
         <div
           className="
@@ -44,9 +44,9 @@ const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
           Termurah
         </div>
         <div className="relative h-[32px] w-[32px] md:h-[40px] md:w-[40px]">
-          <Image src={productIcon} alt={brand} />
+          {productIcon && <Image src={productIcon} alt={brand} />}
         </div>
-        <p className="text-custom-black-primary items-left flex text-left text-sm font-medium">
+        <p className="items-left flex text-left text-sm font-medium text-primary">
           {productName}
         </p>
         <div className="mx-[-8px] mb-[-12px] mt-[6px] flex h-[47px] flex-wrap items-center bg-[#EDECFF] px-3 py-[8px]">

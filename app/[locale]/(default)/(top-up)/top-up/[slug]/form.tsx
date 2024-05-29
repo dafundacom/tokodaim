@@ -426,7 +426,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                       handleSelectPrice(topUpProduct, priceWithProfit)
                       setSelectedProductPrice(name!)
                     }}
-                    productIcon={topUp.productIcon ?? ""}
+                    productIcon={topUp?.productIcon!}
                   />
                 )
               })}
@@ -457,7 +457,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                   Masukan Data Akun
                 </h2>
               </div>
-              {topUp.category === "Games" && topUp.brand !== "GARENA" && (
+              {topUp.category === "Games" && topUp.guideImage && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
@@ -471,7 +471,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                       >
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path>
                       </svg>
-                      <p className="text-custom-primary ml-1 text-sm font-bold">
+                      <p className="ml-1 text-sm font-bold text-primary">
                         Panduan
                       </p>
                     </div>
