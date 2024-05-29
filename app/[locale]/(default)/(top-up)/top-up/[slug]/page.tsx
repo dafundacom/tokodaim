@@ -74,7 +74,7 @@ export default async function TopUpPage({
     redirect("/")
   }
   return (
-    <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 px-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] min-[1200px]:max-w-[1170px]">
+    <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] lg:px-4 min-[1200px]:max-w-[1170px]">
       {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
         <>
           <div className="flex flex-col lg:flex-row lg:space-x-2">
