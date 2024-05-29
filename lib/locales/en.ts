@@ -285,6 +285,13 @@ export default {
   "top_up.profit_percentage": "Profit Percentage",
   "top_up.profit_percentage_placeholder": "Enter Profit Percentage",
   "top_up.profit_percentage_required": "Profit Percentage is required",
+  "top_up.sync": "Sync Top Up",
+  "top_up.sync_success": "Top Up is successfully synced",
+  "top_up.sync_failed": "Failed to sync Top Up! Please try again later",
+  "top_up.sync_product": "Sync Top Up Product",
+  "top_up.sync_product_success": "Top Up Product is successfully synced",
+  "top_up.sync_product_failed":
+    "Failed to sync Top Up Product! Please try again later",
   "top_up.transaction_info": "Transaction Info",
   transaction: "Transaction",
   translate: "Translate",

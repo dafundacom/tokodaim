@@ -288,6 +288,13 @@ export default {
   "top_up.profit_percentage": "Persentase Keuntungan",
   "top_up.profit_percentage_placeholder": "Masukan Persentase Keuntungan",
   "top_up.profit_percentage_required": "Persentase Keuntungan Diperlukan",
+  "top_up.sync": "Sinkronkan Top Up",
+  "top_up.sync_success": "Top Up berhasil disinkronkan",
+  "top_up.sync_failed": "Gagal menyinkronkan Top Up! Coba lagi nanti",
+  "top_up.sync_product": "Sinkronkan Produk Top Up",
+  "top_up.sync_product_success": "Produk Top Up berhasil disinkronkan",
+  "top_up.sync_product_failed":
+    "Gagal menyinkronkan Produk Top Up! Coba lagi nanti",
   "top_up.transaction_info": "Info Transaksi",
   transaction: "Transaksi",
   translate: "Terjemahkan",
