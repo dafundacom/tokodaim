@@ -67,6 +67,8 @@ export async function generateMetadata({
 export default async function Home() {
   const adsBelowHeader = await api.ad.byPosition("article_below_header")
   const topUpProductsGames = await api.topUp.byCategorySlug("games")
+  const topUpProductsEMoney = await api.topUp.byCategorySlug("e-money")
+  const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
 
   return (
     <>
@@ -97,8 +99,8 @@ export default async function Home() {
           })}
         <div className="my-2 flex w-full flex-col space-y-4 lg:space-y-8">
           <TopUpGrid title="Games" topUps={topUpProductsGames!} />
-          {/* <TopUpGrid title="Pulsa" topUps={topUpProductsPulsa!} />
-          <TopUpGrid title="e-Money" topUps={topUpProductsEMoney!} /> */}
+          <TopUpGrid title="Pulsa" topUps={topUpProductsPulsa!} />
+          <TopUpGrid title="e-Money" topUps={topUpProductsEMoney!} />
         </div>
       </section>
     </>
