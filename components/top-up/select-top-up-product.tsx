@@ -2,7 +2,6 @@ import * as React from "react"
 
 import Image from "@/components/image"
 import { FormLabel } from "@/components/ui/form"
-import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 
 interface SelectTopUpProductProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -1,4 +1,4 @@
-import { Game } from "@/lib/check-ign"
+import type { Game } from "@/lib/check-ign"
 
 export const calculateTotalPriceWithProfit = (
   price: number,

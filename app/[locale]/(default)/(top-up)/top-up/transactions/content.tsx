@@ -27,9 +27,17 @@ export function CheckTransactionContent() {
   const [queryInvoice, setQueryInvoice] = React.useState("")
   const form = useForm<FormData>()
 
-  const { data } = api.topUpOrder.byInvoiceId.useQuery(queryInvoice, {
-    enabled: !!queryInvoice,
-  })
+  const { data: paymentData } = api.topUpPayment.byInvoiceId.useQuery(
+    queryInvoice,
+    {
+      enabled: !!queryInvoice,
+    },
+  )
+
+  const { data: orderData } = api.topUpOrder.byInvoiceId.useQuery(
+    queryInvoice,
+    { enabled: !!queryInvoice },
+  )
 
   const onSubmitInvoice: SubmitHandler<FormData> = (values) => {
     setQueryInvoice(values.queryInvoice)
@@ -79,7 +87,7 @@ export function CheckTransactionContent() {
         </Form>
       </div>
 
-      {data?.[0] && (
+      {paymentData?.[0] && (
         <div className="container md:py-8">
           <div className="mt-10 border-t">
             <div className="flex flex-col gap-x-8 border-b py-12 md:flex-row">
@@ -91,7 +99,7 @@ export function CheckTransactionContent() {
                         Account Data
                       </div>
                       <div className="col-span-5 md:col-span-4">
-                        {data[0]?.accountId}
+                        {orderData?.[0]?.accountId}
                       </div>
                       <div className="col-span-3 flex items-center md:col-span-4">
                         Invoice Number
@@ -100,18 +108,38 @@ export function CheckTransactionContent() {
                         <Button
                           aria-label="Copy Invoice"
                           onClick={() =>
-                            copyToClipboard(data[0]?.invoiceId ?? "")
+                            copyToClipboard(paymentData?.[0]?.invoiceId ?? "")
                           }
                           type="button"
                           className="flex items-center space-x-2 rounded-md border px-2.5 py-1 print:hidden"
                         >
                           <div className="max-w-[172px] truncate md:w-auto">
-                            {data[0]?.invoiceId}
+                            {paymentData?.[0]?.invoiceId}
                           </div>
                           <Icon.Copy aria-label="Copy Invoice" />
                         </Button>
                         <span className="hidden print:block">
-                          {data[0]?.invoiceId}
+                          {paymentData?.[0]?.invoiceId}
+                        </span>
+                      </div>
+                      <div className="col-span-3 md:col-span-4">
+                        Transaction Status
+                      </div>
+                      <div className="col-span-5 md:col-span-4">
+                        <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
+                          <Badge
+                            variant={
+                              orderData?.[0]?.status?.toLocaleLowerCase() ===
+                              "paid"
+                                ? "success"
+                                : orderData?.[0]?.status?.toLocaleLowerCase() ===
+                                    "failed"
+                                  ? "danger"
+                                  : "warning"
+                            }
+                          >
+                            {orderData?.[0]?.status ?? ""}
+                          </Badge>
                         </span>
                       </div>
                       <div className="col-span-3 md:col-span-4">
@@ -121,23 +149,22 @@ export function CheckTransactionContent() {
                         <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
                           <Badge
                             variant={
-                              data[0]?.paymentStatus?.toLocaleLowerCase() ===
+                              paymentData?.[0]?.status?.toLocaleLowerCase() ===
                               "paid"
                                 ? "success"
-                                : data[0]?.paymentStatus?.toLocaleLowerCase() ===
+                                : paymentData?.[0]?.status?.toLocaleLowerCase() ===
                                     "unpaid"
                                   ? "danger"
                                   : "warning"
                             }
                           >
-                            {data[0]?.paymentStatus}
+                            {paymentData?.[0]?.status}
                           </Badge>
                         </span>
                       </div>
-
                       <div className="col-span-3 md:col-span-4">Message</div>
                       <div className="col-span-5 md:col-span-4">
-                        {data[0]?.paymentStatus !== "paid"
+                        {paymentData?.[0]?.status !== "paid"
                           ? "Menunggu pembayaran..."
                           : "Pembayaran berhasil"}
                       </div>
@@ -152,13 +179,15 @@ export function CheckTransactionContent() {
                   <dt className="font-medium">Subtotal</dt>
 
                   <dd>
-                    {changePriceToIDR(data[0]?.amount - data[0]?.feeAmount)}
+                    {changePriceToIDR(
+                      paymentData?.[0]?.total - paymentData?.[0]?.fee,
+                    )}
                   </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="font-medium">Fee</dt>
 
-                  <dd>{changePriceToIDR(data[0]?.feeAmount)}</dd>
+                  <dd>{changePriceToIDR(paymentData?.[0]?.fee)}</dd>
                 </div>
                 <div className="flex items-center justify-between text-primary">
                   <dt className="text-xl font-bold md:text-2xl print:text-sm">
@@ -168,18 +197,20 @@ export function CheckTransactionContent() {
                     <Button
                       aria-label="Copy Total Payment"
                       onClick={() =>
-                        copyToClipboard(data[0]?.amount as unknown as string)
+                        copyToClipboard(
+                          paymentData?.[0]?.total as unknown as string,
+                        )
                       }
                       type="button"
                       className="flex items-center space-x-2 rounded-md border px-2.5 py-1 text-xl md:text-2xl print:hidden"
                     >
                       <div className="max-w-[172px] truncate md:w-auto">
-                        {changePriceToIDR(data[0]?.amount)}
+                        {changePriceToIDR(paymentData?.[0]?.amount)}
                       </div>
                       <Icon.Copy aria-label="Copy Total Payment" />
                     </Button>
                     <span className="hidden print:block">
-                      {changePriceToIDR(data[0]?.amount)}
+                      {changePriceToIDR(paymentData?.[0]?.amount)}
                     </span>
                   </dd>
                 </div>

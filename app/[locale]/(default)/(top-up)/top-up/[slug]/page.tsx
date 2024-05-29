@@ -8,7 +8,6 @@ import { redirect } from "next/navigation"
 import Image from "@/components/image"
 import env from "@/env.mjs"
 import { getSession } from "@/lib/auth/utils"
-import { checkIgn } from "@/lib/check-ign"
 import { api } from "@/lib/trpc/server"
 
 const TopUpForm = dynamicFn(
@@ -72,11 +71,11 @@ export default async function TopUpPage({
   const cleanedText = topUp?.brand.replace(/\d+(\.\d+)?/g, "")
 
   if (!topUp && !topUpProducts) {
-    return redirect("/")
+    redirect("/")
   }
   return (
     <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 px-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] min-[1200px]:max-w-[1170px]">
-      {topUp && topUpProducts ? (
+      {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
         <>
           <div className="flex flex-col lg:flex-row lg:space-x-2">
             <div className="mb-4 w-full lg:w-1/3">
