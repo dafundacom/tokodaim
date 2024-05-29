@@ -47,7 +47,7 @@ export const topUpPaymentRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const data = await ctx.db.query.topUpPayments.findMany({
+        const data = await ctx.db.query.topUpPayments.findFirst({
           where: (topUpPayment, { eq }) => eq(topUpPayment.invoiceId, input),
           orderBy: (topUpPayment, { desc }) => [desc(topUpPayment.createdAt)],
         })
@@ -64,6 +64,25 @@ export const topUpPaymentRouter = createTRPCRouter({
         }
       }
     }),
+  byUserId: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    try {
+      const data = await ctx.db.query.topUpPayments.findMany({
+        where: (topUpPayment, { eq }) => eq(topUpPayment.userId, input),
+        orderBy: (topUpPayment, { desc }) => [desc(topUpPayment.createdAt)],
+      })
+      return data
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
+    }
+  }),
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(topUpPayments)
