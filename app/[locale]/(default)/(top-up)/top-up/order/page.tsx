@@ -1,10 +1,8 @@
-import * as React from "react"
 import type { Metadata } from "next"
 
-import LoadingProgress from "@/components/loading-progress"
 import env from "@/env.mjs"
 import type { LanguageType } from "@/lib/validation/language"
-import { DetailTransactionContent } from "./content"
+import { CheckTransactionContent } from "./content"
 
 export function generateMetadata({
   params,
@@ -14,27 +12,23 @@ export function generateMetadata({
   const { locale } = params
 
   return {
-    title: "Top Up Transaction",
-    description: "Teknodaim Top Up Transaction",
+    title: "Check Top Up Transaction",
+    description: "Teknodaim Check Top Up Transaction",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/shop/top-up/transaction`,
+      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/top-up/transactions`,
       languages: {
-        en: `${env.NEXT_PUBLIC_SITE_URL}/shop/top-up/transaction`,
+        en: `${env.NEXT_PUBLIC_SITE_URL}/top-up/transactions`,
       },
     },
     openGraph: {
-      title: "Top Up Transaction",
-      description: "Teknodaim Top Up Transaction",
-      url: `${env.NEXT_PUBLIC_SITE_TITLE}/shop/top-up/transaction`,
+      title: "Check Top Up Transaction",
+      description: "Teknodaim Check Top Up Transaction",
+      url: `${env.NEXT_PUBLIC_SITE_TITLE}/top-up/transactions`,
       locale: locale,
     },
   }
 }
 
-export default function TransactionPage() {
-  return (
-    <React.Suspense fallback={<LoadingProgress />}>
-      <DetailTransactionContent />
-    </React.Suspense>
-  )
+export default function CheckTransaction() {
+  return <CheckTransactionContent />
 }

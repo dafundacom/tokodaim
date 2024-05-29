@@ -193,7 +193,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
-        router.push(`/top-up/order?reference=${data?.invoiceId}`)
+        router.push(`/top-up/order/details?reference=${data?.invoiceId}`)
       }
     },
     onError: (error) => {
