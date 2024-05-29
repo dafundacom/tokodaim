@@ -135,6 +135,7 @@ export default {
   note: "Catatan",
   note_placeholder: "Masukan Catatan (Opsional)",
   of: "dari",
+  order: "Order",
   overview: "Ringkasan",
   page: "Halaman",
   position: "Posisi",

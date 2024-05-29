@@ -132,6 +132,7 @@ export default {
   note: "Note",
   note_placeholder: "Enter Note (Optional)",
   of: "of",
+  order: "Order",
   overview: "Overview",
   page: "Page",
   position: "Position",
