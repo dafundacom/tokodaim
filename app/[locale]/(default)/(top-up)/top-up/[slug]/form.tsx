@@ -436,7 +436,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                   Masukan Data Akun
                 </h2>
               </div>
-              {topUp.category === "Games" && topUp.brand !== "GARENA" && (
+              {topUp.category === "Games" && topUp.guideImage && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
