@@ -67,8 +67,8 @@ export async function generateMetadata({
 export default async function Home() {
   const adsBelowHeader = await api.ad.byPosition("article_below_header")
   const topUpProductsGames = await api.topUp.byCategorySlug("games")
-  const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
   const topUpProductsEMoney = await api.topUp.byCategorySlug("e-money")
+  const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
 
   return (
     <>

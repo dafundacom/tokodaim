@@ -9,7 +9,7 @@ import type {
 } from "@/lib/sdk/digiflazz"
 import { cuid, slugify } from "@/lib/utils"
 import { topUpProducts } from "./db/schema/top-up-product"
-import { TopUpCommand } from "./validation/top-up-product"
+import type { TopUpCommand } from "./validation/top-up-product"
 
 export async function populateTopUps() {
   const digiflazzPriceListPrePaid = (await digiflazz.daftarHarga(

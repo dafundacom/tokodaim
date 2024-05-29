@@ -193,7 +193,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
-        router.push(`/top-up/order?reference=${data?.invoiceId}`)
+        router.push(`/top-up/order/details?reference=${data?.invoiceId}`)
       }
     },
     onError: (error) => {
@@ -364,6 +364,27 @@ const TopUpForm = (props: TopUpFormProps) => {
       topUp.featuredImage,
     ],
   )
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)")
+    const globalNavEl = document.getElementById("global-navigation")
+
+    if (mediaQuery.matches) {
+      if (globalNavEl) globalNavEl.style.display = "block"
+    } else {
+      if (globalNavEl) globalNavEl.style.display = "none"
+    }
+
+    const listener = () => {
+      if (mediaQuery.matches) {
+        if (globalNavEl) globalNavEl.style.display = "block"
+      } else {
+        if (globalNavEl) globalNavEl.style.display = "none"
+      }
+    }
+    mediaQuery.addEventListener("change", listener)
+    return () => mediaQuery.removeEventListener("change", listener)
+  }, [])
 
   return (
     <>
@@ -568,7 +589,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           )}
         </form>
       </Form>
-      <div className="fixed bottom-0 right-0 z-[100] w-full pl-0 shadow-md md:pl-[92px]">
+      <div className="fixed bottom-0 right-0 z-[100] w-full border border-t border-border px-4 shadow-md lg:pl-[92px]">
         <div className="cursor-pointer">
           <div className="bg-background">
             <div className="lg-container flex justify-end">
@@ -577,14 +598,22 @@ const TopUpForm = (props: TopUpFormProps) => {
                   <div>
                     <div className="flex items-center">
                       <div className="flex-1">
-                        <p className="text-base font-bold text-muted-foreground md:text-[20px]">
-                          {changePriceToIDR(
-                            fixedPrice > 0 ? fixedPrice : totalAmount,
-                          )}
-                        </p>
-                        <p className="text-xs font-medium md:text-sm">
-                          {selectedProductPrice},{selectedPaymentMethod}
-                        </p>
+                        {selectedProductPrice && selectedPaymentMethod ? (
+                          <>
+                            <p className="text-base font-bold md:text-[20px]">
+                              {changePriceToIDR(
+                                fixedPrice > 0 ? fixedPrice : totalAmount,
+                              )}
+                            </p>
+                            <p className="text-xs font-medium md:text-sm">
+                              {selectedProductPrice},{selectedPaymentMethod}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-xs font-bold md:text-[20px]">
+                            Lengkapi dulu pembelian
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -5,7 +5,6 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import { FormLabel } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"

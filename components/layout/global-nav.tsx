@@ -10,7 +10,7 @@ const GlobalNav: React.FC = async () => {
   const { session } = await getSession()
 
   return (
-    <aside>
+    <aside id="global-navigation">
       <nav className="fixed bottom-0 left-0 z-50 flex w-full border-t border-border bg-background lg:top-0 lg:block lg:w-[92px] lg:border-r lg:pt-[4.5rem]">
         <NextLink
           className="group relative flex h-[92px] w-[92px] flex-1 flex-col items-center justify-center overflow-hidden text-base text-foreground transition-all hover:bg-muted"
