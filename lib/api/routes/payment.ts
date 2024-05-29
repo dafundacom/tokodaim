@@ -12,7 +12,7 @@ import type {
   PaymentChannelReturnProps,
   TransactionsReturnProps,
 } from "@/lib/sdk/tripay"
-import { cuid, uniqueCharacter } from "@/lib/utils"
+import { cuid } from "@/lib/utils"
 import {
   paymentTripayCreateClosedTransactionSchema,
   paymentTripayCreateOpenTransactionSchema,
@@ -144,12 +144,10 @@ export const paymentRouter = createTRPCRouter({
   tripayCreateClosedTransaction: publicProcedure
     .input(paymentTripayCreateClosedTransactionSchema)
     .mutation(async ({ input, ctx }) => {
-      const generatedMerchatRef = `trx_closed_${uniqueCharacter()}`
-
       try {
         const res = (await ctx.tripay.createClosedTransaction({
           method: input.paymentMethod,
-          merchant_ref: generatedMerchatRef,
+          merchant_ref: input.merchantRef,
           amount: input.amount,
           customer_name: input.customerName,
           customer_email: input.customerEmail,
@@ -175,12 +173,10 @@ export const paymentRouter = createTRPCRouter({
   tripayCreateOpenTransaction: publicProcedure
     .input(paymentTripayCreateOpenTransactionSchema)
     .mutation(async ({ input, ctx }) => {
-      const generatedMerchatRef = `trx_open_${uniqueCharacter()}`
-
       try {
         const res = (await ctx.tripay.createOpenTransaction({
           method: input.paymentMethod,
-          merchant_ref: generatedMerchatRef,
+          merchant_ref: input.merchantRef,
           customer_name: input.customerName,
         })) as CreateOpenTransactionReturnProps
 
