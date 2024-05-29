@@ -268,15 +268,12 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              // not(
-              //   eq(
-              //     articleTopics.articleId,
-              //     "de749d11-2438-4521-99a1-847f5d37b103",
-              //   ),
-              // ),
-              input.cursor ? lt(articles.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(articles.updatedAt, new Date(input.cursor))
+                : undefined,
             ),
           limit: limit + 1,
+          orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
             featuredImage: true,
           },
@@ -368,9 +365,12 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              input.cursor ? lt(articles.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(articles.updatedAt, new Date(input.cursor))
+                : undefined,
             ),
           limit: limit + 1,
+          orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
             featuredImage: true,
             topics: true,
@@ -467,9 +467,12 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              input.cursor ? lt(articles.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(articles.updatedAt, new Date(input.cursor))
+                : undefined,
             ),
           limit: limit + 1,
+          orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
             featuredImage: true,
             authors: true,
@@ -524,10 +527,13 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              input.cursor ? lt(articles.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(articles.updatedAt, new Date(input.cursor))
+                : undefined,
               not(eq(articles.id, input.currentArticleId)),
             ),
           limit: limit + 1,
+          orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
             featuredImage: true,
             topics: true,

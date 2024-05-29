@@ -181,9 +181,12 @@ export const promoRouter = createTRPCRouter({
             and(
               eq(promos.language, input.language),
               eq(promos.status, "published"),
-              input.cursor ? lt(promos.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(promos.updatedAt, new Date(input.cursor))
+                : undefined,
             ),
           limit: limit + 1,
+          orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
           with: {
             featuredImage: true,
           },
@@ -233,10 +236,13 @@ export const promoRouter = createTRPCRouter({
             and(
               eq(promos.language, input.language),
               eq(promos.status, "published"),
-              input.cursor ? lt(promos.updatedAt, input.cursor) : undefined,
+              input.cursor
+                ? lt(promos.updatedAt, new Date(input.cursor))
+                : undefined,
               not(eq(promos.id, input.currentPromoId)),
             ),
           limit: limit + 1,
+          orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
           with: {
             featuredImage: true,
           },

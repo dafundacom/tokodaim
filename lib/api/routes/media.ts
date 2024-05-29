@@ -52,8 +52,11 @@ export const mediaRouter = createTRPCRouter({
 
         const data = await ctx.db.query.medias.findMany({
           where: (medias, { lt }) =>
-            input.cursor ? lt(medias.updatedAt, input.cursor!) : undefined,
+            input.cursor
+              ? lt(medias.updatedAt, new Date(input.cursor!))
+              : undefined,
           limit: limit + 1,
+          orderBy: (medias, { desc }) => [desc(medias.updatedAt)],
         })
 
         let nextCursor: Date | undefined = undefined
