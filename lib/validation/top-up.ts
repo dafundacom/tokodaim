@@ -126,32 +126,38 @@ const topUpInput = {
     .string({
       invalid_type_error: "Featured Image must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   coverImage: z
     .string({
       invalid_type_error: "Cover Image must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   productIcon: z
     .string({
       invalid_type_error: "Product Icon must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   guideImage: z
     .string({
       invalid_type_error: "Guide Image must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   description: z
     .string({
       invalid_type_error: "Description must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   instruction: z
     .string({
       invalid_type_error: "Instruction must be a string",
     })
-    .optional(),
+    .optional()
+    .nullish(),
   featured: z.boolean({
     required_error: "Featured is required",
     invalid_type_error: "Featured must be a boolean",
