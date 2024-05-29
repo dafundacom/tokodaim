@@ -1,10 +1,15 @@
 ## TODO: 
 - [ ] add data from settings db to all page (with amp too)
 - [ ] add amp promo
-- [ ] add isFeatured to edit top up product
-- [ ] sort top up product by isFeatured first at homepage
-- [ ] add isFeatured to promo
+- [x] add featured to edit top up product
+- [ ] sort top up product by featured first at homepage
+- [ ] add featured to promo
 - [ ] add featured promo banner to homepage
-- [ ] make text editor style like textarea style (not text editor extended)
-- [ ] add toolbar and html support to text editor
-- [ ] handle SN from pln top up
+- [x] make text editor style like textarea style (not text editor extended)
+- [x] add toolbar and html support to text editor
+- [ ] add privacy, term of service, refund policy page
+- [ ] finish translate all page
+- [ ] change description top up textare to text editor extended and show in top up page
+- [ ] add metadata and json ld to all page
+
+
