@@ -24,7 +24,7 @@ const GlobalNav: React.FC = async () => {
         {session && (
           <NextLink
             className="group relative flex h-[92px] w-[92px] flex-1 flex-col items-center justify-center overflow-hidden text-base text-foreground transition-all hover:bg-muted"
-            href="/top-up/order"
+            href="/user/order"
           >
             <Icon.Transaction className="mb-2 h-[20px] w-[20px] text-inherit transition-all" />
             <span className="text-inherit transition-all">{t("order")}</span>

@@ -282,7 +282,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             fee: data?.total_fee!,
             total: total,
             paymentProvider: "tripay" as const,
-            expiredAt: new Date(data.expired_time),
+            expiredAt: new Date(data.expired_time * 1000),
             status: "unpaid" as const,
             ...(session?.user?.id && { userId: session.user.id }),
             paidAt: new Date(),
