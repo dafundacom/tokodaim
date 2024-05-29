@@ -5,10 +5,10 @@ import dynamicFn from "next/dynamic"
 import env from "@/env.mjs"
 import type { LanguageType } from "@/lib/validation/language"
 
-const DashboardArticleContent = dynamicFn(
+const DashboardPromoeContent = dynamicFn(
   async () => {
-    const DashboardArticleContent = await import("./content")
-    return DashboardArticleContent
+    const DashboardPromoeContent = await import("./content")
+    return DashboardPromoeContent
   },
   {
     ssr: false,
@@ -23,20 +23,20 @@ export function generateMetadata({
   const { locale } = params
 
   return {
-    title: "Article Dashboard",
-    description: "Article Dashboard",
+    title: "Promoe Dashboard",
+    description: "Promoe Dashboard",
     alternates: {
       canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/topic/`,
     },
     openGraph: {
-      title: "Article Dashboard",
-      description: "Article Dashboard",
+      title: "Promoe Dashboard",
+      description: "Promoe Dashboard",
       url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/topic/`,
       locale: locale,
     },
   }
 }
 
-export default function DashboardArticleage() {
-  return <DashboardArticleContent />
+export default function DashboardPromoeage() {
+  return <DashboardPromoeContent />
 }
