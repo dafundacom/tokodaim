@@ -23,6 +23,7 @@ export const topUpOrders = pgTable("top_up_orders", {
   accountId: text("account_id").notNull(),
   sku: text("sku").notNull(),
   productName: text("product_name").notNull(),
+  ign: text("ign"),
   customerName: text("customer_name"),
   customerEmail: text("customer_email"),
   customerPhone: text("customer_phone").notNull(),

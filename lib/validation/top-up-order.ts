@@ -34,6 +34,11 @@ const topUpOrderInput = {
     required_error: "Product Name is required",
     invalid_type_error: "Product Name must be a string",
   }),
+  ign: z
+    .string({
+      invalid_type_error: "IGN must be a string",
+    })
+    .optional(),
   price: z.number({
     required_error: "Price is required",
     invalid_type_error: "Price must be a number",
