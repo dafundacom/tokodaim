@@ -22,7 +22,9 @@ export default function DashboardTopUpContent() {
     perPage: perPage,
   })
 
-  const lastPage = topUps && Math.ceil(topUps.length / perPage)
+  const { data: topUpsCount } = api.topUp.count.useQuery()
+
+  const lastPage = topUpsCount && Math.ceil(topUpsCount / perPage)
 
   React.useEffect(() => {
     if (lastPage && page && parseInt(page) !== 1 && parseInt(page) > lastPage) {

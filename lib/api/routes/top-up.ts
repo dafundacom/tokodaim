@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { eq, sql } from "drizzle-orm"
+import { count, eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
@@ -123,6 +123,23 @@ export const topUpRouter = createTRPCRouter({
       return data
     } catch (error) {
       console.error("Error:", error)
+    }
+  }),
+  count: adminProtectedProcedure.query(async ({ ctx }) => {
+    try {
+      const data = await ctx.db.select({ value: count() }).from(topUps)
+
+      return data[0].value
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
     }
   }),
   update: adminProtectedProcedure
