@@ -120,6 +120,30 @@ export const topUpRouter = createTRPCRouter({
       console.error("Error:", error)
     }
   }),
+  search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    try {
+      const data = await ctx.db.query.topUps.findMany({
+        where: (topUps, { ilike, or }) =>
+          or(
+            ilike(topUps.brand, `%${input}%`),
+            ilike(topUps.slug, `%${input}%`),
+          ),
+        limit: 10,
+      })
+
+      return data
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
+    }
+  }),
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(topUps)

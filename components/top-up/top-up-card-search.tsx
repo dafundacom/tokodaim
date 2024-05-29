@@ -5,9 +5,7 @@ import Image from "@/components/image"
 import { Icon } from "@/components/ui/icon"
 import type { SelectTopUps } from "@/lib/db/schema/top-up"
 
-type TopUpDataProps = Pick<SelectTopUps, "brand" | "slug"> & {
-  featuredImage?: string
-}
+type TopUpDataProps = Pick<SelectTopUps, "brand" | "slug" | "featuredImage">
 
 interface TopUpCardSearchProps {
   topUp: TopUpDataProps

@@ -3,11 +3,11 @@
 import * as React from "react"
 
 import ArticleCardSearch from "@/components/article/article-card-search"
-import TopicCardSearch from "@/components/topic/topic-card-search"
+import PromoCardSearch from "@/components/promo/promo-card-search"
+import TopUpCardSearch from "@/components/top-up/top-up-card-search"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
-import UserCardSearch from "@/components/user/user-card-search"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -36,12 +36,12 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
     language: locale,
   })
 
-  const { data: topics } = api.topic.search.useQuery({
+  const { data: promos } = api.promo.search.useQuery({
     searchQuery,
     language: locale,
   })
 
-  const { data: users } = api.user.search.useQuery(searchQuery)
+  const { data: topUps } = api.topUp.search.useQuery(searchQuery)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -96,6 +96,26 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
               }}
               aria-expanded={searchVisibility ? "true" : "false"}
             >
+              {topUps && topUps.length > 0 && (
+                <>
+                  <h4 className="mb-2 border-b">{t("top_up")}</h4>
+                  <div className="flex flex-col">
+                    {topUps.map((topUp) => (
+                      <TopUpCardSearch key={topUp.slug} topUp={topUp} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {promos && promos.length > 0 && (
+                <>
+                  <h4 className="mb-2 border-b">{t("promo")}</h4>
+                  <div className="flex flex-col">
+                    {promos.map((promo) => (
+                      <PromoCardSearch key={promo.slug} promo={promo} />
+                    ))}
+                  </div>
+                </>
+              )}
               {articles && articles.length > 0 && (
                 <>
                   <h4 className="mb-2 border-b">{t("article")}</h4>
@@ -106,29 +126,9 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
                   </div>
                 </>
               )}
-              {topics && topics.length > 0 && (
-                <>
-                  <h4 className="mb-2 border-b">{t("topic")}</h4>
-                  <div className="flex flex-col">
-                    {topics.map((topic) => (
-                      <TopicCardSearch key={topic.slug} topic={topic} />
-                    ))}
-                  </div>
-                </>
-              )}
-              {users && users.length > 0 && (
-                <>
-                  <h4 className="mb-2 border-b">{t("user")}</h4>
-                  <div className="flex flex-col">
-                    {users.map((user) => (
-                      <UserCardSearch key={user.username} user={user} />
-                    ))}
-                  </div>
-                </>
-              )}
               {(!articles || articles.length === 0) &&
-                (!topics || topics.length === 0) &&
-                (!users || users.length === 0) && (
+                (!promos || promos.length === 0) &&
+                (!topUps || topUps.length === 0) && (
                   <p className="semibold text-lg">{ts("not_found")}</p>
                 )}
             </div>
