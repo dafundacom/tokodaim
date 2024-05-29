@@ -8,7 +8,6 @@ import { redirect } from "next/navigation"
 import Image from "@/components/image"
 import env from "@/env.mjs"
 import { getSession } from "@/lib/auth/utils"
-import { checkIgn } from "@/lib/check-ign"
 import { api } from "@/lib/trpc/server"
 
 const TopUpForm = dynamicFn(
@@ -75,7 +74,7 @@ export default async function TopUpPage({
     return redirect("/")
   }
   return (
-    <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 px-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] min-[1200px]:max-w-[1170px]">
+    <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] lg:px-4 min-[1200px]:max-w-[1170px]">
       {topUp && topUpProducts ? (
         <>
           <div className="flex flex-col lg:flex-row lg:space-x-2">
@@ -123,7 +122,7 @@ export default async function TopUpPage({
                 </div>
               )}
             </div>
-            <div className="w-full overflow-hidden rounded-lg bg-background lg:w-2/3">
+            <div className="w-full overflow-hidden rounded-lg border bg-background lg:w-2/3 lg:p-5">
               <TopUpForm
                 session={session}
                 topUpProducts={topUpProducts}
@@ -135,36 +134,42 @@ export default async function TopUpPage({
               />
             </div>
           </div>
-          {topUp && (
-            <div className="mt-40">
-              <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
-                Kamu Punya Pertanyaan?
-              </h2>
-              <details open className="mb-4 overflow-hidden rounded-2xl border">
-                <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
-                  <span>
-                    Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
-                  </span>
-                </summary>
-                <div className="p-4 text-sm">
-                  {topUp?.instruction && (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: topUp?.instruction! }}
-                    />
-                  )}
-                  {topUp?.guideImage && (
-                    <div className="relative h-[200px] w-full">
-                      <Image
-                        src={topUp?.guideImage!}
-                        alt={topUp.brand}
-                        className="object-contain"
+          {topUp.instruction ??
+            (topUp.guideImage && (
+              <div className="mt-40">
+                <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
+                  Kamu Punya Pertanyaan?
+                </h2>
+                <details
+                  open
+                  className="mb-4 overflow-hidden rounded-2xl border"
+                >
+                  <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
+                    <span>
+                      Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
+                    </span>
+                  </summary>
+                  <div className="p-4 text-sm">
+                    {topUp?.instruction && (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: topUp?.instruction!,
+                        }}
                       />
-                    </div>
-                  )}
-                </div>
-              </details>
-            </div>
-          )}
+                    )}
+                    {topUp?.guideImage && (
+                      <div className="relative h-[200px] w-full">
+                        <Image
+                          src={topUp?.guideImage!}
+                          alt={topUp.brand}
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </details>
+              </div>
+            ))}
           <hr className="border-t" />
         </>
       ) : (
