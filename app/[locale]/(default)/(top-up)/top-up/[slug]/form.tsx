@@ -421,7 +421,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                     price={idrPrice}
                     active={selectedProductPrice}
                     brand={topUp.brand}
-                    productName={topUpProduct.sku}
+                    productName={topUpProduct.productName}
                     onSelect={() => {
                       handleSelectPrice(topUpProduct, priceWithProfit)
                       setSelectedProductPrice(name!)
