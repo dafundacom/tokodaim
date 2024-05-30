@@ -157,7 +157,7 @@ function CheckTopUp() {
                                   : "warning"
                             }
                           >
-                            {paymentData?.status}
+                            {paymentData?.status.toLowerCase()}
                           </Badge>
                         </span>
                       </div>
