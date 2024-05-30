@@ -1,6 +1,7 @@
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
 
+import CheckTopUp from "@/components/top-up/check-top-up"
 import OrderItemCard from "@/components/top-up/order-item-card"
 import { Button } from "@/components/ui/button"
 import { getSession } from "@/lib/auth/utils"
@@ -16,7 +17,8 @@ export default async function UserOrderPage() {
 
   return (
     <div className="mt-4 md:mt-10">
-      <section>
+      <CheckTopUp />
+      <section className="mt-[200px] rounded-md p-4">
         <div className="mb-[14px] items-center justify-between md:mb-6 lg:flex">
           <h2 className="mb-[14px] text-base font-bold md:text-2xl lg:mb-0">
             Daftar Transaksi

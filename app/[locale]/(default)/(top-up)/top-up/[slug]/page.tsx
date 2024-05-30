@@ -115,7 +115,7 @@ export default async function TopUpPage({
                         </li>
                       </ol>
                       <p className="text-bold text-center text-sm text-foreground">
-                        Top Up Buka 24 Jam
+                        Top Up Buka 24 Jam, Kiamat buka setengah hari.
                       </p>
                     </>
                   )}

@@ -21,16 +21,14 @@ const GlobalNav: React.FC = async () => {
             {t("home")}
           </span>
         </NextLink>
-        {session && (
-          <NextLink
-            className="group relative flex h-[92px] w-[92px] flex-1 flex-col items-center justify-center overflow-hidden text-base text-foreground transition-all hover:bg-muted"
-            href="/user/order"
-          >
-            <Icon.Transaction className="mb-2 h-[20px] w-[20px] text-inherit transition-all" />
-            <span className="text-inherit transition-all">{t("order")}</span>
-            <span className="absolute bottom-[-4px] left-auto right-auto h-1 w-[72px] bg-primary"></span>
-          </NextLink>
-        )}
+        <NextLink
+          className="group relative flex h-[92px] w-[92px] flex-1 flex-col items-center justify-center overflow-hidden text-base text-foreground transition-all hover:bg-muted"
+          href={session ? "/user/order" : "/top-up/order"}
+        >
+          <Icon.Transaction className="mb-2 h-[20px] w-[20px] text-inherit transition-all" />
+          <span className="text-inherit transition-all">{t("order")}</span>
+          <span className="absolute bottom-[-4px] left-auto right-auto h-1 w-[72px] bg-primary"></span>
+        </NextLink>
         <NextLink
           className="group relative flex h-[92px] w-[92px] flex-1 flex-col items-center justify-center overflow-hidden text-base text-foreground transition-all hover:bg-muted"
           href="/promo"
