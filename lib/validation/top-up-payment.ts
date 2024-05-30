@@ -5,7 +5,6 @@ export const TOP_UP_PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
 export const TOP_UP_PAYMENT_METHOD = [
   "MYBVA",
   "PERMATAVA",
-  "DANA",
   "BNIVA",
   "BRIVA",
   "MANDIRIVA",
@@ -16,6 +15,7 @@ export const TOP_UP_PAYMENT_METHOD = [
   "SAMPOERNAVA",
   "BSIVA",
   "DANAMONVA",
+  "DANA",
   "ALFAMART",
   "INDOMARET",
   "ALFAMIDI",
@@ -23,8 +23,8 @@ export const TOP_UP_PAYMENT_METHOD = [
   "QRIS",
   "QRIS2",
   "QRISC",
-  "QRISD",
   "SHOPEEPAY",
+  "DANA",
 ] as const
 
 export const TOP_UP_PAYMENT_STATUS = [
