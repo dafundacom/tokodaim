@@ -5,6 +5,7 @@ export const TOP_UP_PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
 export const TOP_UP_PAYMENT_METHOD = [
   "MYBVA",
   "PERMATAVA",
+  "DANA",
   "BNIVA",
   "BRIVA",
   "MANDIRIVA",

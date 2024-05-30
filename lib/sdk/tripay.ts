@@ -15,6 +15,7 @@ export type ClosedPaymentCode =
   | "SAMPOERNAVA"
   | "BSIVA"
   | "DANAMONVA"
+  | "DANA"
   | "ALFAMART"
   | "INDOMARET"
   | "ALFAMIDI"
