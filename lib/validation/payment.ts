@@ -13,6 +13,9 @@ const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
   "SAMPOERNAVA",
   "BSIVA",
   "DANAMONVA",
+  "BSIVA",
+  "OCBCVA",
+  "OTHERBANKVA",
   "ALFAMART",
   "INDOMARET",
   "ALFAMIDI",
@@ -20,8 +23,9 @@ const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
   "QRIS",
   "QRIS2",
   "QRISC",
-  "QRISD",
   "SHOPEEPAY",
+  "DANA",
+  "QRIS_SHOPEEPAY",
 ] as const
 
 export const paymentTripayClosedPaymentCodeType = z.enum(

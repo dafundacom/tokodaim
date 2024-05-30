@@ -15,6 +15,9 @@ export const TOP_UP_PAYMENT_METHOD = [
   "SAMPOERNAVA",
   "BSIVA",
   "DANAMONVA",
+  "BSIVA",
+  "OCBCVA",
+  "OTHERBANKVA",
   "ALFAMART",
   "INDOMARET",
   "ALFAMIDI",
@@ -22,8 +25,9 @@ export const TOP_UP_PAYMENT_METHOD = [
   "QRIS",
   "QRIS2",
   "QRISC",
-  "QRISD",
   "SHOPEEPAY",
+  "DANA",
+  "QRIS_SHOPEEPAY",
 ] as const
 
 export const TOP_UP_PAYMENT_STATUS = [

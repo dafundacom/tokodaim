@@ -15,6 +15,9 @@ export type ClosedPaymentCode =
   | "SAMPOERNAVA"
   | "BSIVA"
   | "DANAMONVA"
+  | "BSIVA"
+  | "OCBCVA"
+  | "OTHERBANKVA"
   | "ALFAMART"
   | "INDOMARET"
   | "ALFAMIDI"
@@ -22,8 +25,9 @@ export type ClosedPaymentCode =
   | "QRIS"
   | "QRIS2"
   | "QRISC"
-  | "QRISD"
   | "SHOPEEPAY"
+  | "DANA"
+  | "QRIS_SHOPEEPAY"
 
 export type OpenPaymentCode =
   | "BNIVAOP"
