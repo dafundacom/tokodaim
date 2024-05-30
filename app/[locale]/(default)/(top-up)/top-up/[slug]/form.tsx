@@ -41,7 +41,7 @@ import type {
   ClosedPaymentCode as PaymentMethodProps,
 } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
-import { uniqueCharacter } from "@/lib/utils"
+import { cuid } from "@/lib/utils"
 import {
   calculateTotalPriceWithProfit,
   changePriceToIDR,
@@ -320,6 +320,9 @@ const TopUpForm = (props: TopUpFormProps) => {
       },
     })
 
+  const generatedInvoiceId = selectedTopUpProduct?.sku + cuid()
+  const invoiceId = generatedInvoiceId.toUpperCase()
+
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
     (data) => {
       if (!queryAccountId) {
@@ -334,11 +337,10 @@ const TopUpForm = (props: TopUpFormProps) => {
       } else if (selectedTopUpProduct && paymentMethod) {
         try {
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
-          const merchantRef =
-            selectedTopUpProduct.sku + uniqueCharacter().toUpperCase()
+
           postTripayTransactionClosed({
             ...data,
-            merchantRef: merchantRef,
+            merchantRef: invoiceId,
             paymentMethod:
               `${paymentMethod.code}` as unknown as PaymentMethodProps,
             amount: total,
@@ -354,7 +356,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               },
             ],
             callbackUrl: `${env.NEXT_PUBLIC_API}/payment/tripay/callback`,
-            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/details/${merchantRef}`,
+            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/details/${invoiceId}`,
             expiredTime: Math.floor(new Date().getTime() / 1000) + 24 * 60 * 60,
           })
         } catch (error) {
@@ -364,6 +366,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       }
     },
     [
+      invoiceId,
       queryAccountId,
       selectedTopUpProduct,
       paymentMethod,
