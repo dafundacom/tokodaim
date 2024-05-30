@@ -1,11 +1,13 @@
 import crypto from "crypto"
 import { headers } from "next/headers"
 import { NextResponse, type NextRequest } from "next/server"
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
 import { topUpPayments } from "@/lib/db/schema/top-up-payment"
+import { vouchers } from "@/lib/db/schema/voucher"
+import { digiflazz } from "@/lib/digiflazz"
 import type { PaymentStatus } from "@/lib/validation/payment"
 
 const privateKey =
@@ -84,6 +86,43 @@ export async function POST(request: NextRequest) {
             { success: false, message: "Unrecognized payment status" },
             { status: 400 },
           )
+      }
+
+      if (updateStatus === "paid") {
+        const orderDetails = await db.query.topUpOrders.findFirst({
+          where: (topUpOrder, { eq }) => eq(topUpOrder.invoiceId, invoiceId),
+          orderBy: (topUpOrder, { desc }) => [desc(topUpOrder.createdAt)],
+        })
+
+        if (orderDetails && orderDetails.provider === "digiflazz") {
+          if (typeof orderDetails.voucherCode === "string") {
+            const voucherCode = orderDetails.voucherCode
+            const voucherData = await db.query.vouchers.findFirst({
+              where: (voucher, { eq }) => eq(voucher.voucherCode, voucherCode),
+            })
+
+            if (voucherData) {
+              await db
+                .update(vouchers)
+                .set({
+                  ...voucherData,
+                  voucherAmount: voucherData.voucherAmount - 1,
+                  updatedAt: sql`CURRENT_TIMESTAMP`,
+                })
+                .where(eq(vouchers.id, voucherData.id))
+                .returning()
+            }
+          }
+
+          const topUpPayload = {
+            sku: orderDetails?.sku,
+            testing: env.APP_ENV === "development" ? true : false,
+            customerNo: orderDetails?.accountId,
+            refId: invoiceId,
+            msg: "TopUp",
+          }
+          await digiflazz.transaksi(topUpPayload)
+        }
       }
 
       await db

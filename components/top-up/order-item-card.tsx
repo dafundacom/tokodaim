@@ -40,10 +40,10 @@ const OrderItemCard = (props: OrderItemProps) => {
   }
 
   return (
-    <div className="mb-3 last:mb-0 md:mb-5">
+    <div className="mb-0">
       <a
         className="flex h-full w-full cursor-pointer flex-col rounded-[20px] bg-background p-4 shadow-lg active:opacity-30 md:p-5"
-        href={`/top-up/order/details?reference=${invoiceId}`}
+        href={`/top-up/order/details/${invoiceId}`}
       >
         <div className="mb-3 flex items-center justify-between md:mb-4">
           <div className="text-xs md:text-sm">

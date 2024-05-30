@@ -59,7 +59,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
 
   if (topUpServerList) {
     return (
-      <>
+      <div>
         <FormLabel>Server</FormLabel>
         <Select
           onValueChange={() => handleSelectChange}
@@ -76,7 +76,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
             ))}
           </SelectContent>
         </Select>
-      </>
+      </div>
     )
   }
   return (
@@ -84,7 +84,6 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
       <FormLabel>Server</FormLabel>
       <Input
         onChange={handleInputChange}
-        type="number"
         value={queryTopUpServer}
         placeholder={t("server_placeholder")}
       />
@@ -137,6 +136,23 @@ export const topUpGamesWithServer = [
       { value: "90002", name: "Midnight Party" },
       { value: "90002003", name: "Memory of Faith" },
       { value: "90002004", name: "Valhalla Glory" },
+    ],
+  },
+  {
+    name: "Punishing Gray Raven",
+    gameServers: [
+      { value: "5000", name: "Asia Pasific" },
+      { value: "5001", name: "Europe" },
+      { value: "5002", name: "North America" },
+    ],
+  },
+  {
+    name: "Honkai Star Rail",
+    gameServers: [
+      { value: "os_usa", name: "America" },
+      { value: "os_asia", name: "Asia" },
+      { value: "os_euro", name: "Europe" },
+      { value: "os_cht", name: "Taiwan, Hongkong, Macau" },
     ],
   },
 ]
