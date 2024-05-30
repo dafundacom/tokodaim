@@ -41,6 +41,7 @@ import type {
   ClosedPaymentCode as PaymentMethodProps,
 } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
+import { cuid } from "@/lib/utils"
 import {
   calculateTotalPriceWithProfit,
   changePriceToIDR,
@@ -314,6 +315,9 @@ const TopUpForm = (props: TopUpFormProps) => {
       },
     })
 
+  const generatedInvoiceId = selectedTopUpProduct?.sku + cuid()
+  const invoiceId = generatedInvoiceId.toUpperCase()
+
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
     (data) => {
       if (!queryAccountId) {
@@ -330,6 +334,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
           postTripayTransactionClosed({
             ...data,
+            merchantRef: invoiceId,
             paymentMethod:
               `${paymentMethod.code}` as unknown as PaymentMethodProps,
             amount: total,
@@ -355,6 +360,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       }
     },
     [
+      invoiceId,
       queryAccountId,
       selectedTopUpProduct,
       paymentMethod,
