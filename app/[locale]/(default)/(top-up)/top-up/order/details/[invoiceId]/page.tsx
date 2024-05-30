@@ -42,10 +42,11 @@ export default async function TransactionPage({
   const { tripay_reference } = searchParams
   const orderDetails = await api.topUpOrder.byInvoiceId(invoiceId ?? "")
 
-  const paymentDetails = await api.payment.tripayClosedTransactionDetail(
+  const tripayPaymentDetails = await api.payment.tripayClosedTransactionDetail(
     tripay_reference ?? "",
   )
 
+  const paymentDetails = await api.topUpPayment.byInvoiceId(invoiceId ?? "")
   return (
     <section>
       {!orderDetails && (
@@ -55,6 +56,7 @@ export default async function TransactionPage({
       )}
       <DetailTransactionContent
         orderDetails={orderDetails!}
+        tripayPaymentDetails={tripayPaymentDetails!}
         paymentDetails={paymentDetails!}
       />
     </section>

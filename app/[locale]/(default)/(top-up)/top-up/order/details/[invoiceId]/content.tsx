@@ -6,18 +6,19 @@ import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import type { SelectTopUpOrder } from "@/lib/db/schema"
+import type { SelectTopUpOrder, SelectTopUpPayment } from "@/lib/db/schema"
 import type { CreateClosedTransactionReturnProps } from "@/lib/sdk/tripay"
 import { copyToClipboard } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
 interface DetailTransactionContentProps {
   orderDetails: SelectTopUpOrder
-  paymentDetails?: CreateClosedTransactionReturnProps["data"]
+  tripayPaymentDetails?: CreateClosedTransactionReturnProps["data"]
+  paymentDetails?: SelectTopUpPayment
 }
 
 export function DetailTransactionContent(props: DetailTransactionContentProps) {
-  const { orderDetails, paymentDetails } = props
+  const { orderDetails, tripayPaymentDetails, paymentDetails } = props
 
   React.useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -38,16 +39,16 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
           <div className="max-w-3xl">
             <h1 className="text-base font-medium">Thank you!</h1>
             <p className="mt-2 text-4xl font-bold tracking-tight">
-              {paymentDetails?.status !== "PAID"
+              {paymentDetails?.status !== "paid"
                 ? "Please complete the payment."
                 : "Payment has been successful"}
             </p>
             <p className="mt-2 text-base">
               Your order
               <span className="font-semibold">
-                {` ${paymentDetails?.merchant_ref ?? orderDetails.invoiceId} `}
+                {` ${paymentDetails?.invoiceId ?? orderDetails.invoiceId} `}
               </span>
-              {paymentDetails?.status !== "PAID"
+              {paymentDetails?.status !== "paid"
                 ? "is waiting for payment before it is sent."
                 : "is being sent."}
             </p>
@@ -58,12 +59,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
           <div className="flex flex-col gap-x-8 border-b py-12 md:flex-row">
             <div className="-mt-2 flex gap-8 md:mt-0">
               <div className="relative mt-2 flex-none overflow-hidden sm:h-56 md:mt-0 md:block print:hidden">
-                {paymentDetails?.order_items[0]?.product_url && (
+                {tripayPaymentDetails?.order_items[0]?.product_url && (
                   <div className="relative aspect-[4/6] h-32 w-auto sm:h-56">
                     <Image
-                      className="rounded-lg object-cover"
-                      src={paymentDetails?.order_items[0]?.product_url ?? ""}
-                      alt={paymentDetails?.order_items[0]?.name ?? ""}
+                      className="object-cover"
+                      src={
+                        tripayPaymentDetails?.order_items[0]?.product_url ?? ""
+                      }
+                      alt={tripayPaymentDetails?.order_items[0]?.name ?? ""}
                     />
                   </div>
                 )}
@@ -108,7 +111,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                   <dd>
                     <div className="flex items-start space-x-4">
                       <div className="text-sm">
-                        {paymentDetails?.payment_name}
+                        {tripayPaymentDetails?.payment_name}
                       </div>
                     </div>
                   </dd>
@@ -159,9 +162,9 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                       <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
                         <Badge
                           variant={
-                            paymentDetails?.status === "PAID"
+                            paymentDetails?.status === "paid"
                               ? "success"
-                              : paymentDetails?.status === "UNPAID"
+                              : paymentDetails?.status === "unpaid"
                                 ? "danger"
                                 : "warning"
                           }
@@ -170,7 +173,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                         </Badge>
                       </span>
                     </div>
-                    {paymentDetails?.pay_code && (
+                    {tripayPaymentDetails?.pay_code && (
                       <>
                         <div className="col-span-3 md:col-span-4">
                           Payment Code
@@ -179,13 +182,13 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                           <Button
                             aria-label="Copy Payment Code"
                             onClick={() =>
-                              copyToClipboard(paymentDetails?.pay_code)
+                              copyToClipboard(tripayPaymentDetails?.pay_code)
                             }
                             type="button"
                             className="flex items-center space-x-2 rounded-md border px-2.5 py-1 print:hidden"
                           >
                             <div className="max-w-[172px] truncate md:w-auto">
-                              {paymentDetails?.pay_code}
+                              {tripayPaymentDetails?.pay_code}
                             </div>
                             <Icon.Copy aria-label="Copy Payment Code" />
                           </Button>
@@ -194,7 +197,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                     )}
                     <div className="col-span-3 md:col-span-4">Message</div>
                     <div className="col-span-5 md:col-span-4">
-                      {paymentDetails?.status !== "PAID"
+                      {paymentDetails?.status !== "paid"
                         ? "Menunggu pembayaran..."
                         : "Pembayaran berhasil"}
                     </div>
@@ -202,11 +205,11 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                 </div>
               </dl>
               <div className="mt-8 print:hidden">
-                {paymentDetails?.checkout_url &&
-                  paymentDetails?.status === "UNPAID" && (
+                {tripayPaymentDetails?.checkout_url &&
+                  tripayPaymentDetails?.status === "UNPAID" && (
                     <a
                       aria-label="Lanjutkan Pembayaran"
-                      href={paymentDetails?.checkout_url}
+                      href={tripayPaymentDetails?.checkout_url}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -218,14 +221,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               </div>
             </div>
           </div>
-          {paymentDetails?.status === "UNPAID" && (
+          {tripayPaymentDetails?.status === "UNPAID" && (
             <div>
               <dl className="space-y-6 py-6 text-sm">
                 <div className="flex justify-between">
                   <dt className="font-medium">Subtotal</dt>
                   <dd>
                     {changePriceToIDR(
-                      paymentDetails?.amount - (orderDetails?.fee ?? 0),
+                      tripayPaymentDetails?.amount - (orderDetails?.fee ?? 0),
                     )}
                   </dd>
                 </div>
@@ -241,29 +244,29 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                     <Button
                       aria-label="Copy Total Payment"
                       onClick={() =>
-                        copyToClipboard(`${paymentDetails?.amount}` ?? "")
+                        copyToClipboard(`${paymentDetails?.total}` ?? "")
                       }
                       type="button"
                       className="!flex items-center space-x-2 rounded-md border px-2.5 py-1 text-xl md:text-2xl print:hidden"
                     >
                       <div className="max-w-[172px] truncate md:w-auto">
-                        {changePriceToIDR(paymentDetails?.amount ?? 0)}
+                        {changePriceToIDR(paymentDetails?.total ?? 0)}
                       </div>
                       <Icon.Copy aria-label="Copy Total Payment" />
                     </Button>
                     <span className="hidden print:block">
-                      {changePriceToIDR(paymentDetails?.amount ?? 0)}
+                      {changePriceToIDR(paymentDetails?.total ?? 0)}
                     </span>
                   </dd>
                 </div>
               </dl>
             </div>
           )}
-          {paymentDetails?.status === "UNPAID" && (
+          {tripayPaymentDetails?.status === "UNPAID" && (
             <div className="flex-grow rounded-md p-5 shadow-md">
               <h2 className="mb-3 text-xl font-bold">Cara Membayar</h2>
               <div className="space-y-4">
-                {paymentDetails?.instructions.map(
+                {tripayPaymentDetails?.instructions.map(
                   (instructions: { title: string; steps: string[] }) => {
                     return (
                       <details key={instructions.title}>

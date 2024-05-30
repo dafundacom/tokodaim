@@ -284,7 +284,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
             customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
-            amount: total,
+            amount: total - data?.total_fee!,
             fee: data?.total_fee!,
             total: total,
             paymentProvider: "tripay" as const,

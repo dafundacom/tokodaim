@@ -98,8 +98,9 @@ function CheckTopUp() {
                       <div className="col-span-3 md:col-span-4">
                         Account Data
                       </div>
-                      <div className="col-span-5 md:col-span-4">
-                        {orderData?.accountId}
+                      <div className="col-span-5 flex flex-col md:col-span-4">
+                        {orderData?.ign && <div>{orderData?.ign}</div>}
+                        <div>{orderData?.accountId}</div>
                       </div>
                       <div className="col-span-3 flex items-center md:col-span-4">
                         Invoice Number
