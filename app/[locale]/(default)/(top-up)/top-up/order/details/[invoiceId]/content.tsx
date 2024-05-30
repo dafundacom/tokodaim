@@ -61,7 +61,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                 {paymentDetails?.order_items[0]?.product_url && (
                   <div className="relative aspect-[4/6] h-32 w-auto sm:h-56">
                     <Image
-                      className="object-cover"
+                      className="rounded-lg object-cover"
                       src={paymentDetails?.order_items[0]?.product_url ?? ""}
                       alt={paymentDetails?.order_items[0]?.name ?? ""}
                     />
