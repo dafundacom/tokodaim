@@ -166,7 +166,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                                 : "warning"
                           }
                         >
-                          {paymentDetails?.status}
+                          {paymentDetails?.status.toLowerCase()}
                         </Badge>
                       </span>
                     </div>
