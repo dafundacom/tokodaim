@@ -41,7 +41,7 @@ import type {
   ClosedPaymentCode as PaymentMethodProps,
 } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
-import { cuid } from "@/lib/utils"
+import { uniqueCharacter } from "@/lib/utils"
 import {
   calculateTotalPriceWithProfit,
   changePriceToIDR,
@@ -284,7 +284,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
             customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
-            amount: total,
+            amount: total - data?.total_fee!,
             fee: data?.total_fee!,
             total: total,
             paymentProvider: "tripay" as const,
@@ -320,7 +320,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       },
     })
 
-  const generatedInvoiceId = selectedTopUpProduct?.sku + cuid()
+  const generatedInvoiceId = selectedTopUpProduct?.sku + uniqueCharacter()
   const invoiceId = generatedInvoiceId.toUpperCase()
 
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
