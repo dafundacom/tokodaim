@@ -23,7 +23,7 @@ interface FormData {
   queryInvoice: string
 }
 
-export function CheckTransactionContent() {
+function CheckTopUp() {
   const [queryInvoice, setQueryInvoice] = React.useState("")
   const form = useForm<FormData>()
 
@@ -217,3 +217,5 @@ export function CheckTransactionContent() {
     </section>
   )
 }
+
+export default CheckTopUp

@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
+import CheckTopUp from "@/components/top-up/check-top-up"
 import env from "@/env.mjs"
 import type { LanguageType } from "@/lib/validation/language"
-import { CheckTransactionContent } from "./content"
 
 export function generateMetadata({
   params,
@@ -30,5 +30,5 @@ export function generateMetadata({
 }
 
 export default function CheckTransaction() {
-  return <CheckTransactionContent />
+  return <CheckTopUp />
 }

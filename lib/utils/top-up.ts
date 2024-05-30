@@ -77,48 +77,52 @@ export function getTopUpInputAccountIdDetail(
   id: string,
   server: string | undefined,
 ) {
-  switch (brand) {
-    case "GARENA":
+  switch (brand.toLowerCase()) {
+    case "garena":
       return { accountId: `${id}` }
-    case "MOBILE LEGENDS":
+    case "mobile legends":
       return { accountId: `${id}${server}` }
-    case "POINT BLANK":
-      return { accountId: `${id}` }
-    case "FREE FIRE":
-      return { accountId: `${id}` }
-    case "ARENA OF VALOR":
-      return { accountId: `${id}` }
-    case "Ragnarok M: Eternal Love":
+    case "punishing gray raven":
       return { accountId: `${id}${server}` }
-    case "PUBG MOBILE":
+    case "honkai star rail":
+      return { accountId: `${id}${server}` }
+    case "point blank":
       return { accountId: `${id}` }
-    case "AU2 MOBILE":
+    case "free fire":
       return { accountId: `${id}` }
-    case "Call of Duty MOBILE":
+    case "arena of valor":
       return { accountId: `${id}` }
-    case "Eternal City":
+    case "ragnarok m: eternal love":
+      return { accountId: `${id}${server}` }
+    case "pubg mobile":
       return { accountId: `${id}` }
-    case "Laplace M":
+    case "au2 mobile":
       return { accountId: `${id}` }
-    case "Lords Mobile":
+    case "call of duty mobile":
       return { accountId: `${id}` }
-    case "MangaToon":
+    case "eternal city":
       return { accountId: `${id}` }
-    case "Valorant":
+    case "laplace m":
       return { accountId: `${id}` }
-    case "Genshin Impact":
+    case "lords mobile":
+      return { accountId: `${id}` }
+    case "mangatoon":
+      return { accountId: `${id}` }
+    case "valorant":
+      return { accountId: `${id}` }
+    case "genshin impact":
       return { accountId: `${server}${id}` }
-    case "League of Legends Wild Rift":
+    case "league of legends wild rift":
       return { accountId: `${id}` }
-    case "Tower of Fantasy":
+    case "tower of fantasy":
       return { accountId: `${id}|${server}` }
-    case "TELKOMSEL":
+    case "telkomsel":
       return { accountId: `${id}` }
-    case "GO PAY":
+    case "go pay":
       return { accountId: `${id}` }
-    case "OVO":
+    case "ovo":
       return { accountId: `${id}` }
-    case "DANA":
+    case "dana":
       return { accountId: `${id}` }
     default:
       return { accountId: `${id}` }
@@ -126,48 +130,60 @@ export function getTopUpInputAccountIdDetail(
 }
 
 export function isTopInputTopUpAccountIdWithServer(brand: string) {
-  switch (brand) {
-    case "GARENA":
+  switch (brand.toLowerCase()) {
+    case "garena":
       return { isTopUpServer: false }
-    case "MOBILE LEGENDS":
+    case "mobile legends":
       return { isTopUpServer: true }
-    case "POINT BLANK":
-      return { isTopUpServer: false }
-    case "FREE FIRE":
-      return { isTopUpServer: false }
-    case "ARENA OF VALOR":
-      return { isTopUpServer: false }
-    case "Ragnarok M: Eternal Love":
+    case "punishing gray raven":
       return { isTopUpServer: true }
-    case "PUBG MOBILE":
-      return { isTopUpServer: false }
-    case "AU2 MOBILE":
-      return { isTopUpServer: false }
-    case "Call of Duty MOBILE":
-      return { isTopUpServer: false }
-    case "Eternal City":
-      return { isTopUpServer: false }
-    case "Laplace M":
-      return { isTopUpServer: false }
-    case "Lords Mobile":
-      return { isTopUpServer: false }
-    case "MangaToon":
-      return { isTopUpServer: false }
-    case "Valorant":
-      return { isTopUpServer: false }
-    case "Genshin Impact":
+    case "honkai star rail":
       return { isTopUpServer: true }
-    case "League of Legends Wild Rift":
+    case "honkai impact 3":
       return { isTopUpServer: false }
-    case "Tower of Fantasy":
+    case "auto chess":
+      return { isTopUpServer: false }
+    case "super sus":
+      return { isTopUpServer: false }
+    case "sausage man":
+      return { isTopUpServer: false }
+    case "point blank":
+      return { isTopUpServer: false }
+    case "free fire":
+      return { isTopUpServer: false }
+    case "arena of valor":
+      return { isTopUpServer: false }
+    case "ragnarok m: eternal love":
       return { isTopUpServer: true }
-    case "TELKOMSEL":
+    case "pubg mobile":
       return { isTopUpServer: false }
-    case "GO PAY":
+    case "au2 mobile":
       return { isTopUpServer: false }
-    case "OVO":
+    case "call of duty mobile":
       return { isTopUpServer: false }
-    case "DANA":
+    case "eternal city":
+      return { isTopUpServer: false }
+    case "laplace m":
+      return { isTopUpServer: false }
+    case "lords mobile":
+      return { isTopUpServer: false }
+    case "mangatoon":
+      return { isTopUpServer: false }
+    case "valorant":
+      return { isTopUpServer: false }
+    case "genshin impact":
+      return { isTopUpServer: true }
+    case "league of legends wild rift":
+      return { isTopUpServer: false }
+    case "tower of fantasy":
+      return { isTopUpServer: true }
+    case "telkomsel":
+      return { isTopUpServer: false }
+    case "go pay":
+      return { isTopUpServer: false }
+    case "ovo":
+      return { isTopUpServer: false }
+    case "dana":
       return { isTopUpServer: false }
     default:
       return { isTopUpServer: false }
@@ -200,7 +216,7 @@ export function getFormattedGameNameIfAvailable(
     case "mobile legends":
       data = "Mobile Legends" as const
       break
-    case "punishing: gray raven":
+    case "punishing gray raven":
       data = "Punishing: Gray Raven" as const
       break
     case "sausage man":

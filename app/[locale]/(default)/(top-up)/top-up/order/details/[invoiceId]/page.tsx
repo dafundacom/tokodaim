@@ -1,8 +1,8 @@
 import * as React from "react"
 import type { Metadata } from "next"
 
-import LoadingProgress from "@/components/loading-progress"
 import env from "@/env.mjs"
+import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 import { DetailTransactionContent } from "./content"
 
@@ -31,10 +31,32 @@ export function generateMetadata({
   }
 }
 
-export default function TransactionPage() {
+export default async function TransactionPage({
+  params,
+  searchParams,
+}: {
+  params: { invoiceId: string }
+  searchParams: Record<string, string | undefined>
+}) {
+  const { invoiceId } = params
+  const { tripay_reference } = searchParams
+  const orderDetails = await api.topUpOrder.byInvoiceId(invoiceId ?? "")
+
+  const paymentDetails = await api.payment.tripayClosedTransactionDetail(
+    tripay_reference ?? "",
+  )
+
   return (
-    <React.Suspense fallback={<LoadingProgress />}>
-      <DetailTransactionContent />
-    </React.Suspense>
+    <section>
+      {!orderDetails && (
+        <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
+          <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
+        </div>
+      )}
+      <DetailTransactionContent
+        orderDetails={orderDetails!}
+        paymentDetails={paymentDetails!}
+      />
+    </section>
   )
 }

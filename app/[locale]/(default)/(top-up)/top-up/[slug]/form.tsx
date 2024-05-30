@@ -8,6 +8,7 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import Image from "@/components/image"
 import AddVoucher from "@/components/top-up/add-voucher"
 import InputAccountId from "@/components/top-up/input-account-id"
+import InputCustomerPhone from "@/components/top-up/input-customer-phone"
 import PaymentMethods from "@/components/top-up/payment-methods"
 import SelectTopUpProduct from "@/components/top-up/select-top-up-product"
 import TopUpServer from "@/components/top-up/top-up-server"
@@ -27,7 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Icon } from "@/components/ui/icon"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import env from "@/env.mjs"
@@ -102,6 +102,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   const [queryAccountId, setQueryAccountId] = React.useState("")
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
   const [nickname, setNickname] = React.useState("")
+  const [paymentReference, setPaymentReference] = React.useState("")
   const totalProfit = profit !== null ? parseInt(profit) : 15
 
   const router = useRouter()
@@ -194,7 +195,9 @@ const TopUpForm = (props: TopUpFormProps) => {
   const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
-        router.push(`/top-up/order/details?reference=${data?.invoiceId}`)
+        router.push(
+          `/top-up/order/details/${data.invoiceId}?tripay_reference=${paymentReference}`,
+        )
       }
     },
     onError: (error) => {
@@ -246,6 +249,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     api.payment.tripayCreateClosedTransaction.useMutation({
       onSuccess: (data) => {
         if (data && paymentMethod && selectedTopUpProduct) {
+          setPaymentReference(data.reference!)
           const { accountId } = getTopUpInputAccountIdDetail(
             topUp.brand,
             queryAccountId,
@@ -254,14 +258,14 @@ const TopUpForm = (props: TopUpFormProps) => {
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
 
           const orderInput = {
-            invoiceId: data.reference!,
+            invoiceId: data.merchant_ref!,
             accountId: accountId,
             sku: selectedTopUpProduct?.sku ?? "",
             productName: selectedTopUpProduct.productName,
             price: total - data?.total_fee!,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
-            customerPhone: data.customer_phone,
+            customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
             quantity: 1,
             fee: data?.total_fee!,
             total: total,
@@ -271,14 +275,15 @@ const TopUpForm = (props: TopUpFormProps) => {
             discountAmount: fixedPrice > 0 ? total - fixedPrice : undefined,
             note: noteValue!,
             status: "processing" as const,
+            ign: nickname.length > 0 ? nickname : undefined,
           }
 
           const paymentInput = {
-            invoiceId: data.reference!,
+            invoiceId: data.merchant_ref!,
             paymentMethod: paymentMethod.code as ClosedPaymentCode,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
-            customerPhone: data.customer_phone,
+            customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
             amount: total,
             fee: data?.total_fee!,
             total: total,
@@ -332,6 +337,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       } else if (selectedTopUpProduct && paymentMethod) {
         try {
           const total = fixedPrice > 0 ? fixedPrice : totalAmount
+
           postTripayTransactionClosed({
             ...data,
             merchantRef: invoiceId,
@@ -349,8 +355,8 @@ const TopUpForm = (props: TopUpFormProps) => {
                 image_url: topUp.featuredImage ?? "",
               },
             ],
-            callbackUrl: env.NEXT_PUBLIC_API,
-            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
+            callbackUrl: `${env.NEXT_PUBLIC_API}/payment/tripay/callback`,
+            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/details/${invoiceId}`,
             expiredTime: Math.floor(new Date().getTime() / 1000) + 24 * 60 * 60,
           })
         } catch (error) {
@@ -535,26 +541,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                 </h2>
               </div>
             </div>
-            <FormField
-              control={form.control}
-              name="customerPhone"
-              rules={{
-                required: "Nomor HP harus diisi",
-                pattern: {
-                  value: /^0\d{8,19}$/,
-                  message: "Nomor HP tidak valid",
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nomor HP</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="08123xxxxxxxx" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <InputCustomerPhone form={form} name="customerPhone" />
           </div>
           <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
             <div className="mb-4 flex items-center md:mb-5">
