@@ -24,7 +24,6 @@ export type ClosedPaymentCode =
   | "QRISC"
   | "SHOPEEPAY"
   | "DANA"
-  | "QRIS_SHOPEEPAY"
 
 export type OpenPaymentCode =
   | "BNIVAOP"

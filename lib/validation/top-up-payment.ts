@@ -25,7 +25,6 @@ export const TOP_UP_PAYMENT_METHOD = [
   "QRISC",
   "SHOPEEPAY",
   "DANA",
-  "QRIS_SHOPEEPAY",
 ] as const
 
 export const TOP_UP_PAYMENT_STATUS = [

@@ -23,7 +23,6 @@ const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
   "QRISC",
   "SHOPEEPAY",
   "DANA",
-  "QRIS_SHOPEEPAY",
 ] as const
 
 export const paymentTripayClosedPaymentCodeType = z.enum(
