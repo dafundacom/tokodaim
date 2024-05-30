@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
               where: (voucher, { eq }) => eq(voucher.voucherCode, voucherCode),
             })
 
-            if (voucherData) {
+            if (voucherData && voucherData.voucherAmount > 0) {
               await db
                 .update(vouchers)
                 .set({
@@ -110,7 +110,6 @@ export async function POST(request: NextRequest) {
                   updatedAt: sql`CURRENT_TIMESTAMP`,
                 })
                 .where(eq(vouchers.id, voucherData.id))
-                .returning()
             }
           }
 
