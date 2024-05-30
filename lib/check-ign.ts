@@ -17,6 +17,11 @@ interface CheckIgnParams {
   zone?: string
 }
 
+function sanitizeResult(result: string) {
+  const sanitize = decodeURIComponent(result.replace(/\u002B/g, "%20"))
+  return sanitize
+}
+
 export async function checkIgn({ game, id, zone }: CheckIgnParams) {
   const endpoint = "https://order-sg.codashop.com/initPayment.action"
 
@@ -110,14 +115,25 @@ export async function checkIgn({ game, id, zone }: CheckIgnParams) {
     const response = await fetch(endpoint, requestOptions)
     const res = await response.json()
 
-    const data = {
-      success: res.success,
-      game: res.confirmationFields.productName,
-      name: res.confirmationFields.roles[0].role,
-      id: res.user.userId,
-    }
+    if (game === "Valorant") {
+      const data = {
+        success: res.success,
+        game: res.confirmationFields.productName,
+        name: sanitizeResult(res.confirmationFields.username),
+        id: res.user.userId,
+      }
 
-    return data
+      return data
+    } else {
+      const data = {
+        success: res.success,
+        game: res.confirmationFields.productName,
+        name: res.confirmationFields.roles[0].role,
+        id: res.user.userId,
+      }
+
+      return data
+    }
   } catch (error) {
     throw new Error("Cannot find nickname from your request.")
   }

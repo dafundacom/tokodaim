@@ -34,6 +34,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 200 })
   } catch (error) {
-    return NextResponse.json("Internal Server Error", { status: 500 })
+    console.error(error)
+    return NextResponse.json("Cannot find ign from your request", {
+      status: 500,
+    })
   }
 }
