@@ -112,10 +112,10 @@ export default async function TopUpPage({
                         <li>Klik Order Now &amp; lakukan Pembayaran</li>
                         <li>
                           Tunggu 1 detik pesanan masuk otomatis ke akun Anda
-                        </li>
+                        </li
                       </ol>
                       <p className="text-bold text-center text-sm text-foreground">
-                        Top Up Buka 24 Jam
+                        Top Up Buka 24 Jam, Kiamat buka setengah hari.
                       </p>
                     </>
                   )}
