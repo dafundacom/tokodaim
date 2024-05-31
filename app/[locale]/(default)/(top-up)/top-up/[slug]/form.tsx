@@ -111,12 +111,9 @@ const TopUpForm = (props: TopUpFormProps) => {
     [topUp?.brand],
   )
 
-  function checkGameIdAndServer(
-    game: string,
-    id: string,
-    zone?: string,
-  ): boolean {
-    let isMatch = false
+  function checkGameIdAndServer(game: string, id: string, zone?: string) {
+    let isMatch = true
+    let punishingGrayRavenServerCode: undefined | string
     switch (game.toLocaleLowerCase()) {
       case "genshin impact":
         if (id.startsWith("6") && zone !== "003") {
@@ -136,8 +133,8 @@ const TopUpForm = (props: TopUpFormProps) => {
             description: "informasi akun anda tidak ditemukan",
             variant: "danger",
           })
+          isMatch = false
         }
-        isMatch = false
 
         break
       case "honkai star rail":
@@ -158,21 +155,20 @@ const TopUpForm = (props: TopUpFormProps) => {
             description: "informasi akun anda tidak ditemukan",
             variant: "danger",
           })
+          isMatch = false
         }
-        isMatch = false
         break
-
       case "punishing gray raven":
-        if (!id.startsWith("5") && zone !== "5000") {
-          setTopUpServer("5000")
+        if (zone === "5000") {
+          punishingGrayRavenServerCode = "ap"
           isMatch = true
-        } else if (!id.startsWith("6") && zone !== "5001") {
-          setTopUpServer("5001")
+        } else if (zone === "5001") {
+          punishingGrayRavenServerCode = "eu"
           isMatch = true
-        } else if (!id.startsWith("7") && zone !== "5002") {
-          setTopUpServer("5002")
+        } else if (zone === "5002") {
+          punishingGrayRavenServerCode = "na"
           isMatch = true
-        } else if (!["ap", "eu", "na"].includes(id.charAt(0))) {
+        } else {
           toast({
             description: "informasi akun anda tidak ditemukan",
             variant: "danger",
@@ -184,7 +180,7 @@ const TopUpForm = (props: TopUpFormProps) => {
         setTopUpServer(zone ?? "")
         isMatch = true
     }
-    return isMatch
+    return { isMatch, punishingGrayRavenServerCode }
   }
 
   const handleSelectPaymentMethod = React.useCallback(
@@ -227,12 +223,17 @@ const TopUpForm = (props: TopUpFormProps) => {
         getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)
       ) {
         let isMatch = true
+        let punishingGrayRavenServerCode: undefined | string
+
         if (topUpServer) {
-          isMatch = checkGameIdAndServer(
+          const checkGameData = checkGameIdAndServer(
             selectedTopUpProduct.brand,
             queryAccountId,
             topUpServer,
           )
+          isMatch = checkGameData.isMatch
+          punishingGrayRavenServerCode =
+            checkGameData?.punishingGrayRavenServerCode
         }
         if (isMatch) {
           try {
@@ -241,7 +242,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                 selectedTopUpProduct.brand,
               )!,
               id: queryAccountId,
-              zone: topUpServer ?? undefined,
+              zone: punishingGrayRavenServerCode ?? topUpServer ?? undefined,
             }
             const results = await handleCheckIgn(inputIgn)
 
@@ -252,6 +253,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               }
             }
           } catch (error) {
+            console.error(error)
             toast({
               description: "informasi akun anda tidak ditemukan",
               variant: "danger",
@@ -341,7 +343,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           setPaymentReference(data.reference!)
           const { accountId } = getTopUpInputAccountIdDetail(
             topUp.brand,
-            queryAccountId,
+            decodeURIComponent(queryAccountId),
             topUpServer,
           )
 
@@ -754,7 +756,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                       </>
                     )}
                     <div>Account ID</div>
-                    <div className="col-span-2">{`: ${queryAccountId}`}</div>
+                    <div className="col-span-2">{`: ${decodeURIComponent(queryAccountId)}`}</div>
                     <div>Item</div>
                     <div className="col-span-2">{`: ${selectedTopUpProduct?.productName}`}</div>
                     <div>Product</div>
