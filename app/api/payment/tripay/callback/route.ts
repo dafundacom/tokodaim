@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
   const json = JSON.stringify(request.body)
 
-  const callbackSignature = headers().get("x-callback-signature") ?? ""
+  const callbackSignature = headers().get("X-Callback-Signature") ?? ""
 
   const signature = crypto
     .createHmac("sha256", privateKey)
@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
   }
 
   // Stop if the callback event is not payment_status
-  if (headers().get("x-callback-event") !== "payment_status") {
+  if (headers().get("X-Callback-Event") !== "payment_status") {
     return NextResponse.json(
-      `Unrecognizedc callback event: ${headers().get("x-callback-event")}`,
+      `Unrecognizedc callback event: ${headers().get("X-Callback-Event")}`,
       { status: 400 },
     )
   }
