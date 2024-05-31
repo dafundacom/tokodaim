@@ -95,6 +95,15 @@ export const formatDate = (data: string | Date | null, format: string) => {
   return dayjs(data).format(format)
 }
 
+export function date7DaysFromNow() {
+  const currentDate = new Date()
+  const futureDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000)
+  const year = futureDate.getFullYear()
+  const month = String(futureDate.getMonth() + 1).padStart(2, "0")
+  const day = String(futureDate.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
 export const copyToClipboard = (value: string) => {
   void navigator.clipboard.writeText(value)
 }

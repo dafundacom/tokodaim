@@ -2,7 +2,7 @@ import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import NextLink from "next/link"
-import { BreadcrumbJsonLd } from "next-seo"
+import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
 import {
   Breadcrumb,
@@ -70,6 +70,16 @@ export default async function PromoPage({
           {
             position: 2,
             name: `${env.NEXT_PUBLIC_SITE_URL}/promo`,
+          },
+        ]}
+      />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
           },
         ]}
       />

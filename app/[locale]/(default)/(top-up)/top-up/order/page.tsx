@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
 import CheckTopUp from "@/components/top-up/check-top-up"
 import env from "@/env.mjs"
@@ -30,5 +31,39 @@ export function generateMetadata({
 }
 
 export default function CheckTransaction() {
-  return <CheckTopUp />
+  return (
+    <>
+      <BreadcrumbJsonLd
+        useAppDir={true}
+        itemListElements={[
+          {
+            position: 1,
+            name: env.NEXT_PUBLIC_DOMAIN,
+            item: env.NEXT_PUBLIC_SITE_URL,
+          },
+          {
+            position: 2,
+            name: "Top Up",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up`,
+          },
+          {
+            position: 3,
+            name: "Order",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
+          },
+        ]}
+      />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
+          },
+        ]}
+      />
+      <CheckTopUp />
+    </>
+  )
 }

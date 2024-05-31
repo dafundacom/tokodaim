@@ -2,7 +2,11 @@ import * as React from "react"
 import type { Metadata } from "next"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
-import { ArticleJsonLd, BreadcrumbJsonLd } from "next-seo"
+import {
+  ArticleJsonLd,
+  BreadcrumbJsonLd,
+  SiteLinksSearchBoxJsonLd,
+} from "next-seo"
 
 import Image from "@/components/image"
 import Share from "@/components/share"
@@ -135,6 +139,17 @@ export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
         ]}
         isAccessibleForFree={true}
       />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
+          },
+        ]}
+      />
+
       <section>
         <div className="mb-5 md:mb-10">
           <Breadcrumb>

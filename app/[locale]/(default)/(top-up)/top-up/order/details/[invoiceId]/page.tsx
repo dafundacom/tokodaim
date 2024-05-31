@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Metadata } from "next"
+import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
 import env from "@/env.mjs"
 import { api } from "@/lib/trpc/server"
@@ -47,17 +48,54 @@ export default async function TransactionPage({
   )
 
   return (
-    <section>
-      {!orderDetails && (
-        <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
-          <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
-        </div>
-      )}
-      <DetailTransactionContent
-        orderDetails={orderDetails!}
-        tripayPaymentDetails={tripayPaymentDetails!}
-        paymentDetails={paymentDetails!}
+    <>
+      <BreadcrumbJsonLd
+        useAppDir={true}
+        itemListElements={[
+          {
+            position: 1,
+            name: env.NEXT_PUBLIC_DOMAIN,
+            item: env.NEXT_PUBLIC_SITE_URL,
+          },
+          {
+            position: 2,
+            name: "Top Up",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up`,
+          },
+          {
+            position: 3,
+            name: "Order",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
+          },
+          {
+            position: 4,
+            name: `${invoiceId} Order Details`,
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/${invoiceId}`,
+          },
+        ]}
       />
-    </section>
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
+          },
+        ]}
+      />
+      <section>
+        {!orderDetails && (
+          <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
+            <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
+          </div>
+        )}
+        <DetailTransactionContent
+          orderDetails={orderDetails!}
+          tripayPaymentDetails={tripayPaymentDetails!}
+          paymentDetails={paymentDetails!}
+        />
+      </section>
+    </>
   )
 }
