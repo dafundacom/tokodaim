@@ -22,12 +22,24 @@ export const calculateTotalPrice = (
   price: number,
   flatFee: number | null,
   percentageFee: number | null,
+  minimumFee: number | null,
+  maximumFee: number | null,
 ) => {
+  let totalFee = 0
+  let totalPayment = 0
   const priceWithFlatFee = flatFee !== null ? flatFee + price : price
   const calculatedPercentageFee =
     percentageFee !== null ? (price * percentageFee) / 100 : 0
-  const totalFee = (flatFee ?? 0) + Math.round(calculatedPercentageFee)
-  const totalPayment = priceWithFlatFee + Math.round(calculatedPercentageFee)
+  totalFee = (flatFee ?? 0) + Math.round(calculatedPercentageFee)
+  totalPayment = priceWithFlatFee + Math.round(calculatedPercentageFee)
+  if (minimumFee && totalFee < minimumFee) {
+    totalFee = minimumFee
+    totalPayment = price + minimumFee
+  }
+  if (maximumFee && totalFee > maximumFee) {
+    totalFee = maximumFee
+    totalPayment = price + maximumFee
+  }
 
   return { totalPayment, totalFee }
 }
@@ -207,8 +219,8 @@ export function getFormattedGameNameIfAvailable(
     case "genshin impact":
       data = "Genshin Impact" as const
       break
-    case "honkai impact":
-      data = "Honkai Impact" as const
+    case "honkai impact 3":
+      data = "Honkai Impact 3" as const
       break
     case "honkai star rail":
       data = "Honkai Star Rail" as const
@@ -217,7 +229,7 @@ export function getFormattedGameNameIfAvailable(
       data = "Mobile Legends" as const
       break
     case "punishing gray raven":
-      data = "Punishing: Gray Raven" as const
+      data = "Punishing Gray Raven" as const
       break
     case "sausage man":
       data = "Sausage Man" as const

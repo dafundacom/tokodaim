@@ -83,6 +83,8 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                       amount,
                       paymentMethod?.fee_customer?.flat ?? 0,
                       paymentMethod?.fee_customer?.percent ?? 0,
+                      paymentMethod?.minimum_fee,
+                      paymentMethod?.maximum_fee,
                     )
                     const filterpayment = filterPaymentsByPrice(
                       paymentMethodsEWallet,
@@ -143,6 +145,8 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                       amount,
                       paymentMethod?.fee_customer?.flat ?? 0,
                       paymentMethod?.fee_customer?.percent ?? 0,
+                      paymentMethod?.minimum_fee,
+                      paymentMethod?.maximum_fee,
                     )
                     const filterpayment = filterPaymentsByPrice(
                       paymentMethodsVA,
@@ -203,6 +207,8 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                       amount,
                       paymentMethod?.fee_customer?.flat ?? 0,
                       paymentMethod?.fee_customer?.percent ?? 0,
+                      paymentMethod?.minimum_fee,
+                      paymentMethod?.maximum_fee,
                     )
 
                     const filterpayment = filterPaymentsByPrice(

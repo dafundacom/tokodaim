@@ -92,7 +92,6 @@ const TopUpForm = (props: TopUpFormProps) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     React.useState<string>("")
   const [topUpServer, setTopUpServer] = React.useState<string>("")
-  const [totalAmount, setTotalAmount] = React.useState<number>(0)
   const [fixedPrice, setFixedPrice] = React.useState<number>(0)
   const [voucher, setVoucher] = React.useState<SelectVoucher | null>(null)
   const [selectedTopUpProduct, setSelectedTopUpProduct] =
@@ -113,9 +112,8 @@ const TopUpForm = (props: TopUpFormProps) => {
   )
 
   const handleSelectPaymentMethod = React.useCallback(
-    (data: TripayPaymentMethodsProps, price: number) => {
+    (data: TripayPaymentMethodsProps) => {
       setPaymentMethod(data)
-      setTotalAmount(price)
       const userIdSection = document.getElementById("input-user-id")
       if (userIdSection) {
         userIdSection.scrollIntoView({ behavior: "smooth" })
@@ -159,9 +157,12 @@ const TopUpForm = (props: TopUpFormProps) => {
             zone: topUpServer ?? undefined,
           }
           const results = await handleCheckIgn(inputIgn)
+
           if (results?.success) {
             setOpenDialog(true)
-            setNickname(results?.name)
+            if (results?.name) {
+              setNickname(decodeURIComponent(results?.name))
+            }
           }
         } catch (error) {
           toast({
@@ -255,38 +256,41 @@ const TopUpForm = (props: TopUpFormProps) => {
             queryAccountId,
             topUpServer,
           )
-          const total = fixedPrice > 0 ? fixedPrice : totalAmount
 
           const orderInput = {
             invoiceId: data.merchant_ref!,
             accountId: accountId,
             sku: selectedTopUpProduct?.sku ?? "",
             productName: selectedTopUpProduct.productName,
-            price: total - data?.total_fee!,
+            price: data.amount_received!,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
             customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
             quantity: 1,
             fee: data?.total_fee!,
-            total: total,
+            total: data.amount,
             provider: "digiflazz" as const,
             ...(session?.user?.id && { userId: session.user.id }),
             voucherCode: voucher?.voucherCode ?? "",
-            discountAmount: fixedPrice > 0 ? total - fixedPrice : undefined,
+            discountAmount:
+              fixedPrice > 0
+                ? selectedTopUpProduct.price! - fixedPrice
+                : undefined,
             note: noteValue!,
             status: "processing" as const,
             ign: nickname.length > 0 ? nickname : undefined,
           }
 
           const paymentInput = {
+            tripayReference: data.reference,
             invoiceId: data.merchant_ref!,
             paymentMethod: paymentMethod.code as ClosedPaymentCode,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
             customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
-            amount: total - data?.total_fee!,
+            amount: data.amount_received!,
             fee: data?.total_fee!,
-            total: total,
+            total: data.amount,
             paymentProvider: "tripay" as const,
             expiredAt: new Date(data.expired_time * 1000),
             status: "unpaid" as const,
@@ -336,25 +340,32 @@ const TopUpForm = (props: TopUpFormProps) => {
         toast({ variant: "danger", description: "Silahkan Pilih Nominal" })
       } else if (selectedTopUpProduct && paymentMethod) {
         try {
-          const total = fixedPrice > 0 ? fixedPrice : totalAmount
+          const productPrice =
+            fixedPrice > 0 ? fixedPrice : selectedTopUpProduct.price
+
+          const products = [
+            {
+              sku: selectedTopUpProduct.sku,
+              name: selectedTopUpProduct.productName,
+              price: productPrice!,
+              quantity: 1,
+              subtotal: productPrice!,
+              product_url: topUp.featuredImage ?? "",
+              image_url: topUp.featuredImage ?? "",
+            },
+          ]
+
+          const totalPrice = products.reduce((initialValue, product) => {
+            return initialValue + product.price
+          }, 0)
 
           postTripayTransactionClosed({
             ...data,
             merchantRef: invoiceId,
             paymentMethod:
               `${paymentMethod.code}` as unknown as PaymentMethodProps,
-            amount: total,
-            orderItems: [
-              {
-                sku: selectedTopUpProduct.sku,
-                name: selectedTopUpProduct.productName,
-                price: total,
-                quantity: 1,
-                subtotal: total,
-                product_url: topUp.featuredImage ?? "",
-                image_url: topUp.featuredImage ?? "",
-              },
-            ],
+            amount: totalPrice,
+            orderItems: products,
             callbackUrl: `${env.NEXT_PUBLIC_API}/payment/tripay/callback`,
             returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/details/${invoiceId}`,
             expiredTime: Math.floor(new Date().getTime() / 1000) + 24 * 60 * 60,
@@ -371,7 +382,6 @@ const TopUpForm = (props: TopUpFormProps) => {
       selectedTopUpProduct,
       paymentMethod,
       fixedPrice,
-      totalAmount,
       postTripayTransactionClosed,
       topUp.featuredImage,
     ],
@@ -571,10 +581,10 @@ const TopUpForm = (props: TopUpFormProps) => {
               )}
             />
           </div>
-          {totalAmount > 0 && (
+          {selectedTopUpProduct?.price && selectedTopUpProduct?.price > 0 && (
             <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
               <AddVoucher
-                normalPrice={totalAmount}
+                normalPrice={selectedTopUpProduct?.price}
                 setVoucherData={setVoucher}
                 setDiscount={setFixedPrice}
               />
@@ -591,11 +601,17 @@ const TopUpForm = (props: TopUpFormProps) => {
                   <div>
                     <div className="flex items-center">
                       <div className="flex-1">
-                        {selectedProductPrice && selectedPaymentMethod ? (
+                        {selectedProductPrice &&
+                        selectedPaymentMethod &&
+                        selectedTopUpProduct?.price ? (
                           <>
                             <p className="text-base font-bold md:text-[20px]">
                               {changePriceToIDR(
-                                fixedPrice > 0 ? fixedPrice : totalAmount,
+                                fixedPrice > 0
+                                  ? fixedPrice
+                                  : selectedTopUpProduct.price
+                                    ? selectedTopUpProduct.price
+                                    : 0,
                               )}
                             </p>
                             <p className="text-xs font-medium md:text-sm">
