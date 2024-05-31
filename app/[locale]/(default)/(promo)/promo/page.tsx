@@ -83,7 +83,6 @@ export default async function PromoPage({
           },
         ]}
       />
-
       <section>
         <Breadcrumb>
           <BreadcrumbList>
