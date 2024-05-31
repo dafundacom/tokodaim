@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   // Stop if the callback event is not payment_status
   if (request.headers.get("X-Callback-Event") !== "payment_status") {
     return NextResponse.json(
-      `Unrecognizedc callback event: ${request.headers.get("X-Callback-Event")}`,
+      `Unrecognized callback event: ${request.headers.get("X-Callback-Event")}`,
       { status: 400 },
     )
   }
@@ -69,14 +69,20 @@ export async function POST(request: NextRequest) {
       let updateStatus: PaymentStatus = "unpaid"
 
       switch (status) {
-        case "paid":
+        case "PAID":
           updateStatus = "paid"
           break
-        case "expired":
+        case "EXPIRED":
           updateStatus = "expired"
           break
-        case "failed":
+        case "REFUND":
+          updateStatus = "refunded"
+          break
+        case "FAILED":
           updateStatus = "failed"
+          break
+        case "ERROR":
+          updateStatus = "error"
           break
         default:
           return NextResponse.json(
