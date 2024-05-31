@@ -22,12 +22,24 @@ export const calculateTotalPrice = (
   price: number,
   flatFee: number | null,
   percentageFee: number | null,
+  minimumFee: number | null,
+  maximumFee: number | null,
 ) => {
+  let totalFee = 0
+  let totalPayment = 0
   const priceWithFlatFee = flatFee !== null ? flatFee + price : price
   const calculatedPercentageFee =
     percentageFee !== null ? (price * percentageFee) / 100 : 0
-  const totalFee = (flatFee ?? 0) + Math.round(calculatedPercentageFee)
-  const totalPayment = priceWithFlatFee + Math.round(calculatedPercentageFee)
+  totalFee = (flatFee ?? 0) + Math.round(calculatedPercentageFee)
+  totalPayment = priceWithFlatFee + Math.round(calculatedPercentageFee)
+  if (minimumFee && totalFee < minimumFee) {
+    totalFee = minimumFee
+    totalPayment = price + minimumFee
+  }
+  if (maximumFee && totalFee > maximumFee) {
+    totalFee = maximumFee
+    totalPayment = price + maximumFee
+  }
 
   return { totalPayment, totalFee }
 }
