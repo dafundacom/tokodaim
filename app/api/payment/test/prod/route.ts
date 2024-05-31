@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
 
   const callbackSignature = request.headers.get("X-Callback-Signature")
 
-  const signature = createHmac("sha256", privateKey).update(body).digest("hex")
+  const signature = createHmac("sha256", privateKey)
+    .update(JSON.stringify(body))
+    .digest("hex")
 
   console.log("signature prod", signature)
   console.log("body prod", body)

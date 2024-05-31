@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   const signature = crypto
     .createHmac("sha1", privateKey)
-    .update(data)
+    .update(JSON.stringify(data))
     .digest("hex")
 
   const requestSignature = request.headers.get("x-hub-signature")

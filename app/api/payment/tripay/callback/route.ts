@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
   const signature = crypto
     .createHmac("sha256", privateKey)
-    .update(body)
+    .update(JSON.stringify(body))
     .digest("hex")
 
   if (callbackSignature !== signature) {
