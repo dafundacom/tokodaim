@@ -19,20 +19,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json("Method not Allowed", { status: 405 })
   }
 
-  const body = await request.json()
+  const data = await request.json()
 
   const callbackSignature = request.headers.get("X-Callback-Signature") ?? ""
 
   const signature = crypto
     .createHmac("sha256", privateKey)
-    .update(JSON.stringify(body))
+    .update(JSON.stringify(data))
     .digest("hex")
 
   if (callbackSignature !== signature) {
     return NextResponse.json("Invalid Signature", { status: 400 })
   }
-
-  const data = await request.json()
 
   if (!data || typeof data !== "object") {
     return NextResponse.json("Invalid data sent by payment gateway", {
