@@ -156,6 +156,15 @@ export async function checkIgn({ game, id, zone }: CheckIgnParams) {
           server: res.confirmationFields.zoneId,
         }
         break
+      case "Free Fire":
+        data = {
+          success: res.success,
+          game: res.confirmationFields.productName,
+          name: res.confirmationFields.roles[0].role,
+          id: res.user.userId,
+          server: res.confirmationFields.zoneId,
+        }
+        break
       default:
         data = {
           success: res.success,
