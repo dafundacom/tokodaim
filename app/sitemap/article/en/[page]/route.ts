@@ -4,7 +4,6 @@ import type { NextRequest } from "next/server"
 
 import env from "@/env.mjs"
 import { api } from "@/lib/trpc/server"
-import type { LanguageType } from "@/lib/validation/language"
 
 function generateSiteMap(
   articles:
@@ -36,13 +35,12 @@ function generateSiteMap(
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { page: string; locale: LanguageType } },
+  { params }: { params: { page: string } },
 ) {
   const page = parseInt(params.page)
-  const locale = params.locale
 
   const articles = await api.article.sitemap({
-    language: locale,
+    language: "en",
     page: page,
     perPage: 1000,
   })

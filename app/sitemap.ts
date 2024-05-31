@@ -1,5 +1,3 @@
-// TODO add english version content sitemap
-
 import type { MetadataRoute } from "next"
 
 import env from "@/env.mjs"
@@ -17,9 +15,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articlePageCount = Math.ceil(articlesCount! / perPage)
   const articles: RouteProps[] = []
 
+  const articlesEnCount = await api.article.countByLanguage("en")
+  const articleEnPageCount = Math.ceil(articlesEnCount! / perPage)
+  const articlesEn: RouteProps[] = []
+
   const promosCount = await api.promo.countByLanguage("id")
   const promoPageCount = Math.ceil(promosCount! / perPage)
   const promos: RouteProps[] = []
+
+  const promosEnCount = await api.promo.countByLanguage("id")
+  const promoEnPageCount = Math.ceil(promosEnCount! / perPage)
+  const promosEn: RouteProps[] = []
 
   const topUpsCount = await api.topUp.count()
   const topUpPageCount = Math.ceil(topUpsCount! / perPage)
@@ -37,6 +43,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  if (typeof articleEnPageCount === "number") {
+    for (let i = 0; i < articleEnPageCount; i++) {
+      const obj = {
+        url: `https://${`${env.NEXT_PUBLIC_DOMAIN}/sitemap/article/en/${i + 1}`}`,
+        lastModified: new Date()
+          .toISOString()
+          .split("T")[0] as unknown as string,
+      }
+      articlesEn.push(obj)
+    }
+  }
+
   if (typeof promoPageCount === "number") {
     for (let i = 0; i < promoPageCount; i++) {
       const obj = {
@@ -46,6 +64,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .split("T")[0] as unknown as string,
       }
       promos.push(obj)
+    }
+  }
+
+  if (typeof promoEnPageCount === "number") {
+    for (let i = 0; i < promoEnPageCount; i++) {
+      const obj = {
+        url: `https://${`${env.NEXT_PUBLIC_DOMAIN}/sitemap/promo/en/${i + 1}`}`,
+        lastModified: new Date()
+          .toISOString()
+          .split("T")[0] as unknown as string,
+      }
+      promosEn.push(obj)
     }
   }
 
@@ -66,7 +96,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString().split("T")[0],
   }))
 
-  return [...routes, ...articles, ...promos, ...topUps]
+  return [
+    ...routes,
+    ...articles,
+    ...articlesEn,
+    ...promos,
+    ...promosEn,
+    ...topUps,
+  ]
 }
 
 export const dynamic = "force-dynamic"
