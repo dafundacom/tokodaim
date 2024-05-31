@@ -9,16 +9,16 @@ const checkIgnSchema = z.object({
     "Call of Duty Mobile",
     "Free Fire",
     "Genshin Impact",
-    "Honkai Impact",
+    "Honkai Impact 3",
     "Honkai Star Rail",
     "Mobile Legends",
-    "Punishing: Gray Raven",
+    "Punishing Gray Raven",
     "Sausage Man",
     "Super SUS",
     "Valorant",
   ]),
   id: z.string(),
-  zode: z.string().optional(),
+  zone: z.string().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const data = await checkIgn({
       game: parsedInput.game,
       id: parsedInput.id,
-      zone: parsedInput.zode,
+      zone: parsedInput.zone,
     })
 
     return NextResponse.json(data, { status: 200 })
