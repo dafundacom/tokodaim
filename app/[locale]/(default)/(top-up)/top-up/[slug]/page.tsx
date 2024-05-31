@@ -4,11 +4,17 @@ import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { redirect } from "next/navigation"
+import {
+  BreadcrumbJsonLd,
+  ProductJsonLd,
+  SiteLinksSearchBoxJsonLd,
+} from "next-seo"
 
 import Image from "@/components/image"
 import env from "@/env.mjs"
 import { getSession } from "@/lib/auth/utils"
 import { api } from "@/lib/trpc/server"
+import { date7DaysFromNow } from "@/lib/utils"
 
 const TopUpForm = dynamicFn(
   async () => {
@@ -74,109 +80,176 @@ export default async function TopUpPage({
     redirect("/")
   }
   return (
-    <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] lg:px-4 min-[1200px]:max-w-[1170px]">
-      {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
-        <>
-          <div className="flex flex-col lg:flex-row lg:space-x-2">
-            <div className="mb-4 w-full lg:w-1/3">
-              {topUp !== undefined && (
-                <div className="sticky top-[70px] w-full rounded-lg border bg-background p-4">
-                  <div className="mb-4 flex gap-2">
-                    {topUp.featuredImage && (
-                      <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
-                        <Image
-                          src={topUp?.featuredImage}
-                          alt={topUp.brand}
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <h1 className="text-base">{topUp.brand}</h1>
-                  </div>
+    <>
+      <BreadcrumbJsonLd
+        useAppDir={true}
+        itemListElements={[
+          {
+            position: 1,
+            name: env.NEXT_PUBLIC_DOMAIN,
+            item: env.NEXT_PUBLIC_SITE_URL,
+          },
+          {
+            position: 2,
+            name: "Top Up",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up`,
+          },
+          {
+            position: 3,
+            name: topUp?.brand,
+            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`,
+          },
+        ]}
+      />
+      <ProductJsonLd
+        useAppDir={true}
+        productName={topUp?.brand!}
+        images={[
+          topUp?.featuredImage!,
+          topUp?.coverImage!,
+          topUp?.productIcon!,
+          topUp?.guideImage!,
+          env.NEXT_PUBLIC_LOGO_OG_URL,
+        ]}
+        description={topUp?.description ?? `Top Up ${topUp?.brand}`}
+        brand={topUp?.brand}
+        aggregateRating={{
+          ratingValue: "5",
+          reviewCount: "10",
+        }}
+        offers={
+          topUpProducts &&
+          topUpProducts.length > 0 &&
+          topUpProducts.map((product) => ({
+            price: product.price,
+            priceCurrency: "IDR",
+            priceValidUntil: date7DaysFromNow(),
+            availability: "https://schema.org/InStock",
+            url: `${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`,
+            seller: {
+              name: env.NEXT_PUBLIC_SITE_TITLE,
+            },
+          }))
+        }
+        mpn={topUp?.brand}
+      />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
+          },
+        ]}
+      />
+      <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] lg:px-4 min-[1200px]:max-w-[1170px]">
+        {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
+          <>
+            <div className="flex flex-col lg:flex-row lg:space-x-2">
+              <div className="mb-4 w-full lg:w-1/3">
+                {topUp !== undefined && (
+                  <div className="sticky top-[70px] w-full rounded-lg border bg-background p-4">
+                    <div className="mb-4 flex gap-2">
+                      {topUp.featuredImage && (
+                        <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
+                          <Image
+                            src={topUp?.featuredImage}
+                            alt={topUp.brand}
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <h1 className="text-base">{topUp.brand}</h1>
+                    </div>
 
-                  {topUp?.description ? (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: topUp?.description }}
-                    />
-                  ) : (
-                    <>
-                      <p className="text-sm">
-                        Top Up {cleanedText} resmi legal 100% harga paling
-                        murah. Cara top up {topUp.brand} termurah :
-                      </p>
-                      <ol className="list-decimal px-4 text-sm">
-                        <li>Masukkan ID (SERVER)</li>
-                        <li>Pilih Nominal</li>
-                        <li>Pilih Pembayaran</li>
-                        <li>Tulis nama, email, dan nomor WhatsApp yg benar</li>
-                        <li>Klik Order Now &amp; lakukan Pembayaran</li>
-                        <li>
-                          Tunggu 1 detik pesanan masuk otomatis ke akun Anda
-                        </li>
-                      </ol>
-                      <p className="text-bold text-center text-sm text-foreground">
-                        Top Up Buka 24 Jam, Kiamat buka setengah hari.
-                      </p>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="w-full overflow-hidden rounded-lg border bg-background lg:w-2/3 lg:p-5">
-              <TopUpForm
-                session={session}
-                topUpProducts={topUpProducts}
-                topUp={topUp}
-                paymentChannel={paymentChannel}
-                profit={settingValues?.profit_percentage ?? "15"}
-                email={settingValues?.support_email ?? ""}
-                merchant={settingValues?.site_title ?? ""}
-              />
-            </div>
-          </div>
-          {topUp.instruction ??
-            (topUp.guideImage && (
-              <div className="mt-40">
-                <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
-                  Kamu Punya Pertanyaan?
-                </h2>
-                <details
-                  open
-                  className="mb-4 overflow-hidden rounded-2xl border"
-                >
-                  <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
-                    <span>
-                      Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
-                    </span>
-                  </summary>
-                  <div className="p-4 text-sm">
-                    {topUp?.instruction && (
+                    {topUp?.description ? (
                       <div
-                        dangerouslySetInnerHTML={{
-                          __html: topUp?.instruction!,
-                        }}
+                        dangerouslySetInnerHTML={{ __html: topUp?.description }}
                       />
-                    )}
-                    {topUp?.guideImage && (
-                      <div className="relative h-[200px] w-full">
-                        <Image
-                          src={topUp?.guideImage!}
-                          alt={topUp.brand}
-                          className="object-contain"
-                        />
-                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm">
+                          Top Up {cleanedText} resmi legal 100% harga paling
+                          murah. Cara top up {topUp.brand} termurah :
+                        </p>
+                        <ol className="list-decimal px-4 text-sm">
+                          <li>Masukkan ID (SERVER)</li>
+                          <li>Pilih Nominal</li>
+                          <li>Pilih Pembayaran</li>
+                          <li>
+                            Tulis nama, email, dan nomor WhatsApp yg benar
+                          </li>
+                          <li>Klik Order Now &amp; lakukan Pembayaran</li>
+                          <li>
+                            Tunggu 1 detik pesanan masuk otomatis ke akun Anda
+                          </li>
+                        </ol>
+                        <p className="text-bold text-center text-sm text-foreground">
+                          Top Up Buka 24 Jam, Kiamat buka setengah hari.
+                        </p>
+                      </>
                     )}
                   </div>
-                </details>
+                )}
               </div>
-            ))}
-          <hr className="border-t" />
-        </>
-      ) : (
-        <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
-          <h1 className="mx-auto">Product not found</h1>
-        </div>
-      )}
-    </div>
+              <div className="w-full overflow-hidden rounded-lg border bg-background lg:w-2/3 lg:p-5">
+                <TopUpForm
+                  session={session}
+                  topUpProducts={topUpProducts}
+                  topUp={topUp}
+                  paymentChannel={paymentChannel}
+                  profit={settingValues?.profit_percentage ?? "15"}
+                  email={settingValues?.support_email ?? ""}
+                  merchant={settingValues?.site_title ?? ""}
+                />
+              </div>
+            </div>
+            {topUp.instruction ??
+              (topUp.guideImage && (
+                <div className="mt-40">
+                  <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
+                    Kamu Punya Pertanyaan?
+                  </h2>
+                  <details
+                    open
+                    className="mb-4 overflow-hidden rounded-2xl border"
+                  >
+                    <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
+                      <span>
+                        Cara Top Up {topUp.brand} di{" "}
+                        {env.NEXT_PUBLIC_SITE_TITLE}?
+                      </span>
+                    </summary>
+                    <div className="p-4 text-sm">
+                      {topUp?.instruction && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: topUp?.instruction!,
+                          }}
+                        />
+                      )}
+                      {topUp?.guideImage && (
+                        <div className="relative h-[200px] w-full">
+                          <Image
+                            src={topUp?.guideImage!}
+                            alt={topUp.brand}
+                            className="object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                </div>
+              ))}
+            <hr className="border-t" />
+          </>
+        ) : (
+          <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
+            <h1 className="mx-auto">Product not found</h1>
+          </div>
+        )}
+      </div>
+    </>
   )
 }

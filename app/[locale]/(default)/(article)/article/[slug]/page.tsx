@@ -3,7 +3,11 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
-import { ArticleJsonLd, BreadcrumbJsonLd } from "next-seo"
+import {
+  ArticleJsonLd,
+  BreadcrumbJsonLd,
+  SiteLinksSearchBoxJsonLd,
+} from "next-seo"
 
 import Image from "@/components/image"
 import Share from "@/components/share"
@@ -192,6 +196,16 @@ export default async function ArticleSlugPage({
         publisherLogo={env.NEXT_PUBLIC_LOGO_URL}
         description={article.metaDescription ?? article.excerpt}
         isAccessibleForFree={true}
+      />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
+          },
+        ]}
       />
       <section>
         {adsBelowHeader.length > 0 &&

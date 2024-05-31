@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import NextLink from "next/link"
 import { notFound } from "next/navigation"
-import { BreadcrumbJsonLd } from "next-seo"
+import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
 import Ad from "@/components/ad"
 import {
@@ -97,6 +97,16 @@ export default async function TopicArticlesPage({
             position: 4,
             name: topic?.metaTitle ?? topic?.title,
             item: `${env.NEXT_PUBLIC_SITE_URL}/article/topic/${topic?.slug}`,
+          },
+        ]}
+      />
+      <SiteLinksSearchBoxJsonLd
+        useAppDir={true}
+        url={env.NEXT_PUBLIC_SITE_URL}
+        potentialActions={[
+          {
+            target: `${env.NEXT_PUBLIC_SITE_URL}/search?q`,
+            queryInput: "search_term_string",
           },
         ]}
       />
