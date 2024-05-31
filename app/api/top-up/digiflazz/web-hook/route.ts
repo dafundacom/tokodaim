@@ -23,18 +23,18 @@ export async function POST(request: NextRequest) {
   const requestSignature = request.headers.get("x-hub-signature")
 
   if (requestSignature === `sha1=${signature}`) {
-    const status = String(data.status).toLowerCase()
+    const status = String(data.status)
 
     let updateStatus: TopUpOrderStatus = "processing"
 
     switch (status) {
-      case "success":
+      case "Sukses":
         updateStatus = "success"
         break
-      case "failed":
+      case "Gagal":
         updateStatus = "failed"
         break
-      case "error":
+      case "Error":
         updateStatus = "error"
         break
       default:
