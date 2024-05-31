@@ -1,5 +1,4 @@
 import crypto from "crypto"
-import { headers } from "next/headers"
 import { NextResponse, type NextRequest } from "next/server"
 import { eq, sql } from "drizzle-orm"
 
@@ -22,7 +21,7 @@ export async function POST(request: NextRequest) {
 
   const json = JSON.stringify(request.body)
 
-  const callbackSignature = headers().get("X-Callback-Signature") ?? ""
+  const callbackSignature = request.headers.get("X-Callback-Signature") ?? ""
 
   const signature = crypto
     .createHmac("sha256", privateKey)
@@ -42,9 +41,9 @@ export async function POST(request: NextRequest) {
   }
 
   // Stop if the callback event is not payment_status
-  if (headers().get("X-Callback-Event") !== "payment_status") {
+  if (request.headers.get("X-Callback-Event") !== "payment_status") {
     return NextResponse.json(
-      `Unrecognizedc callback event: ${headers().get("X-Callback-Event")}`,
+      `Unrecognizedc callback event: ${request.headers.get("X-Callback-Event")}`,
       { status: 400 },
     )
   }

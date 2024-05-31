@@ -1,5 +1,4 @@
 import { createHmac } from "crypto"
-import { headers } from "next/headers"
 import { NextResponse, type NextRequest } from "next/server"
 
 import env from "@/env.mjs"
@@ -13,7 +12,7 @@ export async function POST(request: NextRequest) {
 
   const json = JSON.stringify(request.body)
 
-  const callbackSignature = headers().get("X-Callback-Signature")
+  const callbackSignature = request.headers.get("X-Callback-Signature")
 
   const signature = createHmac("sha256", privateKey).update(json).digest("hex")
 
@@ -32,9 +31,9 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  if (headers().get("X-Callback-Event") !== "payment_status") {
+  if (request.headers.get("X-Callback-Event") !== "payment_status") {
     return NextResponse.json(
-      `Unrecognizedc callback event: ${headers().get("X-Callback-Event")}`,
+      `Unrecognized callback event: ${request.headers.get("X-Callback-Event")}`,
       { status: 400 },
     )
   }
