@@ -1,4 +1,5 @@
 import * as React from "react"
+import dynamicFn from "next/dynamic"
 import NextLink from "next/link"
 
 import Image from "@/components/image"
@@ -11,7 +12,16 @@ import env from "@/env.mjs"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
-import FooterDescription from "./footer-description"
+
+const FooterDescription = dynamicFn(
+  async () => {
+    const FooterDescription = await import("./footer-description")
+    return FooterDescription
+  },
+  {
+    ssr: false,
+  },
+)
 
 interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
