@@ -111,6 +111,82 @@ const TopUpForm = (props: TopUpFormProps) => {
     [topUp?.brand],
   )
 
+  function checkGameIdAndServer(
+    game: string,
+    id: string,
+    zone?: string,
+  ): boolean {
+    let isMatch = false
+    switch (game.toLocaleLowerCase()) {
+      case "genshin impact":
+        if (id.startsWith("6") && zone !== "003") {
+          setTopUpServer("003")
+          isMatch = true
+        } else if (id.startsWith("7") && zone !== "002") {
+          setTopUpServer("002")
+          isMatch = true
+        } else if (id.startsWith("8") && zone !== "001") {
+          setTopUpServer("001")
+          isMatch = true
+        } else if (id.startsWith("9") && zone !== "004") {
+          setTopUpServer("004")
+          isMatch = true
+        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
+          toast({
+            description: "informasi akun anda tidak ditemukan",
+            variant: "danger",
+          })
+        }
+        isMatch = false
+
+        break
+      case "honkai star rail":
+        if (id.startsWith("6") && zone !== "os_usa") {
+          setTopUpServer("os_usa")
+          isMatch = true
+        } else if (id.startsWith("7") && zone !== "os_euro") {
+          setTopUpServer("os_euro")
+          isMatch = true
+        } else if (id.startsWith("8") && zone !== "os_asia") {
+          setTopUpServer("os_asia")
+          isMatch = true
+        } else if (id.startsWith("9") && zone !== "os_cht") {
+          setTopUpServer("os_cht")
+          isMatch = true
+        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
+          toast({
+            description: "informasi akun anda tidak ditemukan",
+            variant: "danger",
+          })
+        }
+        isMatch = false
+        break
+
+      case "punishing gray raven":
+        if (!id.startsWith("5") && zone !== "5000") {
+          setTopUpServer("5000")
+          isMatch = true
+        } else if (!id.startsWith("6") && zone !== "5001") {
+          setTopUpServer("5001")
+          isMatch = true
+        } else if (!id.startsWith("7") && zone !== "5002") {
+          setTopUpServer("5002")
+          isMatch = true
+        } else if (!["ap", "eu", "na"].includes(id.charAt(0))) {
+          toast({
+            description: "informasi akun anda tidak ditemukan",
+            variant: "danger",
+          })
+          isMatch = false
+        }
+        break
+      default:
+        setTopUpServer(zone ?? "")
+        isMatch = true
+    }
+    return isMatch
+  }
+
   const handleSelectPaymentMethod = React.useCallback(
     (data: TripayPaymentMethodsProps) => {
       setPaymentMethod(data)
@@ -150,25 +226,37 @@ const TopUpForm = (props: TopUpFormProps) => {
         queryAccountId &&
         getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)
       ) {
-        try {
-          const inputIgn = {
-            game: getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)!,
-            id: queryAccountId,
-            zone: topUpServer ?? undefined,
-          }
-          const results = await handleCheckIgn(inputIgn)
-
-          if (results?.success) {
-            setOpenDialog(true)
-            if (results?.name) {
-              setNickname(decodeURIComponent(results?.name))
+        let isMatch = true
+        if (topUpServer) {
+          isMatch = checkGameIdAndServer(
+            selectedTopUpProduct.brand,
+            queryAccountId,
+            topUpServer,
+          )
+        }
+        if (isMatch) {
+          try {
+            const inputIgn = {
+              game: getFormattedGameNameIfAvailable(
+                selectedTopUpProduct.brand,
+              )!,
+              id: queryAccountId,
+              zone: topUpServer ?? undefined,
             }
+            const results = await handleCheckIgn(inputIgn)
+
+            if (results?.success) {
+              setOpenDialog(true)
+              if (results?.name) {
+                setNickname(decodeURIComponent(results?.name))
+              }
+            }
+          } catch (error) {
+            toast({
+              description: "informasi akun anda tidak ditemukan",
+              variant: "danger",
+            })
           }
-        } catch (error) {
-          toast({
-            description: "informasi akun anda tidak ditemukan",
-            variant: "danger",
-          })
         }
       } else {
         setOpenDialog(true)
