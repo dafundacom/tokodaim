@@ -11,15 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { toast } from "@/components/ui/toast/use-toast"
 import { useI18n } from "@/lib/locales/client"
 
 interface TopUpServerProps extends React.HTMLAttributes<HTMLDivElement> {
   brand: string
   topUpServer: (_value: React.SetStateAction<string>) => void
+  queryAccountId: string
 }
 
 const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
-  const { brand, topUpServer } = props
+  const { brand, topUpServer, queryAccountId } = props
 
   const [queryTopUpServer, setTopUpServerQuery] = React.useState<string>("")
 
@@ -44,10 +46,91 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
     }
   }, [topUpServer, topUpServerList])
 
+  function checkGameIdAndServer(game: string, id: string, zone?: string) {
+    let isMatch = true
+    switch (game.toLocaleLowerCase()) {
+      case "genshin impact":
+        if (id.startsWith("6") && zone !== "003") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("7") && zone !== "002") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("8") && zone !== "001") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("9") && zone !== "004") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
+          toast({
+            description: "informasi akun tidak ditemukan",
+            variant: "danger",
+          })
+          isMatch = false
+        }
+
+        break
+      case "honkai star rail":
+        if (id.startsWith("6") && zone !== "os_usa") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("7") && zone !== "os_euro") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("8") && zone !== "os_asia") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (id.startsWith("9") && zone !== "os_cht") {
+          toast({
+            description: "server tidak sesuai, silahkan pilih yang lain",
+            variant: "danger",
+          })
+          isMatch = false
+        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
+          toast({
+            description: "informasi akun tidak ditemukan",
+            variant: "danger",
+          })
+          isMatch = false
+        }
+        break
+      default:
+        isMatch = true
+    }
+    return isMatch
+  }
+
   const handleSelectChange = (value: string) => {
-    topUpServer(value)
-    setTopUpServerQuery(value)
-    localStorage.setItem(`top-up-server-${brand}`, value)
+    if (value.length > 0) {
+      const isMatch = checkGameIdAndServer(brand, queryAccountId, value)
+      if (isMatch) {
+        topUpServer(value)
+        setTopUpServerQuery(value)
+        localStorage.setItem(`top-up-server-${brand}`, value)
+      }
+    }
   }
 
   const handleInputChange = (event: { target: { value: string } }) => {

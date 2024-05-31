@@ -111,53 +111,10 @@ const TopUpForm = (props: TopUpFormProps) => {
     [topUp?.brand],
   )
 
-  function checkGameIdAndServer(game: string, id: string, zone?: string) {
+  function addAreaCodePublishingGrayRaven(game: string, zone?: string) {
     let isMatch = true
     let punishingGrayRavenServerCode: undefined | string
     switch (game.toLocaleLowerCase()) {
-      case "genshin impact":
-        if (id.startsWith("6") && zone !== "003") {
-          setTopUpServer("003")
-          isMatch = true
-        } else if (id.startsWith("7") && zone !== "002") {
-          setTopUpServer("002")
-          isMatch = true
-        } else if (id.startsWith("8") && zone !== "001") {
-          setTopUpServer("001")
-          isMatch = true
-        } else if (id.startsWith("9") && zone !== "004") {
-          setTopUpServer("004")
-          isMatch = true
-        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
-          toast({
-            description: "informasi akun anda tidak ditemukan",
-            variant: "danger",
-          })
-          isMatch = false
-        }
-
-        break
-      case "honkai star rail":
-        if (id.startsWith("6") && zone !== "os_usa") {
-          setTopUpServer("os_usa")
-          isMatch = true
-        } else if (id.startsWith("7") && zone !== "os_euro") {
-          setTopUpServer("os_euro")
-          isMatch = true
-        } else if (id.startsWith("8") && zone !== "os_asia") {
-          setTopUpServer("os_asia")
-          isMatch = true
-        } else if (id.startsWith("9") && zone !== "os_cht") {
-          setTopUpServer("os_cht")
-          isMatch = true
-        } else if (!["6", "7", "8", "9"].includes(id.charAt(0))) {
-          toast({
-            description: "informasi akun anda tidak ditemukan",
-            variant: "danger",
-          })
-          isMatch = false
-        }
-        break
       case "punishing gray raven":
         if (zone === "5000") {
           punishingGrayRavenServerCode = "ap"
@@ -177,7 +134,6 @@ const TopUpForm = (props: TopUpFormProps) => {
         }
         break
       default:
-        setTopUpServer(zone ?? "")
         isMatch = true
     }
     return { isMatch, punishingGrayRavenServerCode }
@@ -226,9 +182,8 @@ const TopUpForm = (props: TopUpFormProps) => {
         let punishingGrayRavenServerCode: undefined | string
 
         if (topUpServer) {
-          const checkGameData = checkGameIdAndServer(
+          const checkGameData = addAreaCodePublishingGrayRaven(
             selectedTopUpProduct.brand,
-            queryAccountId,
             topUpServer,
           )
           isMatch = checkGameData.isMatch
@@ -626,7 +581,11 @@ const TopUpForm = (props: TopUpFormProps) => {
                 />
               </FormControl>
               {isTopUpServer && (
-                <TopUpServer brand={topUp.brand} topUpServer={setTopUpServer} />
+                <TopUpServer
+                  queryAccountId={queryAccountId}
+                  brand={topUp.brand}
+                  topUpServer={setTopUpServer}
+                />
               )}
             </div>
           </div>
