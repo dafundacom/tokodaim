@@ -33,20 +33,19 @@ export function generateMetadata({
 
 export default async function TransactionPage({
   params,
-  searchParams,
 }: {
   params: { invoiceId: string }
   searchParams: Record<string, string | undefined>
 }) {
   const { invoiceId } = params
-  const { tripay_reference } = searchParams
   const orderDetails = await api.topUpOrder.byInvoiceId(invoiceId ?? "")
 
+  const paymentDetails = await api.topUpPayment.byInvoiceId(invoiceId ?? "")
+
   const tripayPaymentDetails = await api.payment.tripayClosedTransactionDetail(
-    tripay_reference ?? "",
+    paymentDetails?.tripayReference ?? "",
   )
 
-  const paymentDetails = await api.topUpPayment.byInvoiceId(invoiceId ?? "")
   return (
     <section>
       {!orderDetails && (
