@@ -207,8 +207,8 @@ export function getFormattedGameNameIfAvailable(
     case "genshin impact":
       data = "Genshin Impact" as const
       break
-    case "honkai impact":
-      data = "Honkai Impact" as const
+    case "honkai impact 3":
+      data = "Honkai Impact 3" as const
       break
     case "honkai star rail":
       data = "Honkai Star Rail" as const
@@ -217,7 +217,7 @@ export function getFormattedGameNameIfAvailable(
       data = "Mobile Legends" as const
       break
     case "punishing gray raven":
-      data = "Punishing: Gray Raven" as const
+      data = "Punishing Gray Raven" as const
       break
     case "sausage man":
       data = "Sausage Man" as const
