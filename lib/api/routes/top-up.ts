@@ -78,6 +78,29 @@ export const topUpRouter = createTRPCRouter({
       console.error("Error:", error)
     }
   }),
+  sitemap: publicProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.topUps.findMany({
+          limit: input.perPage,
+          offset: (input.page - 1) * input.perPage,
+          orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+          columns: {
+            slug: true,
+            updatedAt: true,
+          },
+        })
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }),
   dashboard: adminProtectedProcedure
     .input(
       z.object({
