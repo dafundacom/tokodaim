@@ -1,4 +1,4 @@
-import { createHmac } from "crypto"
+import crypto from "crypto"
 import { NextResponse, type NextRequest } from "next/server"
 
 import env from "@/env.mjs"
@@ -10,14 +10,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json("Method not Allowed", { status: 405 })
   }
 
-  const json = JSON.stringify(request.body)
+  const body = await request.json()
 
   const callbackSignature = request.headers.get("X-Callback-Signature")
 
-  const signature = createHmac("sha256", privateKey).update(json).digest("hex")
+  const signature = crypto
+    .createHmac("sha256", privateKey)
+    .update(body)
+    .digest("hex")
 
-  console.log(signature)
-  console.log(json)
+  console.log("signature dev", signature)
+  console.log("body dev", body)
+  console.log("callbackSignature dev", callbackSignature)
 
   if (callbackSignature !== signature) {
     return NextResponse.json("Invalid Signature", { status: 400 })

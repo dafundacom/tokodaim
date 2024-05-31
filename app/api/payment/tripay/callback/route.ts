@@ -19,13 +19,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json("Method not Allowed", { status: 405 })
   }
 
-  const json = JSON.stringify(request.body)
+  const body = await request.json()
 
   const callbackSignature = request.headers.get("X-Callback-Signature") ?? ""
 
   const signature = crypto
     .createHmac("sha256", privateKey)
-    .update(json)
+    .update(body)
     .digest("hex")
 
   if (callbackSignature !== signature) {
