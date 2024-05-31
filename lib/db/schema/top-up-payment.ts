@@ -26,6 +26,7 @@ export const topUpPaymentProviderEnum = pgEnum(
 export const topUpPayments = pgTable("top_up_payments", {
   id: text("id").primaryKey(),
   invoiceId: text("invoice_id").unique().notNull(),
+  tripayReference: text("tripay_reference"),
   paymentMethod: topUpPaymentMethodEnum("payment_method").notNull(),
   customerName: text("customer_name"),
   customerEmail: text("customer_email"),

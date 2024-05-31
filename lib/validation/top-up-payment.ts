@@ -49,6 +49,11 @@ const topUpPaymentInput = {
     invalid_type_error:
       "your payment method type doesnt exist on available option.",
   }),
+  tripayReference: z
+    .string({
+      invalid_type_error: "Tripay Reference must be a string",
+    })
+    .optional(),
   userId: z
     .string({
       invalid_type_error: "User Id must be a string",
