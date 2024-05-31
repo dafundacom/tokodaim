@@ -17,6 +17,9 @@ export async function POST(request: NextRequest) {
 
   const signature = createHmac("sha256", privateKey).update(json).digest("hex")
 
+  console.log(signature)
+  console.log(json)
+
   if (callbackSignature !== signature) {
     return NextResponse.json("Invalid Signature", { status: 400 })
   }
