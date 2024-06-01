@@ -63,7 +63,6 @@ interface TopUpFormProps {
     convenienceShop: TripayPaymentMethodsProps[] | undefined
   } | null
   profit: string | null
-  email: string
   merchant: string
   session: AuthSession["session"]
 }
@@ -77,15 +76,8 @@ interface FormValues {
 }
 
 const TopUpForm = (props: TopUpFormProps) => {
-  const {
-    topUpProducts,
-    topUp,
-    paymentChannel,
-    profit,
-    email,
-    merchant,
-    session,
-  } = props
+  const { topUpProducts, topUp, paymentChannel, profit, merchant, session } =
+    props
 
   const [selectedProductPrice, setSelectedProductPrice] =
     React.useState<string>("")
@@ -105,6 +97,8 @@ const TopUpForm = (props: TopUpFormProps) => {
   const totalProfit = profit !== null ? parseInt(profit) : 15
 
   const router = useRouter()
+
+  const user = session?.user
 
   const { isTopUpServer } = React.useMemo(
     () => isTopInputTopUpAccountIdWithServer(topUp.brand),
@@ -230,9 +224,9 @@ const TopUpForm = (props: TopUpFormProps) => {
   const form = useForm<FormValues>({
     defaultValues: {
       customerName: `${
-        merchant ? merchant : env.NEXT_PUBLIC_SITE_TITLE
+        user?.name ? merchant : env.NEXT_PUBLIC_SITE_TITLE
       } Top Up`,
-      customerEmail: `${email ? email : `top-up@${env.NEXT_PUBLIC_DOMAIN}`}`,
+      customerEmail: user?.email ?? `top-up@${env.NEXT_PUBLIC_DOMAIN}`,
     },
   })
 

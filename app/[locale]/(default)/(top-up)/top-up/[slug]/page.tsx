@@ -200,7 +200,6 @@ export default async function TopUpPage({
                   topUp={topUp}
                   paymentChannel={paymentChannel}
                   profit={settingValues?.profit_percentage ?? "15"}
-                  email={settingValues?.support_email ?? ""}
                   merchant={settingValues?.site_title ?? ""}
                 />
               </div>
