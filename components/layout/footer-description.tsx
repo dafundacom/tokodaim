@@ -25,7 +25,7 @@ const FooterDescription: React.FC<FooterDescriptionProps> = (props) => {
 
   return (
     <div className="bg-muted/50 py-4 lg:pt-8">
-      <div className="relative space-y-2 px-4 lg:space-y-3 lg:px-64">
+      <div className="relative space-y-2 px-4 lg:space-y-3 lg:px-56">
         <h1 className="text-sm font-bold lg:text-base">{footerTagline}</h1>
         <div
           className="text-xs lg:text-sm"

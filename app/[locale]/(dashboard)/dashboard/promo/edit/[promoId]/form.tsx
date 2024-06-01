@@ -222,7 +222,7 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
             </div>
           </div>
           <div className="flex min-h-screen flex-row flex-wrap">
-            <div className="order-1 w-full md:px-64 lg:w-10/12">
+            <div className="order-1 w-full md:px-56 lg:w-10/12">
               <div className="relative mt-4 flex items-center justify-center">
                 <div className="flex-1 space-y-4">
                   <FormField
