@@ -14,26 +14,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json("Method not Allowed", { status: 405 })
   }
 
-  const data = await request.json()
+  const res = await request.json()
+
+  const data = res.data
 
   const requestSignature = request.headers.get("X-Hub-Signature")
 
   const signature = crypto
     .createHmac("sha1", privateKey)
-    .update(JSON.stringify(data))
+    .update(JSON.stringify(res))
     .digest("hex")
-
-  console.log("signature dev", signature)
-  console.log("body dev", data)
-  console.log("requestSignature dev", requestSignature)
-  console.log("is authenticated 1", requestSignature === signature)
-  console.log("is authenticated 2", requestSignature === `sha1=${signature}`)
 
   if (requestSignature !== `sha1=${signature}`) {
     return NextResponse.json("Invalid Signature", { status: 400 })
   }
 
-  if (!data || typeof data !== "object") {
+  if (!res || typeof res !== "object") {
     return NextResponse.json("Invalid data sent by top up provider", {
       status: 400,
     })
