@@ -151,7 +151,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                                 : "warning"
                           }
                         >
-                          {orderDetails?.status}
+                          {orderDetails?.status.toUpperCase()}
                         </Badge>
                       </span>
                     </div>
@@ -169,7 +169,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                                 : "warning"
                           }
                         >
-                          {paymentDetails?.status.toLowerCase()}
+                          {paymentDetails?.status.toUpperCase()}
                         </Badge>
                       </span>
                     </div>
@@ -206,7 +206,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               </dl>
               <div className="mt-8 print:hidden">
                 {tripayPaymentDetails?.checkout_url &&
-                  tripayPaymentDetails?.status === "UNPAID" && (
+                  paymentDetails?.status === "unpaid" && (
                     <a
                       aria-label="Lanjutkan Pembayaran"
                       href={tripayPaymentDetails?.checkout_url}
