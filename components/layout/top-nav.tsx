@@ -14,7 +14,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
   const { session } = await getSession()
 
   return (
-    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-4 md:px-0">
+    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-8 md:px-4">
       <div className="container flex w-full justify-between">
         <div className="relative flex items-center">
           <a className="relative top-[3px] md:top-[2.5px]" href="/">
@@ -26,7 +26,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
           <SearchTopNav locale="id" />
           {session?.user ? (
             <NextLink
-              className="relative ml-4 h-[40px] w-[40px] text-muted-foreground transition-all group-hover:text-primary"
+              className="relative ml-2 h-[40px] w-[40px] text-muted-foreground transition-all group-hover:text-primary"
               href="/user/profile"
             >
               <Image
