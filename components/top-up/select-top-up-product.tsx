@@ -33,9 +33,9 @@ const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
           active === label ? "ring-2 ring-primary" : ""
         } item-price relative flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl border border-border px-2 py-3 shadow-md transition-all`}
       >
-        <div className="absolute right-[0px] top-[0px] z-[1] rounded-bl-xl rounded-tr-xl border-b border-l border-muted bg-primary px-3 py-[0px] text-xs font-bold text-muted md:right-0 md:top-0 md:rounded-bl-3xl md:border-b-2 md:border-l-2 md:px-3 md:py-0 md:text-sm">
-          Termurah
-        </div>
+        {/* <div className="absolute right-[0px] top-[0px] z-[1] rounded-bl-xl rounded-tr-xl border-b border-l border-muted bg-primary px-3 py-[0px] text-xs font-bold text-muted md:right-0 md:top-0 md:rounded-bl-3xl md:border-b-2 md:border-l-2 md:px-3 md:py-0 md:text-sm"> */}
+        {/*   Termurah */}
+        {/* </div> */}
         <div className="relative h-[32px] w-[32px] md:h-[40px] md:w-[40px]">
           {productIcon && <Image src={productIcon} alt={brand} />}
         </div>
@@ -45,7 +45,7 @@ const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
         <div className="mx-[-8px] mb-[-12px] mt-[6px] flex h-[47px] flex-wrap items-center bg-primary/10 px-3 py-[8px]">
           <div className="flex w-full items-center">
             <p className="text-[10px]">Dari</p>
-            <p className="ml-1 text-xs font-bold">{price}</p>
+            <p className="ml-1 text-xs font-bold text-danger">{price}</p>
           </div>
         </div>
       </FormLabel>

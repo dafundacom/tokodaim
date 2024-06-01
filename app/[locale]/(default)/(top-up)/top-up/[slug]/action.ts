@@ -11,10 +11,10 @@ export async function handleCheckIgn({
   id: string
   zone?: string
 }) {
-  const cod = await checkIgn({
+  const data = await checkIgn({
     game: game,
     id: id,
     zone: zone,
   })
-  return cod
+  return data
 }
