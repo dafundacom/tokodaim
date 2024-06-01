@@ -29,8 +29,10 @@ export async function POST(request: NextRequest) {
   console.log("signature dev", signature)
   console.log("body dev", data)
   console.log("requestSignature dev", requestSignature)
+  console.log("is authenticated 1", requestSignature === signature)
+  console.log("is authenticated 2", requestSignature === `sha1=${signature}`)
 
-  if (requestSignature !== signature) {
+  if (requestSignature !== `sha1=${signature}`) {
     return NextResponse.json("Invalid Signature", { status: 400 })
   }
 
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  if (requestSignature === signature) {
+  if (requestSignature === `sha1=${signature}`) {
     const status = String(data.status)
 
     let updateStatus: TopUpOrderStatus = "processing"
