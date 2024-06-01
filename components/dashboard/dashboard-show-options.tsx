@@ -10,7 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icon } from "@/components/ui/icon"
@@ -18,7 +17,7 @@ import { useI18n } from "@/lib/locales/client"
 
 interface DashboardShowOptionsProps {
   onDelete?: () => void
-  editUrl: string | UrlObject
+  editUrl?: string | UrlObject
   translateUrl?: string | UrlObject
   viewUrl?: string | UrlObject
   description?: string
@@ -41,41 +40,34 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[150px] p-2">
           {onDelete && (
-            <>
-              <DropdownMenuItem onClick={() => setOpenDialog(true)}>
-                <Icon.Delete className="mr-2 size-4" />
-                {t("delete")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
+            <DropdownMenuItem onClick={() => setOpenDialog(true)}>
+              <Icon.Delete className="mr-2 size-4" />
+              {t("delete")}
+            </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild>
-            <NextLink href={editUrl}>
-              <Icon.Edit className="mr-2 size-4" />
-              {t("edit")}
-            </NextLink>
-          </DropdownMenuItem>
+          {editUrl && (
+            <DropdownMenuItem asChild>
+              <NextLink href={editUrl}>
+                <Icon.Edit className="mr-2 size-4" />
+                {t("edit")}
+              </NextLink>
+            </DropdownMenuItem>
+          )}
           {translateUrl && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <NextLink href={translateUrl}>
-                  <Icon.Language className="mr-2 size-4" />
-                  {t("translate")}
-                </NextLink>
-              </DropdownMenuItem>
-            </>
+            <DropdownMenuItem asChild>
+              <NextLink href={translateUrl}>
+                <Icon.Language className="mr-2 size-4" />
+                {t("translate")}
+              </NextLink>
+            </DropdownMenuItem>
           )}
           {viewUrl && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <NextLink href={viewUrl} target="_blank">
-                  <Icon.View className="mr-2 size-4" />
-                  {t("view")}
-                </NextLink>
-              </DropdownMenuItem>
-            </>
+            <DropdownMenuItem asChild>
+              <NextLink href={viewUrl} target="_blank">
+                <Icon.View className="mr-2 size-4" />
+                {t("view")}
+              </NextLink>
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

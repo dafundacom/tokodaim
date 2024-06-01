@@ -86,7 +86,7 @@ export const topUpOrderRouter = createTRPCRouter({
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(topUpOrders)
-      return data
+      return data[0].value
     } catch (error) {
       console.error("Error:", error)
       if (error instanceof TRPCError) {
