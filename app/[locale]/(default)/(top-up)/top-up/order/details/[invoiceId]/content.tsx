@@ -273,14 +273,16 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                         <summary className="cursor-pointer">
                           {instructions.title}
                         </summary>
-                        {instructions.steps.map((step: string) => {
-                          return (
-                            <div
-                              key={step}
-                              dangerouslySetInnerHTML={{ __html: step }}
-                            />
-                          )
-                        })}
+                        <ol className="list-decimal pl-5">
+                          {instructions.steps.map((step: string) => {
+                            return (
+                              <li
+                                key={step}
+                                dangerouslySetInnerHTML={{ __html: step }}
+                              />
+                            )
+                          })}
+                        </ol>
                       </details>
                     )
                   },
