@@ -70,7 +70,7 @@ const OrderItemCard = (props: OrderItemProps) => {
           <div className="flex w-full items-center justify-between">
             <div className="text-xs md:text-sm">{invoiceId}</div>
             <div className="text-right">
-              {timeLeft && (
+              {status === "unpaid" && timeLeft && (
                 <div className="text-xs md:text-sm">
                   Bayar dalam{" "}
                   <span className="text-sm md:text-base">{timeLeft}</span>
