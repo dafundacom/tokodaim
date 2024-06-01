@@ -39,7 +39,6 @@ export default async function TransactionPage({
   searchParams: Record<string, string | undefined>
 }) {
   const { invoiceId } = params
-  const orderDetails = await api.topUpOrder.byInvoiceId(invoiceId ?? "")
 
   const paymentDetails = await api.topUpPayment.byInvoiceId(invoiceId ?? "")
 
@@ -85,13 +84,7 @@ export default async function TransactionPage({
         ]}
       />
       <section>
-        {!orderDetails && (
-          <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
-            <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
-          </div>
-        )}
         <DetailTransactionContent
-          orderDetails={orderDetails!}
           tripayPaymentDetails={tripayPaymentDetails!}
           paymentDetails={paymentDetails!}
         />

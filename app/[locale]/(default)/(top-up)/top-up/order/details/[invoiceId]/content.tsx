@@ -1,24 +1,36 @@
 "use client"
 
 import * as React from "react"
+import { useParams } from "next/navigation"
 
 import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import type { SelectTopUpOrder, SelectTopUpPayment } from "@/lib/db/schema"
+import type { SelectTopUpPayment } from "@/lib/db/schema/top-up-payment"
 import type { CreateClosedTransactionReturnProps } from "@/lib/sdk/tripay"
+import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
 interface DetailTransactionContentProps {
-  orderDetails: SelectTopUpOrder
   tripayPaymentDetails?: CreateClosedTransactionReturnProps["data"]
   paymentDetails?: SelectTopUpPayment
 }
 
 export function DetailTransactionContent(props: DetailTransactionContentProps) {
-  const { orderDetails, tripayPaymentDetails, paymentDetails } = props
+  const { tripayPaymentDetails, paymentDetails } = props
+
+  const params = useParams<{ invoiceId: string }>()
+
+  const invoiceId = params.invoiceId
+
+  const { data: orderDetails } = api.topUpOrder.byInvoiceId.useQuery(
+    invoiceId,
+    {
+      refetchInterval: 3000,
+    },
+  )
 
   React.useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -31,6 +43,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, [])
+
+  if (!orderDetails) {
+    return (
+      <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
+        <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -46,7 +66,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
             <p className="mt-2 text-base">
               Your order
               <span className="font-semibold">
-                {` ${paymentDetails?.invoiceId ?? orderDetails.invoiceId} `}
+                {` ${paymentDetails?.invoiceId ?? orderDetails?.invoiceId} `}
               </span>
               {paymentDetails?.status !== "paid"
                 ? "is waiting for payment before it is sent."
