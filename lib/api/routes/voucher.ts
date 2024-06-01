@@ -174,6 +174,32 @@ export const voucherRouter = createTRPCRouter({
         }
       }
     }),
+  decreaseAmount: publicProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .update(vouchers)
+          .set({
+            voucherAmount: sql`${vouchers.voucherAmount} - 1`,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(vouchers.id, input))
+          .returning()
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
   delete: adminProtectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
