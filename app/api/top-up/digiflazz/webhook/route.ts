@@ -13,16 +13,34 @@ const privateKey =
     : env.DIGIFLAZZ_API_KEY_PROD
 
 export async function POST(request: NextRequest) {
+  if (request.method !== "POST") {
+    return NextResponse.json("Method not Allowed", { status: 405 })
+  }
+
   const data = await request.json()
+
+  const requestSignature = request.headers.get("X-Hub-Signature")
 
   const signature = crypto
     .createHmac("sha1", privateKey)
     .update(JSON.stringify(data))
     .digest("hex")
 
-  const requestSignature = request.headers.get("x-hub-signature")
+  console.log("signature dev", signature)
+  console.log("body dev", data)
+  console.log("requestSignature dev", requestSignature)
 
-  if (requestSignature === `sha1=${signature}`) {
+  if (requestSignature !== signature) {
+    return NextResponse.json("Invalid Signature", { status: 400 })
+  }
+
+  if (!data || typeof data !== "object") {
+    return NextResponse.json("Invalid data sent by top up provider", {
+      status: 400,
+    })
+  }
+
+  if (requestSignature === signature) {
     const status = String(data.status)
 
     let updateStatus: TopUpOrderStatus = "processing"
