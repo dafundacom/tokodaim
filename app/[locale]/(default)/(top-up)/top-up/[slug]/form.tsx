@@ -728,16 +728,23 @@ const TopUpForm = (props: TopUpFormProps) => {
             </div>
             <div className="mt-5 flex justify-between sm:mt-6">
               <Button
+                variant="danger"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpenDialog(false)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
                 type="submit"
                 value="order sekarang"
                 formMethod="Modal"
                 aria-label="Order Sekarang"
                 onClick={form.handleSubmit(onSubmit)}
-                className="bg-shop text-foreground hover:bg-shop/70"
               >
                 Order Sekarang
               </Button>
-              <Button value="cancel">Cancel</Button>
             </div>
           </form>
         </DialogContent>
