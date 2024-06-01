@@ -75,20 +75,6 @@
   }
 }
 
-@media (min-width: 768px) {
-  .layout-background-image:before {
-    @apply w-[100vh];
-  }
-}
-
-.layout-background-image {
-  @apply bg-background bg-[url('/background/background-repeat.svg')] bg-[100%_auto] bg-repeat-y dark:bg-[url('/background/dark-background-repeat.svg')];
-}
-
-.layout-background-image:before {
-  @apply absolute left-0 top-0 mx-auto h-[45vw] w-full bg-background bg-[url('/background/background-top.svg')] bg-[100%_auto] bg-no-repeat content-[""] dark:bg-[url('/background/dark-background-top.svg')];
-}
-
 /* Editor */
 .text-editor-extended > .ProseMirror {
   @apply min-h-screen min-w-0 items-center space-y-2 px-3 py-2 text-base text-foreground outline-none;
