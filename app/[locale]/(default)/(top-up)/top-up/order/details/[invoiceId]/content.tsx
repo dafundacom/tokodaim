@@ -146,9 +146,9 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                           variant={
                             orderDetails?.status === "success"
                               ? "success"
-                              : orderDetails?.status === "failed"
-                                ? "danger"
-                                : "warning"
+                              : orderDetails?.status === "processing"
+                                ? "warning"
+                                : "danger"
                           }
                         >
                           {orderDetails?.status.toUpperCase()}
@@ -165,8 +165,8 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                             paymentDetails?.status === "paid"
                               ? "success"
                               : paymentDetails?.status === "unpaid"
-                                ? "danger"
-                                : "warning"
+                                ? "warning"
+                                : "danger"
                           }
                         >
                           {paymentDetails?.status.toUpperCase()}
