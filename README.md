@@ -10,6 +10,4 @@
 - [ ] add privacy, term of service, refund policy page
 - [ ] finish translate all page
 - [ ] change description top up textare to text editor extended and show in top up page
-- [ ] add metadata and json ld to all page
-
-
+- [x] add metadata and json ld to all page
