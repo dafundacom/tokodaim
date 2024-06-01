@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       .where(eq(topUpOrders.invoiceId, data.ref_id))
 
     return NextResponse.json(
-      { message: "Webhook received and verified" },
+      { success: true, message: "Webhook received and verified" },
       { status: 200 },
     )
   } else {
