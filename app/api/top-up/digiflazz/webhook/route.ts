@@ -7,10 +7,7 @@ import { db } from "@/lib/db"
 import { topUpOrders } from "@/lib/db/schema/top-up-order"
 import type { TopUpOrderStatus } from "@/lib/validation/top-up-order"
 
-const privateKey =
-  env.APP_ENV === "development"
-    ? env.DIGIFLAZZ_API_KEY_DEV
-    : env.DIGIFLAZZ_API_KEY_PROD
+const privateKey = env.DIGIFLAZZ_WEBHOOK_SECRET
 
 export async function POST(request: NextRequest) {
   if (request.method !== "POST") {
