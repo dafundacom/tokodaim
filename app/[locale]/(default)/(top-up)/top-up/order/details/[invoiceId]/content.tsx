@@ -210,7 +210,6 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                     <a
                       aria-label="Lanjutkan Pembayaran"
                       href={tripayPaymentDetails?.checkout_url}
-                      target="_blank"
                       rel="noreferrer"
                     >
                       <Button type="button" aria-label="Lanjutkan Pembayaran">
