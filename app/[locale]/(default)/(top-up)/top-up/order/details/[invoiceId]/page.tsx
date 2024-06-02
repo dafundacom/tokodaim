@@ -83,7 +83,7 @@ export default async function TransactionPage({
           },
         ]}
       />
-      <section>
+      <section className="fade-up-element">
         <DetailTransactionContent
           tripayPaymentDetails={tripayPaymentDetails!}
           paymentDetails={paymentDetails!}

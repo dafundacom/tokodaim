@@ -63,7 +63,9 @@ export default function CheckTransaction() {
           },
         ]}
       />
-      <CheckTopUp />
+      <section className="fade-up-elemenet">
+        <CheckTopUp />
+      </section>
     </>
   )
 }

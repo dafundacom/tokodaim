@@ -145,7 +145,7 @@ export default async function TopUpPage({
           },
         ]}
       />
-      <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4">
+      <div className="fade-up-element relative z-[5] mx-auto flex w-full flex-col space-y-4">
         {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
           <>
             <div className="mt-[100px] flex flex-col gap-4 lg:flex-row lg:space-x-2">

@@ -119,8 +119,7 @@ export default async function AuthorArticlesPage({
           },
         ]}
       />
-
-      <section className="flex w-full flex-col">
+      <section className="fade-up-element flex w-full flex-col">
         {adsBelowHeader.length > 0 &&
           adsBelowHeader.map((ad) => {
             return <Ad key={ad.id} ad={ad} />

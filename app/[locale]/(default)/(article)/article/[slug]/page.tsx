@@ -207,7 +207,7 @@ export default async function ArticleSlugPage({
           },
         ]}
       />
-      <section>
+      <section className="fade-up-element">
         {adsBelowHeader.length > 0 &&
           adsBelowHeader.map((ad) => {
             return <Ad key={ad.id} ad={ad} />

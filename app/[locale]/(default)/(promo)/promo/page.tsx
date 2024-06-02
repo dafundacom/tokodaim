@@ -83,7 +83,7 @@ export default async function PromoPage({
           },
         ]}
       />
-      <section>
+      <section className="fade-up-element">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

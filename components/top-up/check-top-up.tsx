@@ -43,7 +43,7 @@ function CheckTopUp() {
     setQueryInvoice(values.queryInvoice)
   }
   return (
-    <section>
+    <>
       <div>
         <Form {...form}>
           <form
@@ -215,7 +215,7 @@ function CheckTopUp() {
           </div>
         </div>
       )}
-    </section>
+    </>
   )
 }
 

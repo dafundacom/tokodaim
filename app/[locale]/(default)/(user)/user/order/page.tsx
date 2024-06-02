@@ -17,7 +17,7 @@ export default async function UserOrderPage() {
   const orders = await api.topUpPayment.byUserId(session?.user?.id ?? "")
 
   return (
-    <div className="mt-4 md:mt-10">
+    <div className="fade-up-elemenet mt-4 md:mt-10">
       <CheckTopUp />
       <section className="mt-[200px] rounded-md p-4">
         <div className="mb-[14px] items-center justify-between md:mb-6 lg:flex">

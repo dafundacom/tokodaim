@@ -11,6 +11,23 @@
   }
 }
 
+@keyframes fade-up-animation {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 100;
+  }
+}
+
+.fade-up-element {
+  transform: translateY(40px);
+  opacity: 0;
+  animation: fade-up-animation 500ms ease forwards;
+}
+
 /* Editor */
 .text-editor-extended > .ProseMirror {
   @apply min-h-screen min-w-0 items-center space-y-2 px-3 py-2 text-base text-foreground outline-none;

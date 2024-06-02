@@ -149,8 +149,7 @@ export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
           },
         ]}
       />
-
-      <section>
+      <section className="fade-up-element">
         <div className="mb-5 md:mb-10">
           <Breadcrumb>
             <BreadcrumbList>

@@ -98,7 +98,7 @@ export default async function SingleTopicPage({
           },
         ]}
       />
-      <section>
+      <section className="fade-up-elemenet">
         {adsBelowHeader.length > 0 &&
           adsBelowHeader.map((ad) => {
             return <Ad key={ad.id} ad={ad} />

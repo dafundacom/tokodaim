@@ -44,7 +44,7 @@ export default async function EditUserProfilePage() {
   }
 
   return (
-    <div>
+    <div className="fade-up-element">
       <PageInfo title={t("settings")} description={ts("setting_header")} />
       <UserSettingForm user={session.user} />
     </div>
