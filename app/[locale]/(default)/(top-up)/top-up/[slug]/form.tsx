@@ -223,9 +223,7 @@ const TopUpForm = (props: TopUpFormProps) => {
 
   const form = useForm<FormValues>({
     defaultValues: {
-      customerName: `${
-        user?.name ? merchant : env.NEXT_PUBLIC_SITE_TITLE
-      } Top Up`,
+      customerName: `${user?.name ?? env.NEXT_PUBLIC_SITE_TITLE} Top Up`,
       customerEmail: user?.email ?? `top-up@${env.NEXT_PUBLIC_DOMAIN}`,
       customerPhone: user?.phoneNumber ?? "",
     },
