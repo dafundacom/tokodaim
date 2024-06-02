@@ -14,14 +14,14 @@ const TopNav: React.FC<TopNavProps> = async () => {
   const { session } = await getSession()
 
   return (
-    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-8 md:px-4">
-      <div className="container flex w-full justify-between">
-        <div className="relative flex items-center">
+    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-4 md:px-56">
+      <div className="flex w-full justify-between">
+        <div className="relative flex items-start">
           <a className="relative top-[3px] md:top-[2.5px]" href="/">
             <Logo />
           </a>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-end gap-2">
           {/* TODO: dont use locale */}
           <SearchTopNav locale="id" />
           {session?.user ? (
@@ -36,7 +36,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
               />
             </NextLink>
           ) : (
-            <Button asChild variant="outline" className="mx-4 rounded-full">
+            <Button asChild variant="outline" className="ml-2 rounded-full">
               <a href="/auth/login">{t("login")}</a>
             </Button>
           )}
