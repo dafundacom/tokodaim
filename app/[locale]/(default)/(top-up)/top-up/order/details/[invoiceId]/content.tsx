@@ -74,20 +74,21 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               </div>
               <div className="flex flex-auto flex-col">
                 <div className="">
-                  <h4 className="text-lg font-medium">
+                  <h4 className="text-lg font-black">
                     {orderDetails?.productName ?? ""}
                   </h4>
-                  <div className="text-sm">
-                    {orderDetails?.productName ?? ""}
-                  </div>
                   <div className="mt-8 text-sm font-medium">
-                    <div className="grid grid-cols-3 gap-4 pb-2">
-                      <div>Account Data</div>
+                    <div className="flex flex-col gap-4 pb-2">
+                      <h5>Account Data</h5>
                       <div className="col-span-2">
                         {orderDetails?.ign && (
-                          <p className="break-words">{orderDetails?.ign}</p>
+                          <p className="break-words font-medium">
+                            {orderDetails?.ign}
+                          </p>
                         )}
-                        <p className="break-words">{orderDetails?.accountId}</p>
+                        <p className="break-words font-medium">
+                          {orderDetails?.accountId}
+                        </p>
                       </div>
                     </div>
                   </div>
