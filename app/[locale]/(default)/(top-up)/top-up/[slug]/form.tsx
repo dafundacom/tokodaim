@@ -63,7 +63,6 @@ interface TopUpFormProps {
     convenienceShop: TripayPaymentMethodsProps[] | undefined
   } | null
   profit: string | null
-  merchant: string
   session: AuthSession["session"]
 }
 
@@ -76,8 +75,7 @@ interface FormValues {
 }
 
 const TopUpForm = (props: TopUpFormProps) => {
-  const { topUpProducts, topUp, paymentChannel, profit, merchant, session } =
-    props
+  const { topUpProducts, topUp, paymentChannel, profit, session } = props
 
   const [selectedProductPrice, setSelectedProductPrice] =
     React.useState<string>("")
