@@ -11,7 +11,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        cool: "bg-[#CEEEEC] text-[#00695C] hover:bg-primary/30",
+        cool: "bg-[#CEEEEC] text-[#00695C] hover:bg-[#B4E5E3]",
         danger: "bg-danger text-danger-foreground hover:bg-danger/90",
         outline:
           "border border-input hover:bg-accent hover:text-accent-foreground",
