@@ -243,7 +243,7 @@ export default async function TopUpPage({
                               Tunggu 1 detik pesanan masuk otomatis ke akun Anda
                             </li>
                           </ol>
-                          <div className="flex flex-row justify-center rounded-lg bg-muted py-5 text-xs font-bold text-foreground lg:text-sm">
+                          <div className="flex flex-row justify-center rounded-lg bg-muted py-5 text-xs font-bold text-foreground dark:bg-[#4B6584] lg:text-sm">
                             <Icon.ClockColor className="mr-1 size-5" />
                             Top Up Buka 24 Jam, Kiamat buka setengah hari.
                           </div>
