@@ -44,8 +44,8 @@ const SelectTopUpProduct: React.FunctionComponent<SelectTopUpProductProps> = (
         </p>
         <div className="mx-[-8px] mb-[-12px] mt-[6px] flex h-[47px] flex-wrap items-center bg-[#FFF8E1] px-3 py-[8px] dark:bg-[#4b6584]">
           <div className="flex w-full items-center">
-            <p className="text-[10px] text-[#FF6F00] dark:text-black">Dari</p>
-            <p className="ml-1 text-xs font-bold text-[#FF6F00] dark:text-black">
+            <p className="text-[10px] text-[#FF6F00] dark:text-[#eee]">Dari</p>
+            <p className="ml-1 text-xs font-bold text-[#FF6F00] dark:text-[#eee]">
               {price}
             </p>
           </div>
