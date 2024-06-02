@@ -89,45 +89,49 @@ const AddVoucher: React.FunctionComponent<AddVoucherProps> = ({
   }, [isSubmitted, voucherQuery, voucher, currentTime, calculatedDiscount])
 
   return (
-    <div className="space-y-2">
-      <div className="mb-4 flex items-center md:mb-5">
-        <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
-          6
+    <div className="flex flex-col gap-2 p-4 dark:bg-muted lg:rounded-lg lg:border">
+      <div className="space-y-2">
+        <div className="mb-4 flex items-center md:mb-5">
+          <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
+            6
+          </div>
+          <div className="flex flex-col">
+            <h2 className="text-base font-bold md:text-xl">Voucher</h2>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <h2 className="text-base font-bold md:text-xl">Voucher</h2>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <Input
-          type="text"
-          id="voucher"
-          placeholder="Enter Voucher (Optional)"
-          value={voucherQuery}
-          onChange={(event) => setVoucherQuery(event.target.value)}
-        />
-        {voucherQuery.length > 1 && (
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            id="voucher"
+            placeholder="Enter Voucher (Optional)"
+            className="dark:bg-[#4b6584]"
+            value={voucherQuery}
+            onChange={(event) => setVoucherQuery(event.target.value)}
+          />
+          {voucherQuery.length > 1 && (
+            <Button
+              onClick={handleClearQuery}
+              aria-label="Clear Voucher Query"
+              variant="ghost"
+              type="button"
+              className="p-1"
+            >
+              <Icon.Close aria-label="Clear Voucher Query" />
+            </Button>
+          )}
           <Button
-            onClick={handleClearQuery}
-            aria-label="Clear Voucher Query"
-            variant="ghost"
+            aria-label="Submit Voucher"
             type="button"
-            className="p-1"
+            variant="cool"
+            onClick={handleSubmit}
           >
-            <Icon.Close aria-label="Clear Voucher Query" />
+            Pakai
           </Button>
-        )}
-        <Button
-          aria-label="Submit Voucher"
-          type="button"
-          onClick={handleSubmit}
-        >
-          Pakai
-        </Button>
+        </div>
+        <span>
+          <p>{renderVoucherStatus}</p>
+        </span>
       </div>
-      <span>
-        <p>{renderVoucherStatus}</p>
-      </span>
     </div>
   )
 }

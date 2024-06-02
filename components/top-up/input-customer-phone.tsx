@@ -67,6 +67,7 @@ const InputCustomerPhone = <TFieldValues extends FieldValues = FieldValues>(
                 field.onBlur()
                 handleInputOnBlur(event)
               }}
+              className="dark:bg-[#4b6584]"
             />
           </FormControl>
           <FormMessage />

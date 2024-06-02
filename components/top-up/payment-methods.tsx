@@ -55,7 +55,13 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
   return (
     <div>
       <div
-        className={`${amount && isVisible ? "h-auto" : amount ? "h-[550px] overflow-hidden" : ""}`}
+        className={`relative ${
+          amount && isVisible
+            ? "h-auto"
+            : amount
+              ? "h-[550px] overflow-hidden"
+              : ""
+        }`}
       >
         <div>
           <div className="mb-4 flex items-center md:mb-5">
@@ -256,14 +262,20 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
           )}
       </div>
 
+      {amount && !isVisible && (
+        <div className="relative">
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent dark:from-muted"></div>
+        </div>
+      )}
+
       {amount && (
-        <div className="flex justify-center">
+        <div className="flex justify-center py-4">
           <Button
             onClick={() => {
               setIsVisible((prev) => !prev)
             }}
-            variant="ghost"
-            className="rounded-xl font-bold"
+            variant="outline"
+            className="rounded-xl font-bold dark:bg-[#4b6584]"
           >
             {t(isVisible ? "show_less" : "show_more")}
           </Button>

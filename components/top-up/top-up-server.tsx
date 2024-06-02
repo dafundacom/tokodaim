@@ -164,6 +164,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
       <Input
         onChange={handleInputChange}
         value={queryTopUpServer}
+        className="dark:bg-[#4b6584]"
         placeholder={t("server_placeholder")}
       />
     </div>

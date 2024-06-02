@@ -616,6 +616,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                   <FormControl>
                     <Textarea
                       placeholder="Masukan Catatan (Opsional)"
+                      className="placehoder:text-foreground dark:bg-[#4b6584]"
                       {...field}
                     />
                   </FormControl>
@@ -625,13 +626,11 @@ const TopUpForm = (props: TopUpFormProps) => {
             />
           </div>
           {selectedTopUpProduct?.price && selectedTopUpProduct?.price > 0 && (
-            <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
-              <AddVoucher
-                normalPrice={selectedTopUpProduct?.price}
-                setVoucherData={setVoucher}
-                setDiscount={setFixedPrice}
-              />
-            </div>
+            <AddVoucher
+              normalPrice={selectedTopUpProduct?.price}
+              setVoucherData={setVoucher}
+              setDiscount={setFixedPrice}
+            />
           )}
         </form>
       </Form>

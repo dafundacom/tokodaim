@@ -45,6 +45,7 @@ const InputAccountId: React.FC<InputAccountIdProps> = (props) => {
         ref={inputRef}
         type={type}
         onBlur={handleInputOnBlur}
+        className="dark:bg-[#4b6584]"
         placeholder={placeholder}
         {...rest}
       />
