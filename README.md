@@ -9,5 +9,7 @@
 - [x] add toolbar and html support to text editor
 - [ ] add privacy, term of service, refund policy page
 - [ ] finish translate all page
-- [ ] change description top up textare to text editor extended and show in top up page
+- [ ] change description top up textarea to text editor extended and show in top up page
 - [x] add metadata and json ld to all page
+- [ ] place all ads
+- [ ] add duitku integration
