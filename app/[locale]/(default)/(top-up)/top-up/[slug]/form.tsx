@@ -227,6 +227,7 @@ const TopUpForm = (props: TopUpFormProps) => {
         user?.name ? merchant : env.NEXT_PUBLIC_SITE_TITLE
       } Top Up`,
       customerEmail: user?.email ?? `top-up@${env.NEXT_PUBLIC_DOMAIN}`,
+      customerPhone: user?.phoneNumber ?? "",
     },
   })
 
