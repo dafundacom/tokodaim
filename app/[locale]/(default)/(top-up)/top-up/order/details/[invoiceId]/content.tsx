@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import NextLink from "next/link"
 import { useParams } from "next/navigation"
 
 import Image from "@/components/image"
@@ -31,18 +32,6 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
       refetchInterval: 3000,
     },
   )
-
-  React.useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault()
-    }
-
-    window.addEventListener("beforeunload", handleBeforeUnload)
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
 
   return (
     <>
@@ -219,15 +208,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               <div className="mt-8 print:hidden">
                 {tripayPaymentDetails?.checkout_url &&
                   paymentDetails?.status === "unpaid" && (
-                    <a
-                      aria-label="Lanjutkan Pembayaran"
-                      href={tripayPaymentDetails?.checkout_url}
-                      rel="noreferrer"
-                    >
-                      <Button type="button" aria-label="Lanjutkan Pembayaran">
+                    <Button asChild aria-label="Lanjutkan Pembayaran">
+                      <NextLink
+                        aria-label="Lanjutkan Pembayaran"
+                        href={tripayPaymentDetails?.checkout_url}
+                      >
                         Lanjutkan Pembayaran
-                      </Button>
-                    </a>
+                      </NextLink>
+                    </Button>
                   )}
               </div>
             </div>
