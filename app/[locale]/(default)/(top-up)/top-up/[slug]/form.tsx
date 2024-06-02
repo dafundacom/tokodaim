@@ -451,12 +451,12 @@ const TopUpForm = (props: TopUpFormProps) => {
     <>
       <Form {...form}>
         <form
-          className="mb-[60px] flex flex-col gap-4"
+          className="mb-[60px] flex flex-col gap-4 space-y-4"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="p-4 lg:rounded-lg lg:border">
+          <div className="rounded-lg border bg-background p-4 dark:bg-muted">
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-danger/20 px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
                 1
               </div>
               <div className="flex flex-col">
@@ -495,7 +495,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           </div>
           <div
             id="select-payment-methods"
-            className="flex flex-col gap-4 p-4 lg:rounded-lg lg:border"
+            className="flex flex-col gap-4 rounded-lg border bg-background p-4 dark:bg-muted"
           >
             <PaymentMethods
               paymentChannel={paymentChannel}
@@ -507,10 +507,10 @@ const TopUpForm = (props: TopUpFormProps) => {
           </div>
           <div
             id="input-user-id"
-            className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border"
+            className="flex flex-col gap-2 rounded-lg border bg-background p-4 dark:bg-muted"
           >
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-danger/20 px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
                 3
               </div>
               <div className="flex flex-col">
@@ -552,7 +552,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                 </Dialog>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-row justify-between gap-2">
               <FormControl>
                 <InputAccountId
                   label={
@@ -583,9 +583,9 @@ const TopUpForm = (props: TopUpFormProps) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
+          <div className="flex flex-col gap-2 rounded-lg border bg-background p-4 dark:bg-muted">
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-danger/20 px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
                 4
               </div>
               <div className="flex flex-col">
@@ -596,9 +596,9 @@ const TopUpForm = (props: TopUpFormProps) => {
             </div>
             <InputCustomerPhone form={form} name="customerPhone" />
           </div>
-          <div className="flex flex-col gap-2 p-4 lg:rounded-lg lg:border">
+          <div className="flex flex-col gap-2 rounded-lg border bg-background p-4 dark:bg-muted">
             <div className="mb-4 flex items-center md:mb-5">
-              <div className="mr-2 rounded-full bg-danger/20 px-3 py-1 text-xs font-bold md:text-sm">
+              <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
                 5
               </div>
               <div className="flex flex-col">
@@ -638,8 +638,8 @@ const TopUpForm = (props: TopUpFormProps) => {
       <div className="fixed bottom-0 right-0 z-[100] w-full border border-t border-border bg-background px-4 shadow-md lg:pl-[92px]">
         <div className="cursor-pointer">
           <div className="bg-background">
-            <div className="flex justify-end lg:px-80">
-              <div className="flex w-full py-4 md:p-5 lg:max-w-[716px]">
+            <div className="flex justify-end lg:px-48">
+              <div className="flex w-full py-4 md:p-5 lg:max-w-[892px]">
                 <div className="flex w-full items-center justify-between">
                   <div>
                     <div className="flex items-center">
@@ -672,8 +672,9 @@ const TopUpForm = (props: TopUpFormProps) => {
                   <div className="">
                     <Button
                       aria-label="Order Sekarang"
+                      variant="cool"
                       onClick={form.handleSubmit(handleDialogToast)}
-                      className="rounded-full"
+                      className="rounded-full font-black lg:h-14 lg:px-8 lg:text-lg"
                     >
                       Order Sekarang
                     </Button>

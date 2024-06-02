@@ -59,7 +59,7 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
       >
         <div>
           <div className="mb-4 flex items-center md:mb-5">
-            <div className="mr-2 rounded-full bg-danger/20 px-3 py-1 text-xs font-bold md:text-sm">
+            <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
               2
             </div>
             <div className="flex flex-col">

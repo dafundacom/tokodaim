@@ -141,7 +141,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
 
   if (topUpServerList) {
     return (
-      <div>
+      <div className="w-full">
         <FormLabel>Server</FormLabel>
         <Select onValueChange={handleSelectChange} value={queryTopUpServer}>
           <SelectTrigger>
@@ -159,7 +159,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
     )
   }
   return (
-    <div>
+    <div className="w-full">
       <FormLabel>Server</FormLabel>
       <Input
         onChange={handleInputChange}

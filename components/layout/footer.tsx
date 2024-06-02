@@ -68,8 +68,8 @@ const Footer: React.FunctionComponent<FooterProps> = async (props) => {
               <span className="font-bold">{siteTitle}</span>
               <span className="text-sm">{siteTagline}</span>
             </div>
-            <ThemeSwitcher />
             <LanguageSwitcher />
+            <ThemeSwitcher />
           </div>
           <div className="flex flex-col space-y-4 lg:space-y-12">
             <div className="space-y-2">

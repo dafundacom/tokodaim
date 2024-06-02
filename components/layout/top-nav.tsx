@@ -2,15 +2,15 @@ import NextLink from "next/link"
 
 import Image from "@/components/image"
 import Logo from "@/components/logo"
+import ThemeSwitcher from "@/components/theme/theme-switcher"
 import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/icon"
 import { getSession } from "@/lib/auth/utils"
-import { getI18n } from "@/lib/locales/server"
 import SearchTopNav from "./search-top-nav"
 
 interface TopNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const TopNav: React.FC<TopNavProps> = async () => {
-  const t = await getI18n()
   const { session } = await getSession()
 
   return (
@@ -23,6 +23,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
         </div>
         <div className="flex items-end gap-2">
           {/* TODO: dont use locale */}
+          <ThemeSwitcher />
           <SearchTopNav locale="id" />
           {session?.user ? (
             <NextLink
@@ -36,8 +37,10 @@ const TopNav: React.FC<TopNavProps> = async () => {
               />
             </NextLink>
           ) : (
-            <Button asChild variant="outline" className="ml-2 rounded-full">
-              <a href="/auth/login">{t("login")}</a>
+            <Button asChild variant="ghost" size="icon">
+              <NextLink href="/auth/login">
+                <Icon.User className="size-5 px-0" />
+              </NextLink>
             </Button>
           )}
         </div>

@@ -11,6 +11,8 @@ import {
 } from "next-seo"
 
 import Image from "@/components/image"
+import { Badge } from "@/components/ui/badge"
+import { Icon } from "@/components/ui/icon"
 import env from "@/env.mjs"
 import { getSession } from "@/lib/auth/utils"
 import { api } from "@/lib/trpc/server"
@@ -143,16 +145,16 @@ export default async function TopUpPage({
           },
         ]}
       />
-      <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4 md:max-[991px]:max-w-[750px] min-[992px]:max-[1199px]:max-w-[970px] lg:px-4 min-[1200px]:max-w-[1170px]">
+      <div className="relative z-[5] mx-auto flex w-full flex-col space-y-4">
         {topUp && Array.isArray(topUpProducts) && topUpProducts.length > 0 ? (
           <>
-            <div className="flex flex-col lg:flex-row lg:space-x-2">
+            <div className="mt-[100px] flex flex-col gap-4 lg:flex-row lg:space-x-2">
               <div className="mb-4 w-full lg:w-1/3">
                 {topUp !== undefined && (
-                  <div className="sticky top-[70px] w-full rounded-lg border bg-background p-4">
-                    <div className="mb-4 flex gap-2">
+                  <div className="sticky w-full rounded-md border bg-background p-4 dark:bg-muted lg:top-[205px]">
+                    <div className="flex flex-col items-center justify-center space-y-4">
                       {topUp.featuredImage && (
-                        <div className="relative h-[50px] w-[50px] overflow-hidden rounded-md">
+                        <div className="absolute my-20 size-[120px] overflow-hidden rounded-2xl lg:size-[150px]">
                           <Image
                             src={topUp?.featuredImage}
                             alt={topUp.brand}
@@ -160,40 +162,98 @@ export default async function TopUpPage({
                           />
                         </div>
                       )}
-                      <h1 className="text-base">{topUp.brand}</h1>
                     </div>
-
-                    {topUp?.description ? (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: topUp?.description }}
-                      />
-                    ) : (
-                      <>
-                        <p className="text-sm">
-                          Top Up {cleanedText} resmi legal 100% harga paling
-                          murah. Cara top up {topUp.brand} termurah :
-                        </p>
-                        <ol className="list-decimal px-4 text-sm">
-                          <li>Masukkan ID (SERVER)</li>
-                          <li>Pilih Nominal</li>
-                          <li>Pilih Pembayaran</li>
-                          <li>
-                            Tulis nama, email, dan nomor WhatsApp yg benar
-                          </li>
-                          <li>Klik Order Now &amp; lakukan Pembayaran</li>
-                          <li>
-                            Tunggu 1 detik pesanan masuk otomatis ke akun Anda
-                          </li>
-                        </ol>
-                        <p className="text-bold text-center text-sm text-foreground">
-                          Top Up Buka 24 Jam, Kiamat buka setengah hari.
-                        </p>
-                      </>
-                    )}
+                    <div className="mt-20 space-y-2 lg:mt-24">
+                      <h1 className="text-center text-xl">{topUp.brand}</h1>
+                      <div className="flex justify-center space-x-2">
+                        <Badge className="bg-muted" variant="outline">
+                          <Icon.FlashColor className="mr-1 size-3" />
+                          Proses Cepat
+                        </Badge>
+                        <Badge className="bg-muted" variant="outline">
+                          <Icon.CheckColor className="mr-1 size-3" />
+                          Bergaransi
+                        </Badge>
+                      </div>
+                      {topUp?.description ? (
+                        <div
+                          className="mt-20 space-y-2 text-sm lg:mt-24 lg:text-base"
+                          dangerouslySetInnerHTML={{
+                            __html: topUp?.description,
+                          }}
+                        />
+                      ) : (
+                        <div className="space-y-2 border-t border-border pt-5">
+                          <p className="text-sm lg:text-base">
+                            Top Up {cleanedText} resmi legal 100% harga paling
+                            murah.
+                          </p>
+                          <p className="text-sm lg:text-base">
+                            Cara top up {topUp.brand} termurah:
+                          </p>
+                          <ol className="space-y-3 text-sm lg:text-base">
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                1
+                              </span>
+                              Masukkan <span className="font-bold">ID</span> dan{" "}
+                              <span className="font-bold">Server</span> jika ada
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                2
+                              </span>
+                              Pilih Nominal
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                3
+                              </span>
+                              Pilih{" "}
+                              <span className="font-bold">
+                                Methode Pembayaran
+                              </span>
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                4
+                              </span>
+                              Tulis nama, email, dan nomor WhatsApp yg benar
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                5
+                              </span>
+                              <span className="font-bold">
+                                Klik Order Sekarang
+                              </span>
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                6
+                              </span>
+                              <span className="font-bold">
+                                Klik Lanjutkan Pembayaran
+                              </span>
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                7
+                              </span>
+                              Tunggu 1 detik pesanan masuk otomatis ke akun Anda
+                            </li>
+                          </ol>
+                          <div className="mt-5 flex flex-row justify-center text-xs font-bold text-foreground lg:text-sm">
+                            <Icon.ClockColor className="mr-1 size-5" />
+                            Top Up Buka 24 Jam, Kiamat buka setengah hari.
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
-              <div className="w-full overflow-hidden rounded-lg border bg-background lg:w-2/3 lg:p-5">
+              <div className="w-full lg:w-2/3">
                 <TopUpForm
                   session={session}
                   topUpProducts={topUpProducts}

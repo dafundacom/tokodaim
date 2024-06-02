@@ -38,7 +38,7 @@ const InputAccountId: React.FC<InputAccountIdProps> = (props) => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <FormLabel htmlFor="server">{label}</FormLabel>
       <Input
         id="server"

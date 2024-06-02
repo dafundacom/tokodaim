@@ -15,16 +15,16 @@ interface TopUpGridProps {
 const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
   const { title, topUps } = props
 
-  const [visibleCount, setVisibleCount] = React.useState<number>(12)
+  const [visibleCount, setVisibleCount] = React.useState<number>(15)
 
   const t = useI18n()
 
   const handleShowMore = () => {
-    setVisibleCount((prevCount) => prevCount + 12)
+    setVisibleCount((prevCount) => prevCount + 15)
   }
 
   const handleShowLess = () => {
-    setVisibleCount(12)
+    setVisibleCount(15)
   }
 
   const visibleProducts = topUps?.slice(0, visibleCount)
@@ -32,7 +32,7 @@ const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
   return (
     <div className="space-y-4">
       <h2>{title}</h2>
-      <div className="grid grid-cols-3 gap-4 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-6">
+      <div className="grid grid-cols-3 gap-4 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-5">
         {visibleProducts?.map((topUpProduct) => (
           <TopUpCard key={topUpProduct.slug} topUp={topUpProduct} />
         ))}
@@ -48,7 +48,7 @@ const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
           </Button>
         </div>
       )}
-      {visibleCount > 12 && (
+      {visibleCount > 15 && (
         <div className="flex justify-center">
           <Button
             onClick={handleShowLess}

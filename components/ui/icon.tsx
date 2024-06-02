@@ -32,7 +32,7 @@ import {
   FaYoutube,
 } from "react-icons/fa"
 import { FaBolt, FaXTwitter } from "react-icons/fa6"
-import { FcGoogle } from "react-icons/fc"
+import { FcClock, FcFlashOn, FcGoogle, FcOk } from "react-icons/fc"
 import { HiOutlineReceiptPercent } from "react-icons/hi2"
 import { ImBook } from "react-icons/im"
 import { IoGameController } from "react-icons/io5"
@@ -156,6 +156,7 @@ export const Icon = {
   Calendar: MdOutlineCalendarMonth,
   Category: MdCategory,
   Check: MdOutlineCheck,
+  CheckColor: FcOk,
   CheckSquare: BiCheckSquare,
   ChevronDown: LuChevronDown,
   ChevronLeft: LuChevronLeft,
@@ -164,6 +165,7 @@ export const Icon = {
   ChevronsLeft: BiChevronsLeft,
   ChevronsRight: BiChevronsRight,
   Circle: LuCircle,
+  ClockColor: FcClock,
   Close: MdClose,
   Code: MdCode,
   Coffe: FaCoffee,
@@ -182,6 +184,7 @@ export const Icon = {
   EditNote: MdOutlineEditNote,
   Email: FaEnvelope,
   Facebook: FaFacebook,
+  FlashColor: FcFlashOn,
   Folder: MdFolder,
   FormatBold: MdFormatBold,
   FormatItalic: MdFormatItalic,

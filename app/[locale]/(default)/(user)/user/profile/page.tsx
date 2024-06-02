@@ -32,7 +32,7 @@ export default async function UserProfilePage() {
           </div>
           <div className="flex justify-start space-x-2">
             {session?.user?.role.includes("admin" || "author") && (
-              <Button asChild variant="outline" className="rounded-full">
+              <Button asChild variant="cool" className="rounded-full">
                 <NextLink href="/dashboard">{t("dashboard")}</NextLink>
               </Button>
             )}

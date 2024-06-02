@@ -205,19 +205,6 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                   </div>
                 </div>
               </dl>
-              <div className="mt-8 print:hidden">
-                {tripayPaymentDetails?.checkout_url &&
-                  paymentDetails?.status === "unpaid" && (
-                    <Button asChild aria-label="Lanjutkan Pembayaran">
-                      <NextLink
-                        aria-label="Lanjutkan Pembayaran"
-                        href={tripayPaymentDetails?.checkout_url}
-                      >
-                        Lanjutkan Pembayaran
-                      </NextLink>
-                    </Button>
-                  )}
-              </div>
             </div>
           </div>
           {tripayPaymentDetails?.status === "UNPAID" && (
@@ -261,6 +248,24 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               </dl>
             </div>
           )}
+          <div className="my-8 flex items-center justify-center">
+            {tripayPaymentDetails?.checkout_url &&
+              paymentDetails?.status === "unpaid" && (
+                <Button
+                  asChild
+                  variant="cool"
+                  className="rounded-full font-black lg:h-14 lg:px-8 lg:text-lg"
+                  aria-label="Lanjutkan Pembayaran"
+                >
+                  <NextLink
+                    aria-label="Lanjutkan Pembayaran"
+                    href={tripayPaymentDetails?.checkout_url}
+                  >
+                    Lanjutkan Pembayaran
+                  </NextLink>
+                </Button>
+              )}
+          </div>
           {tripayPaymentDetails?.status === "UNPAID" && (
             <div className="flex-grow rounded-md p-5 shadow-md">
               <h2 className="mb-3 text-xl font-bold">Cara Membayar</h2>
