@@ -448,7 +448,7 @@ const TopUpForm = (props: TopUpFormProps) => {
   }, [])
 
   return (
-    <>
+    <div className="fade-up-element">
       <Form {...form}>
         <form
           className="mb-[60px] flex flex-col gap-4 space-y-4"
@@ -743,7 +743,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           </form>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
 
