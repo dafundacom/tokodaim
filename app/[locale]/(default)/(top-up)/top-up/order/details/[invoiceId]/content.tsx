@@ -44,14 +44,6 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
     }
   }, [])
 
-  if (!orderDetails) {
-    return (
-      <div className="flex min-h-[500px] items-center rounded-md bg-background text-center">
-        <h1 className="mx-auto">Transaksi tidak ditemukan</h1>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="container py-12 md:py-8 print:py-8">
