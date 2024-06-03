@@ -71,7 +71,7 @@ export const topUpRouter = createTRPCRouter({
   all: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.query.topUps.findMany({
-        orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+        orderBy: (topUps, { desc }) => [desc(topUps.featured)],
       })
       return data
     } catch (error) {
@@ -90,7 +90,7 @@ export const topUpRouter = createTRPCRouter({
         const data = await ctx.db.query.topUps.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
-          orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+          orderBy: (topUps, { desc }) => [desc(topUps.featured)],
           columns: {
             slug: true,
             updatedAt: true,
@@ -126,7 +126,7 @@ export const topUpRouter = createTRPCRouter({
       try {
         const data = await ctx.db.query.topUps.findMany({
           where: (topUps, { eq }) => eq(topUps.categorySlug, input),
-          orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+          orderBy: (topUps, { desc }) => [desc(topUps.featured)],
         })
         return data
       } catch (error) {
