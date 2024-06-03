@@ -76,7 +76,7 @@ function CheckTopUp() {
               <Button
                 aria-label="Find Transactions"
                 onClick={form.handleSubmit(onSubmitInvoice)}
-                className="inline-flex items-center justify-center space-x-2 rounded-md bg-primary px-4 py-2 !pl-3 !pr-4 text-sm font-medium text-background duration-300 disabled:cursor-not-allowed disabled:opacity-75"
+                className="inline-flex items-center justify-center space-x-2 rounded-full bg-primary px-4 py-2 !pl-3 !pr-4 text-sm font-medium text-background duration-300 disabled:cursor-not-allowed disabled:opacity-75"
                 type="submit"
               >
                 <Icon.Search aria-label="Find Transactions" />

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import Image from "@/components/image"
 import DeleteMediaButton from "@/components/media/delete-media-button"
 import SelectMediaDialog from "@/components/media/select-media-dialog"
+import TextEditor from "@/components/text-editor/text-editor"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -17,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import type { SelectTopUps } from "@/lib/db/schema/top-up"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
@@ -219,38 +219,14 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                   <p className="line-clamp-1">{topUp.slug}</p>
                 </div>
               </div>
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("description")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("description_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="instruction"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{ts("instruction")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={ts("instruction_placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <FormLabel>{t("description")}</FormLabel>
+                <TextEditor control={form.control} name="description" />
+              </div>
+              <div className="space-y-2">
+                <FormLabel>{ts("instruction")}</FormLabel>
+                <TextEditor control={form.control} name="instruction" />
+              </div>
               <FormField
                 control={form.control}
                 name="featured"
@@ -267,6 +243,7 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

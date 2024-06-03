@@ -175,11 +175,11 @@ export default async function TopUpPage({
                           Bergaransi
                         </Badge>
                       </div>
-                      {topUp?.description ? (
+                      {topUp?.instruction ? (
                         <div
-                          className="mt-20 space-y-2 text-sm lg:mt-24 lg:text-base"
+                          className="top-up-content mt-20 space-y-2 lg:mt-24"
                           dangerouslySetInnerHTML={{
-                            __html: topUp?.description,
+                            __html: topUp?.instruction,
                           }}
                         />
                       ) : (
@@ -263,43 +263,33 @@ export default async function TopUpPage({
                 />
               </div>
             </div>
-            {topUp.instruction ??
-              (topUp.guideImage && (
-                <div className="mt-40">
-                  <h2 className="mb-4 text-left text-sm font-bold xl:text-base">
-                    Kamu Punya Pertanyaan?
-                  </h2>
-                  <details
-                    open
-                    className="mb-4 overflow-hidden rounded-2xl border"
-                  >
-                    <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
-                      <span>
-                        Cara Top Up {topUp.brand} di{" "}
-                        {env.NEXT_PUBLIC_SITE_TITLE}?
-                      </span>
-                    </summary>
-                    <div className="p-4 text-sm">
-                      {topUp?.instruction && (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: topUp?.instruction!,
-                          }}
-                        />
-                      )}
-                      {topUp?.guideImage && (
-                        <div className="relative h-[200px] w-full">
-                          <Image
-                            src={topUp?.guideImage!}
-                            alt={topUp.brand}
-                            className="object-contain"
-                          />
-                        </div>
-                      )}
+            <div className="mt-40">
+              <details open className="mb-4 overflow-hidden rounded-2xl border">
+                <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
+                  <span>
+                    Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
+                  </span>
+                </summary>
+                <div className="top-up-content p-4">
+                  {topUp?.guideImage && (
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={topUp?.guideImage!}
+                        alt={topUp.brand}
+                        className="object-contain"
+                      />
                     </div>
-                  </details>
+                  )}
                 </div>
-              ))}
+              </details>
+              {topUp?.description && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: topUp?.description!,
+                  }}
+                />
+              )}
+            </div>
             <hr className="border-t" />
           </>
         ) : (

@@ -535,7 +535,9 @@ const TopUpForm = (props: TopUpFormProps) => {
                     </div>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
-                    <DialogHeader>User Id</DialogHeader>
+                    <DialogHeader>
+                      Cara mengetahui ID Akun {topUp.brand}
+                    </DialogHeader>
                     {topUp.guideImage && (
                       <div className="relative h-[250px] w-full max-w-[600px]">
                         <Image

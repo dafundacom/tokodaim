@@ -54,10 +54,15 @@
   @apply !max-w-5xl;
 }
 
-/* Article */
+/* Content */
 .article-content,
+.top-up-content,
 .tiptap {
   @apply space-y-2 break-words;
+}
+
+.top-up-content {
+  @apply space-y-2 break-words text-sm lg:text-base;
 }
 
 .article-content p,
@@ -66,66 +71,80 @@
 }
 
 .article-content a,
+.top-up-content a,
 .tiptap a {
   @apply font-semibold text-sky-900 no-underline duration-200 hover:text-sky-950 hover:underline;
 }
 
 .article-content ul li,
+.top-up-content ul li,
 .tiptap ul li {
   @apply ml-12 list-disc;
 }
 
 .article-content ol li,
+.top-up-content ol li,
 .tiptap ol li {
   @apply ml-12 list-decimal;
 }
 
 .article-content blockquote,
+.top-up-content blockquote,
 .tiptap blockquote {
   @apply my-4 rounded-sm border-l-4 border-border p-4 italic;
 }
 
 .article-content img,
+.top-up-content img,
 .tiptap img {
   @apply !relative !h-auto !w-auto max-w-full rounded-md object-cover;
 }
 
 .article-content pre,
+.top-up-content pre,
 .tiptap pre {
   @apply rounded-lg bg-black px-3 py-2 font-mono text-white;
 }
 
 .article-content code,
+.top-up-content code,
 .tiptap code {
   @apply bg-[none] p-0 text-xs text-[inherit];
 }
 
-.article-body table th,
+.article-content table th,
+.top-up-content table th,
 .tiptap table th {
   @apply bg-[#f1f3f5] text-left font-bold;
 }
 
-.article-body table td,
-.article-body table th,
+.article-content table td,
+.article-content table th,
+.top-up-content table td,
+.top-up-content table th,
 .tiptap table td,
 .tiptap table th {
   @apply relative box-border min-w-[1em] border-2 border-[#ced4da] px-[5px] py-[3px] align-top;
 }
 
-.article-body table .selectedCell:after {
+.article-content table .selectedCell:after,
+.top-up-content table .selectedCell:after {
   @apply pointer-events-none absolute bottom-0 left-0 right-0 top-0 z-20 bg-[#c8c8ff66];
 }
 
-.article-body table .column-resize-handle {
+.article-content table .column-resize-handle,
+.top-up-content table .column-resize-handle {
   @apply pointer-events-none absolute bottom-[-2px] right-[-2px] top-0 w-1 bg-[#adf];
 }
 
-.article-body table,
+.article-content table,
+.top-up-content table,
 .tiptap table {
   @apply m-0 w-full max-w-[calc(100%-10px)] table-fixed border-collapse overflow-hidden;
 }
 
-.article-content iframe {
+.article-content iframe,
+.top-up-content iframe {
   @apply relative mx-auto my-0 aspect-video h-auto w-full rounded-md align-baseline;
 }
 
