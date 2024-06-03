@@ -2,6 +2,7 @@
 
 // TODO: not yet translated
 import * as React from "react"
+import NextImage from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm, type SubmitHandler } from "react-hook-form"
 
@@ -455,6 +456,18 @@ const TopUpForm = (props: TopUpFormProps) => {
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="rounded-lg border bg-background p-4 dark:bg-muted">
+            {topUp.orders > 0 && (
+              <div className="mb-4 inline-flex w-full max-w-[250px] items-center justify-center rounded-full border border-border bg-gradient-to-r from-warning/30 to-danger/30 px-5 py-2 font-black md:mb-5">
+                <NextImage
+                  src="/icon/animated-flash.gif"
+                  className="mr-2"
+                  alt={topUp.brand}
+                  width={20}
+                  height={20}
+                />
+                {topUp.orders} item telah dibeli!
+              </div>
+            )}
             <div className="mb-4 flex items-center md:mb-5">
               <div className="mr-2 flex size-10 items-center justify-center rounded-full bg-danger/30 p-1 font-bold md:text-xl">
                 1
