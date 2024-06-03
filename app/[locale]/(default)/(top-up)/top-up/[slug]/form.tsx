@@ -259,6 +259,8 @@ const TopUpForm = (props: TopUpFormProps) => {
     },
   })
 
+  const { mutate: updateTopUpOrderCount } = api.topUp.updateOrder.useMutation()
+
   const { mutate: createTopUpPayment } = api.topUpPayment.create.useMutation({
     onError: (error) => {
       const errorData = error?.data?.zodError?.fieldErrors
@@ -336,6 +338,7 @@ const TopUpForm = (props: TopUpFormProps) => {
 
           createTopUpPayment(paymentInput)
           createTopUpOrder(orderInput)
+          updateTopUpOrderCount(selectedTopUpProduct.brand)
         }
       },
       onError: (error) => {

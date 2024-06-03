@@ -1,4 +1,4 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { boolean, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 export const topUps = pgTable("top_ups", {
   id: text("id").primaryKey(),
@@ -13,6 +13,7 @@ export const topUps = pgTable("top_ups", {
   description: text("description"),
   instruction: text("instruction"),
   featured: boolean("featured").notNull().default(false),
+  orders: integer("orders").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })

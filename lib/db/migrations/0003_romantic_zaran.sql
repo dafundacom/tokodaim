@@ -1,0 +1,1 @@
+ALTER TABLE "top_ups" ADD COLUMN "orders" integer DEFAULT 0 NOT NULL;

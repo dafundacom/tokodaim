@@ -209,4 +209,30 @@ export const topUpRouter = createTRPCRouter({
         }
       }
     }),
+  updateOrder: publicProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .update(topUps)
+          .set({
+            orders: sql`${topUps.orders} + 1`,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(topUps.brand, input))
+          .returning()
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
 })
