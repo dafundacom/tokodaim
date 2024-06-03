@@ -176,12 +176,18 @@ export default async function TopUpPage({
                         </Badge>
                       </div>
                       {topUp?.instruction ? (
-                        <div
-                          className="top-up-content mt-20 space-y-2 lg:mt-24"
-                          dangerouslySetInnerHTML={{
-                            __html: topUp?.instruction,
-                          }}
-                        />
+                        <>
+                          <div
+                            className="top-up-content mt-20 space-y-2 lg:mt-24"
+                            dangerouslySetInnerHTML={{
+                              __html: topUp?.instruction,
+                            }}
+                          />
+                          <div className="flex flex-row justify-center rounded-lg bg-muted py-5 text-xs font-bold text-foreground dark:bg-[#4B6584] lg:text-sm">
+                            <Icon.ClockColor className="mr-1 size-5" />
+                            Top Up Buka 24 Jam, Kiamat buka setengah hari.
+                          </div>
+                        </>
                       ) : (
                         <div className="space-y-2 border-t border-border pt-5">
                           <p className="text-sm lg:text-base">
