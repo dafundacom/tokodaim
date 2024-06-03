@@ -308,6 +308,7 @@ export default {
   excerpt_placeholder: "Enter Excerpt (Optional)",
   expand: "Expand",
   extra_content_search_engine: "Extra content for search engine.",
+  featured: "Featured",
   featured_image: "Featured Image",
   featured_image_deleted: "Featured Image has been deleted",
   featured_image_placeholder: "Add Featured Image",

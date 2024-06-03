@@ -9,7 +9,7 @@ import {
 } from "@/lib/api/trpc"
 import { medias } from "@/lib/db/schema/media"
 import { promos, promoTranslations } from "@/lib/db/schema/promo"
-import { cuid, slugify, trimText, uniqueCharacter } from "@/lib/utils"
+import { cuid, slugify, trimText } from "@/lib/utils"
 import { languageType } from "@/lib/validation/language"
 import {
   createPromoSchema,
@@ -365,6 +365,17 @@ export const promoRouter = createTRPCRouter({
         }
       }
     }),
+  featured: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.query.promos.findMany({
+      where: (promos, { eq }) => eq(promos.featured, true),
+      with: {
+        featuredImage: true,
+      },
+      limit: 10,
+    })
+
+    return data
+  }),
   count: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db
@@ -500,7 +511,7 @@ export const promoRouter = createTRPCRouter({
     .input(createPromoSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = `${slugify(input.title)}_${uniqueCharacter()}`
+        const slug = slugify(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -536,6 +547,7 @@ export const promoRouter = createTRPCRouter({
             status: input.status,
             featuredImageId: input.featuredImageId,
             brand: input.brand,
+            featured: input.featured,
           })
           .returning()
 
@@ -607,7 +619,7 @@ export const promoRouter = createTRPCRouter({
     .input(translatePromoSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = `${slugify(input.title)}_${uniqueCharacter()}`
+        const slug = slugify(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt

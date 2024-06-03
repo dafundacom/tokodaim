@@ -307,6 +307,7 @@ export default {
   excerpt_placeholder: "Masukan Kutipan (Opsional)",
   expand: "Buka",
   extra_content_search_engine: "Konten tambahan untuk mesin pencarian.",
+  featured: "Unggulan",
   featured_image: "Gambar Unggulan",
   featured_image_deleted: "Gambar Unggulan sudah dihapus",
   featured_image_placeholder: "Masukan Gambar Unggulan",

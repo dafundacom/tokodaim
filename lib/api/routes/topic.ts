@@ -9,7 +9,7 @@ import {
 } from "@/lib/api/trpc"
 import { articleTopics } from "@/lib/db/schema/article"
 import { topics, topicTranslations } from "@/lib/db/schema/topic"
-import { cuid, slugify, uniqueCharacter } from "@/lib/utils"
+import { cuid, slugify } from "@/lib/utils"
 import { languageType } from "@/lib/validation/language"
 import {
   createTopicSchema,
@@ -481,7 +481,7 @@ export const topicRouter = createTRPCRouter({
     .input(createTopicSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = `${slugify(input.title)}_${uniqueCharacter()}`
+        const slug = slugify(input.title)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle
@@ -559,7 +559,7 @@ export const topicRouter = createTRPCRouter({
     .input(translateTopicSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = `${slugify(input.title)}_${uniqueCharacter()}`
+        const slug = slugify(input.title)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle

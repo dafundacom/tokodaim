@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm"
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import { languageEnum } from "./language"
 import { medias } from "./media"
@@ -28,6 +28,7 @@ export const promos = pgTable("promos", {
   featuredImageId: text("featured_image_id")
     .notNull()
     .references(() => medias.id),
+  featured: boolean("featured").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })

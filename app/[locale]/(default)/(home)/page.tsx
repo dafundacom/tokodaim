@@ -16,6 +16,16 @@ const Ad = dynamicFn(
   },
 )
 
+const PromoCarousel = dynamicFn(
+  async () => {
+    const PromoCarousel = await import("@/components/promo/promo-carousel")
+    return PromoCarousel
+  },
+  {
+    ssr: false,
+  },
+)
+
 const TopUpGrid = dynamicFn(
   async () => {
     const TopUpProductGrid = await import("@/components/top-up/top-up-grid")
@@ -69,6 +79,7 @@ export default async function Home() {
   const topUpProductsGames = await api.topUp.byCategorySlug("games")
   const topUpProductsEMoney = await api.topUp.byCategorySlug("e-money")
   const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
+  const featuredPromos = await api.promo.featured()
 
   return (
     <>
@@ -92,12 +103,13 @@ export default async function Home() {
           },
         ]}
       />
-      <section>
+      <section className="fade-up-element">
         {adsBelowHeader.length > 0 &&
           adsBelowHeader.map((ad) => {
             return <Ad key={ad.id} ad={ad} />
           })}
-        <div className="fade-up-element my-2 flex w-full flex-col space-y-4 lg:space-y-8">
+        {featuredPromos.length > 0 && <PromoCarousel promos={featuredPromos} />}
+        <div className="my-2 flex w-full flex-col space-y-4 lg:space-y-8">
           <TopUpGrid title="Games" topUps={topUpProductsGames!} />
           <TopUpGrid title="Pulsa" topUps={topUpProductsPulsa!} />
           <TopUpGrid title="e-Money" topUps={topUpProductsEMoney!} />
