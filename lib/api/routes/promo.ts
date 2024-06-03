@@ -644,6 +644,7 @@ export const promoRouter = createTRPCRouter({
             status: input.status,
             featuredImageId: input.featuredImageId,
             brand: input.brand,
+            featured: input.featured,
             promoTranslationId: input.promoTranslationId,
           })
           .returning()
