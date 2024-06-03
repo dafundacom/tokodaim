@@ -270,24 +270,29 @@ export default async function TopUpPage({
               </div>
             </div>
             <div className="mt-40">
-              <details open className="mb-4 overflow-hidden rounded-2xl border">
-                <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
-                  <span>
-                    Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
-                  </span>
-                </summary>
-                <div className="top-up-content p-4">
-                  {topUp?.guideImage && (
-                    <div className="relative h-full w-full">
-                      <Image
-                        src={topUp?.guideImage!}
-                        alt={topUp.brand}
-                        className="object-contain"
-                      />
-                    </div>
-                  )}
-                </div>
-              </details>
+              {topUp.guides && (
+                <details
+                  open
+                  className="mb-4 overflow-hidden rounded-2xl border"
+                >
+                  <summary className="flex cursor-pointer list-none flex-row items-center border-b border-border p-4 text-sm font-bold">
+                    <span>
+                      Cara Top Up {topUp.brand} di {env.NEXT_PUBLIC_SITE_TITLE}?
+                    </span>
+                  </summary>
+                  <div className="top-up-content p-4">
+                    {topUp?.guideImage && (
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={topUp?.guideImage!}
+                          alt={topUp.brand}
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </details>
+              )}
               {topUp?.description && (
                 <div
                   dangerouslySetInnerHTML={{
