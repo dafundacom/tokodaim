@@ -66,6 +66,7 @@ interface EditPromoFormProps {
     | "metaTitle"
     | "metaDescription"
     | "status"
+    | "featured"
     | "promoTranslationId"
   > & {
     featuredImage: Pick<SelectMedia, "id" | "url">
@@ -133,6 +134,7 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
       metaTitle: promo?.metaTitle ?? "",
       metaDescription: promo?.metaDescription ?? "",
       status: promo?.status ?? "draft",
+      featured: promo?.featured ?? false,
       promoTranslationId: promo?.promoTranslationId ?? "",
     },
   })

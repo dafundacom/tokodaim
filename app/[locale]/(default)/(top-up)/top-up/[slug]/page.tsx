@@ -270,7 +270,7 @@ export default async function TopUpPage({
               </div>
             </div>
             <div className="mt-40">
-              {topUp.guides && (
+              {topUp.guideImage && (
                 <details
                   open
                   className="mb-4 overflow-hidden rounded-2xl border"
