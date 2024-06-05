@@ -57,7 +57,7 @@ const Footer: React.FunctionComponent<FooterProps> = async (props) => {
       />
       <div
         className={cn(
-          "sticky top-[100vh] z-40 mt-auto bg-muted px-4 pb-[100px] pt-4 lg:px-56 lg:pb-12 lg:pt-12",
+          "sticky top-[100vh] z-40 mt-auto bg-muted px-4 pb-[100px] pt-4 lg:px-24 lg:pb-12 lg:pt-12 2xl:px-56",
           className,
         )}
       >

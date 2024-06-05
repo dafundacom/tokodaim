@@ -42,7 +42,9 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
             ></div>
           </div>
         </div>
-        <main className="relative mt-4 px-4 lg:my-20 lg:px-56">{children}</main>
+        <main className="relative mt-4 px-4 lg:my-20 lg:px-24 2xl:px-56">
+          {children}
+        </main>
         <Footer />
       </div>
     </>

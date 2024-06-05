@@ -14,7 +14,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
   const { session } = await getSession()
 
   return (
-    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-4 md:px-56">
+    <header className="sticky top-0 z-50 flex h-[4.5rem] w-full items-center justify-center border-b border-border bg-background px-4 lg:px-24 2xl:px-56">
       <div className="flex w-full justify-between">
         <div className="relative flex items-start">
           <a className="relative top-[3px] md:top-[2.5px]" href="/">
