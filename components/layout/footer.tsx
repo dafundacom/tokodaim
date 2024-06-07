@@ -120,12 +120,15 @@ const Footer: React.FunctionComponent<FooterProps> = async (props) => {
               <div className="flex flex-col space-y-2 lg:space-y-3">
                 <h2 className="text-base">{t("information")}</h2>
                 <NextLink
-                  href="/term-and-condition"
+                  href="/p/term-and-condition"
                   className="text-xs lg:text-sm"
                 >
                   {t("term_and_condition")}
                 </NextLink>
-                <NextLink href="/privacy-policy" className="text-xs lg:text-sm">
+                <NextLink
+                  href="/p/privacy-policy"
+                  className="text-xs lg:text-sm"
+                >
                   {t("privacy_policy")}
                 </NextLink>
                 <NextLink href="/article" className="text-xs lg:text-sm">
