@@ -202,18 +202,11 @@ export default async function TopUpPage({
                               <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
                                 1
                               </span>
-                              Masukkan <span className="font-bold">ID</span> dan{" "}
-                              <span className="font-bold">Server</span> jika ada
+                              Pilih <span className="font-bold">Nominal</span>
                             </li>
                             <li className="relative pl-8">
                               <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
                                 2
-                              </span>
-                              Pilih Nominal
-                            </li>
-                            <li className="relative pl-8">
-                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
-                                3
                               </span>
                               Pilih{" "}
                               <span className="font-bold">
@@ -222,9 +215,16 @@ export default async function TopUpPage({
                             </li>
                             <li className="relative pl-8">
                               <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
+                                3
+                              </span>
+                              Masukkan <span className="font-bold">ID</span> dan{" "}
+                              <span className="font-bold">Server</span> jika ada
+                            </li>
+                            <li className="relative pl-8">
+                              <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
                                 4
                               </span>
-                              Tulis nama, email, dan nomor WhatsApp yg benar
+                              Tulis No HP yang aktif
                             </li>
                             <li className="relative pl-8">
                               <span className="absolute left-0 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full bg-warning/20 text-foreground">
