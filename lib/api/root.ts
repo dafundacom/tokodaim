@@ -2,6 +2,7 @@ import { adRouter } from "./routes/ad"
 import { articleRouter } from "./routes/article"
 import { articleCommentRouter } from "./routes/article-comment"
 import { mediaRouter } from "./routes/media"
+import { pageRouter } from "./routes/page"
 import { paymentRouter } from "./routes/payment"
 import { promoRouter } from "./routes/promo"
 import { settingRouter } from "./routes/setting"
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   article: articleRouter,
   articleComment: articleCommentRouter,
   media: mediaRouter,
+  page: pageRouter,
   payment: paymentRouter,
   promo: promoRouter,
   setting: settingRouter,
