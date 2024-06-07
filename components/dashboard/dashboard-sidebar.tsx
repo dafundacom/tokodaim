@@ -87,6 +87,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
             <SidebarItem href="/dashboard/topic" icon={<Icon.Topic />}>
               {t("topics")}
             </SidebarItem>
+            <SidebarItem href="/dashboard/page" icon={<Icon.Page />}>
+              {t("page")}
+            </SidebarItem>
             <SidebarItem href="/dashboard/media" icon={<Icon.Media />}>
               {t("medias")}
             </SidebarItem>
