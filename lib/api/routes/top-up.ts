@@ -7,67 +7,13 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { topUps } from "@/lib/db/schema/top-up"
-import type {
-  CekSaldoReturnProps,
-  DepositReturnProps,
-  TransaksiReturnProps,
-} from "@/lib/sdk/digiflazz"
-import {
-  topUpDigiflazzCreateDepositSchema,
-  topUpDigiflazzCreateTransactionSchema,
-  updateTopUpSchema,
-} from "@/lib/validation/top-up"
+import { medias } from "@/lib/db/schema/media"
+import { topUps, topUpTopUpProducts } from "@/lib/db/schema/top-up"
+import { topUpProducts } from "@/lib/db/schema/top-up-product"
+import { cuid, slugify } from "@/lib/utils"
+import { createTopUpSchema, updateTopUpSchema } from "@/lib/validation/top-up"
 
 export const topUpRouter = createTRPCRouter({
-  digiflazzCheckBalance: adminProtectedProcedure.query(async ({ ctx }) => {
-    try {
-      const res = (await ctx.digiflazz.cekSaldo()) as CekSaldoReturnProps
-
-      const { data } = res
-
-      return data.deposit
-    } catch (error) {
-      console.error("Error:", error)
-    }
-  }),
-  digiflazzDeposit: publicProcedure
-    .input(topUpDigiflazzCreateDepositSchema)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const res = (await ctx.digiflazz.deposit({
-          amount: input.amount,
-          bank: input.bank,
-          name: input.name,
-        })) as DepositReturnProps
-
-        const { data } = res
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-      }
-    }),
-  digiflazzCreateTransaction: publicProcedure
-    .input(topUpDigiflazzCreateTransactionSchema)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const res = (await ctx.digiflazz.transaksi({
-          sku: input.sku,
-          customerNo: input.customerNo,
-          refId: input.refId,
-          cmd: input.cmd,
-          testing: input.testing,
-          msg: input.message,
-        })) as TransaksiReturnProps
-
-        const { data } = res
-
-        return data
-      } catch (error) {
-        console.log("Error:", error)
-      }
-    }),
   all: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.query.topUps.findMany({
@@ -113,7 +59,7 @@ export const topUpRouter = createTRPCRouter({
         const data = await ctx.db.query.topUps.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
-          orderBy: (topUps, { asc }) => [asc(topUps.brand)],
+          orderBy: (topUps, { asc }) => [asc(topUps.title)],
         })
         return data
       } catch (error) {
@@ -133,12 +79,79 @@ export const topUpRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
+  byId: adminProtectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const topUpData = await ctx.db
+        .select()
+        .from(topUps)
+        .leftJoin(medias, eq(medias.id, topUps.featuredImageId))
+        .leftJoin(medias, eq(medias.id, topUps.coverImageId))
+        .leftJoin(medias, eq(medias.id, topUps.guideImageId))
+        .where(eq(topUps.id, input))
+        .limit(1)
+
+      const topUpsTopUpProductsData = await ctx.db
+        .select({
+          id: topUpProducts.id,
+          name: topUpProducts.name,
+        })
+        .from(topUpTopUpProducts)
+        .leftJoin(topUps, eq(topUpTopUpProducts.topUpId, topUps.id))
+        .leftJoin(
+          topUpProducts,
+          eq(topUpTopUpProducts.topUpProductId, topUpProducts.id),
+        )
+        .where(eq(topUps.id, input))
+
+      const data = topUpData.map((item) => ({
+        ...item.top_ups,
+        featuredImage: {
+          id: item?.medias?.id,
+          url: item?.medias?.url,
+        },
+        topUpProducts: topUpsTopUpProductsData,
+      }))
+
+      return data[0]
+    }),
   bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
-      const data = await ctx.db.query.topUps.findFirst({
-        where: (topUp, { eq }) => eq(topUp.slug, input),
-      })
-      return data
+      const topUpData = await ctx.db
+        .select()
+        .from(topUps)
+        .leftJoin(medias, eq(medias.id, topUps.featuredImageId))
+        .leftJoin(medias, eq(medias.id, topUps.coverImageId))
+        .leftJoin(medias, eq(medias.id, topUps.guideImageId))
+        .where(eq(topUps.slug, input))
+        .limit(1)
+
+      const topUpsTopUpProductsData = await ctx.db
+        .select({
+          id: topUpProducts.id,
+          name: topUpProducts.name,
+          sku: topUpProducts.sku,
+          originalPrice: topUpProducts.originalPrice,
+          price: topUpProducts.price,
+        })
+        .from(topUpTopUpProducts)
+        .leftJoin(topUps, eq(topUpTopUpProducts.topUpId, topUps.id))
+        .leftJoin(
+          topUpProducts,
+          eq(topUpTopUpProducts.topUpProductId, topUpProducts.id),
+        )
+        .where(eq(topUps.slug, input))
+
+      const data = topUpData.map((item) => ({
+        ...item.top_ups,
+        featuredImage: {
+          id: item?.medias?.id,
+          url: item?.medias?.url,
+        },
+        topUpProducts: topUpsTopUpProductsData,
+      }))
+
+      return data[0]
     } catch (error) {
       console.error("Error:", error)
     }
@@ -148,7 +161,7 @@ export const topUpRouter = createTRPCRouter({
       const data = await ctx.db.query.topUps.findMany({
         where: (topUps, { ilike, or }) =>
           or(
-            ilike(topUps.brand, `%${input}%`),
+            ilike(topUps.title, `%${input}%`),
             ilike(topUps.slug, `%${input}%`),
           ),
         limit: 10,
@@ -184,17 +197,37 @@ export const topUpRouter = createTRPCRouter({
       }
     }
   }),
-  update: adminProtectedProcedure
-    .input(updateTopUpSchema)
+  create: adminProtectedProcedure
+    .input(createTopUpSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        const slug = slugify(input.title)
+        const categorySlug = slugify(input.category)
+        const generatedMetaTitle = !input.metaTitle
+          ? input.title
+          : input.metaTitle
+        const generatedMetaDescription = !input.metaDescription
+          ? generatedMetaTitle
+          : input.metaDescription
+
         const data = await ctx.db
-          .update(topUps)
-          .set({
+          .insert(topUps)
+          .values({
             ...input,
-            updatedAt: sql`CURRENT_TIMESTAMP`,
+            id: cuid(),
+            slug: slug,
+            categorySlug: categorySlug,
+            metaTitle: generatedMetaTitle,
+            metaDescription: generatedMetaDescription,
           })
-          .where(eq(topUps.id, input.id))
+          .returning()
+
+        const topUpProductValues = input.topUpProducts.map((topUpProduct) => ({
+          topUpId: data[0].id,
+          topUpProductId: topUpProduct,
+        }))
+
+        await ctx.db.insert(topUpTopUpProducts).values(topUpProductValues)
 
         return data
       } catch (error) {
@@ -209,17 +242,54 @@ export const topUpRouter = createTRPCRouter({
         }
       }
     }),
-  updateOrder: publicProcedure
+  update: adminProtectedProcedure
+    .input(updateTopUpSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .update(topUps)
+          .set({
+            ...input,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(topUps.id, input.id))
+          .returning()
+
+        await ctx.db
+          .delete(topUpTopUpProducts)
+          .where(eq(topUpTopUpProducts.topUpId, input.id))
+
+        const topUpProductValues = input.topUpProducts.map((topUpProduct) => ({
+          topUpId: data[0].id,
+          topUpProductId: topUpProduct,
+        }))
+
+        await ctx.db.insert(topUpTopUpProducts).values(topUpProductValues)
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+  updateTransactions: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db
           .update(topUps)
           .set({
-            orders: sql`${topUps.orders} + 1`,
+            transactions: sql`${topUps.transactions} + 1`,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(topUps.brand, input))
+          .where(eq(topUps.title, input))
           .returning()
 
         return data

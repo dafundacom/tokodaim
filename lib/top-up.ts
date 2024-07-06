@@ -3,13 +3,11 @@
 import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { topUps } from "@/lib/db/schema/top-up"
 import { digiflazz } from "@/lib/digiflazz"
 import type { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
-import { cuid, slugify } from "@/lib/utils"
-import { topUpProducts } from "./db/schema/top-up-product"
+import { cuid } from "@/lib/utils"
+import { digiflazzPriceList } from "./db/schema/digiflazz-price-list"
 import { getScopedI18n } from "./locales/server"
-import type { TopUpCommand } from "./validation/top-up-product"
 
 export async function populateTopUps() {
   const ts = await getScopedI18n("top_up")
@@ -21,49 +19,46 @@ export async function populateTopUps() {
   if (Array.isArray(digiflazzPriceListPrePaid.data)) {
     const digiflazzPriceListPrePaidData = digiflazzPriceListPrePaid.data.map(
       (item) => ({
+        productName: item.product_name,
+        sku: item.buyer_sku_code,
         brand: item.brand,
-        slug: slugify(item.brand),
         category: item.category,
-        categorySlug: slugify(item.category),
+        price: item.price,
       }),
     )
 
     await Promise.all(
       digiflazzPriceListPrePaidData.map(async (item) => {
         await db
-          .insert(topUps)
+          .insert(digiflazzPriceList)
           .values({
             id: cuid(),
-            brand: item.brand,
-            slug: item.slug,
-            category: item.category,
-            categorySlug: item.categorySlug,
+            ...item,
           })
           .onConflictDoUpdate({
-            target: topUps.slug,
+            target: digiflazzPriceList.sku,
             set: {
-              brand: item.brand,
-              slug: item.slug,
-              category: item.category,
-              categorySlug: item.categorySlug,
+              ...item,
               updatedAt: sql`CURRENT_TIMESTAMP`,
             },
           })
       }),
     )
 
-    const existingTopUps = await db.query.topUps.findMany()
+    const existingPriceList = await db.query.digiflazzPriceList.findMany()
 
-    const existingTopUpBrands = existingTopUps.map((item) => item.slug)
-    const newTopUps = digiflazzPriceListPrePaidData.map((item) => item.slug)
+    const existingPriceListBrands = existingPriceList.map((item) => item.brand)
+    const newPriceList = digiflazzPriceListPrePaidData.map((item) => item.brand)
 
-    const topUpsToRemove = existingTopUpBrands.filter(
-      (slug) => !newTopUps.includes(slug),
+    const priceListToRemove = existingPriceListBrands.filter(
+      (brand) => !newPriceList.includes(brand),
     )
 
     await Promise.all(
-      topUpsToRemove.map(async (slug) => {
-        await db.delete(topUps).where(eq(topUps.slug, slug))
+      priceListToRemove.map(async (brand) => {
+        await db
+          .delete(digiflazzPriceList)
+          .where(eq(digiflazzPriceList.brand, brand))
       }),
     )
 
@@ -85,67 +80,46 @@ export async function populateTopUpProducts() {
       (item) => ({
         productName: item.product_name,
         sku: item.buyer_sku_code,
-        price: item.price,
-        type: item.type,
-        command: "prepaid" as TopUpCommand,
-        category: item.category,
-        categorySlug: slugify(item.category),
-        description: item.desc,
         brand: item.brand,
-        brandSlug: slugify(item.brand),
+        category: item.category,
+        price: item.price,
       }),
     )
 
     await Promise.all(
       digiflazzPriceListPrePaidData.map(async (item) => {
         await db
-          .insert(topUpProducts)
+          .insert(digiflazzPriceList)
           .values({
+            ...item,
             id: cuid(),
-            productName: item.productName,
-            sku: item.sku,
-            price: item.price,
-            type: item.type,
-            command: item.command,
-            category: item.category,
-            description: item.description,
-            brand: item.brand,
-            brandSlug: item.brandSlug,
           })
           .onConflictDoUpdate({
-            target: topUpProducts.sku,
+            target: digiflazzPriceList.sku,
             set: {
-              productName: item.productName,
-              sku: item.sku,
-              price: item.price,
-              type: item.type,
-              command: item.command,
-              category: item.category,
-              description: item.description,
-              brand: item.brand,
-              brandSlug: item.brandSlug,
+              ...item,
               updatedAt: sql`CURRENT_TIMESTAMP`,
             },
           })
       }),
     )
 
-    const existingTopUpProducts = await db.query.topUpProducts.findMany()
+    const existingPriceList = await db.query.digiflazzPriceList.findMany()
 
-    const existingTopUpProductSKUs = existingTopUpProducts.map(
-      (item) => item.sku,
-    )
+    const existingPriceListSKUs = existingPriceList.map((item) => item.sku)
     const newTopUpProducts = digiflazzPriceListPrePaidData.map(
       (item) => item.sku,
     )
 
-    const topUpProductsToRemove = existingTopUpProductSKUs.filter(
+    const priceListToRemove = existingPriceListSKUs.filter(
       (sku) => !newTopUpProducts.includes(sku),
     )
 
     await Promise.all(
-      topUpProductsToRemove.map(async (sku) => {
-        await db.delete(topUpProducts).where(eq(topUpProducts.sku, sku))
+      priceListToRemove.map(async (sku) => {
+        await db
+          .delete(digiflazzPriceList)
+          .where(eq(digiflazzPriceList.sku, sku))
       }),
     )
 

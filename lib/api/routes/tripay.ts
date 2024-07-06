@@ -14,15 +14,15 @@ import type {
 } from "@/lib/sdk/tripay"
 import { cuid } from "@/lib/utils"
 import {
-  paymentTripayCreateClosedTransactionSchema,
-  paymentTripayCreateOpenTransactionSchema,
-  paymentTripayFeeCalculatorSchema,
-  paymentTripayPaymentInstructionSchema,
-} from "@/lib/validation/payment"
+  tripayCreateClosedTransactionSchema,
+  tripayCreateOpenTransactionSchema,
+  tripayFeeCalculatorSchema,
+  tripayPaymentInstructionSchema,
+} from "@/lib/validation/tripay"
 
-export const paymentRouter = createTRPCRouter({
-  tripayInstruction: publicProcedure
-    .input(paymentTripayPaymentInstructionSchema)
+export const tripayRouter = createTRPCRouter({
+  instruction: publicProcedure
+    .input(tripayPaymentInstructionSchema)
     .query(async ({ input, ctx }) => {
       try {
         const res = (await ctx.tripay.instruction({
@@ -38,7 +38,7 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayPaymentChannel: publicProcedure.query(async ({ ctx }) => {
+  paymentChannel: publicProcedure.query(async ({ ctx }) => {
     try {
       const paymentChannel =
         (await ctx.tripay.paymentChannel()) as PaymentChannelReturnProps
@@ -95,8 +95,8 @@ export const paymentRouter = createTRPCRouter({
       console.error("Error:", error)
     }
   }),
-  tripayFeeCalculator: publicProcedure
-    .input(paymentTripayFeeCalculatorSchema)
+  feeCalculator: publicProcedure
+    .input(tripayFeeCalculatorSchema)
     .query(async ({ input, ctx }) => {
       try {
         const res = (await ctx.tripay.feeCalculator({
@@ -111,7 +111,7 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayClosedTransactionList: publicProcedure
+  closedTransactionList: publicProcedure
     .input(z.object({ page: z.number(), per_page: z.number() }))
     .query(async ({ input, ctx }) => {
       try {
@@ -127,7 +127,7 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayOpenTransactionList: publicProcedure
+  openTransactionList: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
@@ -141,8 +141,8 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayCreateClosedTransaction: publicProcedure
-    .input(paymentTripayCreateClosedTransactionSchema)
+  createClosedTransaction: publicProcedure
+    .input(tripayCreateClosedTransactionSchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const res = (await ctx.tripay.createClosedTransaction({
@@ -170,8 +170,8 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayCreateOpenTransaction: publicProcedure
-    .input(paymentTripayCreateOpenTransactionSchema)
+  createOpenTransaction: publicProcedure
+    .input(tripayCreateOpenTransactionSchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const res = (await ctx.tripay.createOpenTransaction({
@@ -187,7 +187,7 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayClosedTransactionDetail: publicProcedure
+  closedTransactionDetail: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
@@ -202,7 +202,7 @@ export const paymentRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
-  tripayOpenTransactionDetail: publicProcedure
+  openTransactionDetail: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {

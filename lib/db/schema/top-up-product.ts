@@ -1,26 +1,31 @@
-import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm"
+import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import { TOP_UP_PRODUCT_COMMAND } from "@/lib/validation/top-up-product"
-
-export const commandEnum = pgEnum(
-  "top_up_product_command",
-  TOP_UP_PRODUCT_COMMAND,
-)
+import { medias } from "./media"
+import { topUpTopUpProducts } from "./top-up"
 
 export const topUpProducts = pgTable("top_up_products", {
   id: text("id").primaryKey(),
-  productName: text("product_name").notNull(),
-  sku: text("sku").notNull().unique(),
-  price: integer("price"),
-  type: text("type"),
-  command: commandEnum("command").notNull().default("prepaid"),
-  category: text("category").notNull(),
-  description: text("description"),
-  brand: text("brand").notNull(),
-  brandSlug: text("brand_slug").notNull(),
+  name: text("name").notNull(),
+  slug: text("slug").unique().notNull(),
+  sku: text("sku").unique().notNull(),
+  originalPrice: integer("original_price").notNull(),
+  price: integer("price").notNull(),
+  iconId: text("icon_id").references(() => medias.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
+
+export const topUpProductsRelations = relations(
+  topUpProducts,
+  ({ one, many }) => ({
+    icon: one(medias, {
+      fields: [topUpProducts.iconId],
+      references: [medias.id],
+    }),
+    topUps: many(topUpTopUpProducts),
+  }),
+)
 
 export type InsertTopUpProducts = typeof topUpProducts.$inferInsert
 export type SelectTopUpProducts = typeof topUpProducts.$inferSelect

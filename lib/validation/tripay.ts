@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
+const TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
   "MYBVA",
   "PERMATAVA",
   "BNIVA",
@@ -25,11 +25,11 @@ const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
   "DANA",
 ] as const
 
-export const paymentTripayClosedPaymentCodeType = z.enum(
-  PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE,
+export const tripayClosedPaymentCodeType = z.enum(
+  TRIPAY_CLOSED_PAYMENT_CODE_TYPE,
 )
 
-const PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE = [
+const TRIPAY_OPEN_PAYMENT_CODE_TYPE = [
   "BNIVAOP",
   "HANAVAOP",
   "DANAMONOP",
@@ -40,7 +40,7 @@ const PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE = [
   "BSIVAOP",
 ] as const
 
-const PAYMENT_STATUS = [
+const TRIPAY_PAYMENT_STATUS = [
   "unpaid",
   "paid",
   "failed",
@@ -49,14 +49,12 @@ const PAYMENT_STATUS = [
   "refunded",
 ] as const
 
-export const paymentStatus = z.enum(PAYMENT_STATUS)
+export const tripayPaymentStatus = z.enum(TRIPAY_PAYMENT_STATUS)
 
-export const paymentTripayOpenPaymentCodeType = z.enum(
-  PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE,
-)
+export const tripayOpenPaymentCodeType = z.enum(TRIPAY_OPEN_PAYMENT_CODE_TYPE)
 
-const paymentTripayPaymentInstructionInput = {
-  code: z.enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
+const tripayPaymentInstructionInput = {
+  code: z.enum(TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
     invalid_type_error:
       "your payment code type doesnt exist on available option.",
   }),
@@ -77,20 +75,20 @@ const paymentTripayPaymentInstructionInput = {
     .optional(),
 }
 
-const paymentTripayFeeCalculatorInput = {
+const tripayFeeCalculatorInput = {
   amount: z.number({
     required_error: "Amount is required",
     invalid_type_error: "Amount must be a number",
   }),
   code: z
-    .enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
+    .enum(TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
       invalid_type_error:
         "your payment code type doesnt exist on available option.",
     })
     .optional(),
 }
 
-const paymentTripayOrderItemsInput = z.object(
+const tripayOrderItemsInput = z.object(
   {
     sku: z.string({
       required_error: "SKU is required",
@@ -127,12 +125,12 @@ const paymentTripayOrderItemsInput = z.object(
   },
 )
 
-const paymentTripayCreateClosedTransactionInput = {
+const tripayCreateClosedTransactionInput = {
   amount: z.number({
     required_error: "Amount is required",
     invalid_type_error: "Amount must be a number",
   }),
-  paymentMethod: z.enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
+  paymentMethod: z.enum(TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
     required_error: "Method is required",
     invalid_type_error:
       "your payment code type doesnt exist on available option.",
@@ -153,7 +151,7 @@ const paymentTripayCreateClosedTransactionInput = {
     required_error: "Customer Phone Number is required",
     invalid_type_error: "Customer Phone Number must be a string",
   }),
-  orderItems: z.array(paymentTripayOrderItemsInput, {
+  orderItems: z.array(tripayOrderItemsInput, {
     required_error: "Order Items Required",
     invalid_type_error: "Order Items must be an array",
   }),
@@ -174,12 +172,12 @@ const paymentTripayCreateClosedTransactionInput = {
     .optional(),
 }
 
-const paymentTripayCreateOpenTransactionInput = {
+const tripayCreateOpenTransactionInput = {
   merchantRef: z.string({
     required_error: "Merchant Ref is required",
     invalid_type_error: "Merchant Ref must be a string",
   }),
-  paymentMethod: z.enum(PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE, {
+  paymentMethod: z.enum(TRIPAY_OPEN_PAYMENT_CODE_TYPE, {
     required_error: "Method is required",
     invalid_type_error:
       "your payment code type doesnt exist on available option.",
@@ -190,28 +188,28 @@ const paymentTripayCreateOpenTransactionInput = {
   }),
 }
 
-export const paymentTripayPaymentInstructionSchema = z.object({
-  ...paymentTripayPaymentInstructionInput,
+export const tripayPaymentInstructionSchema = z.object({
+  ...tripayPaymentInstructionInput,
 })
 
-export const paymentTripayFeeCalculatorSchema = z.object({
-  ...paymentTripayFeeCalculatorInput,
+export const tripayFeeCalculatorSchema = z.object({
+  ...tripayFeeCalculatorInput,
 })
 
-export const paymentTripayCreateClosedTransactionSchema = z.object({
-  ...paymentTripayCreateClosedTransactionInput,
+export const tripayCreateClosedTransactionSchema = z.object({
+  ...tripayCreateClosedTransactionInput,
 })
 
-export const paymentTripayCreateOpenTransactionSchema = z.object({
-  ...paymentTripayCreateOpenTransactionInput,
+export const tripayCreateOpenTransactionSchema = z.object({
+  ...tripayCreateOpenTransactionInput,
 })
 
-export type PaymentTripayClosedPaymentCodeType = z.infer<
-  typeof paymentTripayClosedPaymentCodeType
+export type TripayClosedPaymentCodeType = z.infer<
+  typeof tripayClosedPaymentCodeType
 >
 
-export type PaymentTripayOpenPaymentCodeType = z.infer<
-  typeof paymentTripayOpenPaymentCodeType
+export type TripayOpenPaymentCodeType = z.infer<
+  typeof tripayOpenPaymentCodeType
 >
 
-export type PaymentStatus = z.infer<typeof paymentStatus>
+export type TripayPaymentStatus = z.infer<typeof tripayPaymentStatus>

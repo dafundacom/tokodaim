@@ -5,19 +5,22 @@ export const TOP_UP_PRODUCT_COMMAND = ["prepaid", "postpaid"] as const
 export const topUpProductCommand = z.enum(TOP_UP_PRODUCT_COMMAND)
 
 const topUpProductInput = {
-  proudctName: z.string({
-    required_error: "Product Name is required",
-    invalid_type_error: "Product Name must be a string",
+  name: z.string({
+    required_error: "Name is required",
+    invalid_type_error: "Name must be a string",
   }),
   sku: z.string({
     required_error: "SKU is required",
     invalid_type_error: "SKU must be a string",
   }),
-  price: z
-    .number({
-      invalid_type_error: "Price must be a number",
-    })
-    .optional(),
+  originalPrice: z.number({
+    required_error: "Original Price is required",
+    invalid_type_error: "Original Price must be a number",
+  }),
+  price: z.number({
+    required_error: "Price is required",
+    invalid_type_error: "Price must be a number",
+  }),
   type: z
     .string({
       invalid_type_error: "Type must be a string",

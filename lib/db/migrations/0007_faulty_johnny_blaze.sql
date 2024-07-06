@@ -1,0 +1,1 @@
+ALTER TABLE "top_ups" RENAME COLUMN "orders" TO "transactions";

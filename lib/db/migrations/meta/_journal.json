@@ -43,6 +43,41 @@
       "when": 1717760715642,
       "tag": "0005_confused_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1720248567019,
+      "tag": "0006_illegal_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1720250532393,
+      "tag": "0007_faulty_johnny_blaze",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1720250891682,
+      "tag": "0008_massive_maddog",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1720255197926,
+      "tag": "0009_colossal_stick",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1720255916561,
+      "tag": "0010_funny_starbolt",
+      "breakpoints": true
     }
   ]
 }
