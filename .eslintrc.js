@@ -7,6 +7,7 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:prettier/recommended",
     "plugin:@next/next/recommended",
+    "plugin:tailwindcss/recommended",
     "next",
     "next/core-web-vitals",
     "prettier",
@@ -20,7 +21,13 @@ const config = {
     project: true,
     ecmaVersion: 6,
   },
-  plugins: ["@typescript-eslint", "import", "prettier", "drizzle"],
+  plugins: [
+    "@typescript-eslint",
+    "import",
+    "prettier",
+    "tailwindcss",
+    "drizzle",
+  ],
   rules: {
     "prettier/prettier": "error",
     "arrow-body-style": "off",
