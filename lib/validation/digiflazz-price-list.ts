@@ -5,6 +5,10 @@ const digiflazzPriceListInput = {
     required_error: "Product Name is required",
     invalid_type_error: "Product Name must be a string",
   }),
+  sku: z.string({
+    required_error: "Brand is required",
+    invalid_type_error: "Brand must be a string",
+  }),
   brand: z.string({
     required_error: "Brand is required",
     invalid_type_error: "Brand must be a string",

@@ -1,33 +1,32 @@
 import { z } from "zod"
 
-export const TOP_UP_PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
+export const PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
 
-export const TOP_UP_PAYMENT_METHOD = [
-  "MYBVA",
-  "PERMATAVA",
+export const PAYMENT_METHOD = [
+  "ALFAMART",
+  "ALFAMIDI",
+  "BCAVA",
   "BNIVA",
   "BRIVA",
-  "MANDIRIVA",
-  "BCAVA",
-  "SMSVA",
-  "MUAMALATVA",
-  "CIMBVA",
-  "SAMPOERNAVA",
   "BSIVA",
-  "DANAMONVA",
+  "CIMBVA",
   "DANA",
-  "ALFAMART",
+  "DANAMONVA",
   "INDOMARET",
-  "ALFAMIDI",
+  "MANDIRIVA",
+  "MUAMALATVA",
+  "MYBVA",
   "OVO",
+  "PERMATAVA",
   "QRIS",
   "QRIS2",
   "QRISC",
+  "SAMPOERNAVA",
   "SHOPEEPAY",
-  "DANA",
+  "SMSVA",
 ] as const
 
-export const TOP_UP_PAYMENT_STATUS = [
+export const PAYMENT_STATUS = [
   "unpaid",
   "paid",
   "failed",
@@ -36,22 +35,22 @@ export const TOP_UP_PAYMENT_STATUS = [
   "refunded",
 ] as const
 
-export const topUpPaymentStatus = z.enum(TOP_UP_PAYMENT_STATUS)
-export const topUpPaymentProvider = z.enum(TOP_UP_PAYMENT_PROVIDER)
+export const paymentStatus = z.enum(PAYMENT_STATUS)
+export const paymentProvider = z.enum(PAYMENT_PROVIDER)
 
-const topUpPaymentInput = {
+const paymentInput = {
   invoiceId: z.string({
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
-  paymentMethod: z.enum(TOP_UP_PAYMENT_METHOD, {
+  method: z.enum(PAYMENT_METHOD, {
     required_error: "Payment Method is required",
     invalid_type_error:
       "your payment method type doesnt exist on available option.",
   }),
-  tripayReference: z
+  reference: z
     .string({
-      invalid_type_error: "Tripay Reference must be a string",
+      invalid_type_error: "Reference must be a string",
     })
     .optional(),
   userId: z
@@ -83,7 +82,7 @@ const topUpPaymentInput = {
     required_error: "Total is required",
     invalid_type_error: "Total must be a number",
   }),
-  paymentProvider: z.enum(TOP_UP_PAYMENT_PROVIDER, {
+  paymentProvider: z.enum(PAYMENT_PROVIDER, {
     required_error: "Payment Provider is required",
     invalid_type_error:
       "your payment provider type doesnt exist on available option.",
@@ -99,40 +98,38 @@ const topUpPaymentInput = {
   }),
 }
 
-const topUpPaymentStatusInput = {
+const paymentStatusInput = {
   invoiceId: z.string({
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
-  status: z.enum(TOP_UP_PAYMENT_STATUS, {
-    required_error: "Top Up Payment status is required",
+  status: z.enum(PAYMENT_STATUS, {
+    required_error: "Payment status is required",
     invalid_type_error:
-      "your top up payment status type doesnt exist on available option.",
+      "your payment status type doesnt exist on available option.",
   }),
 }
 
-export const createTopUpPaymentSchema = z.object({
-  ...topUpPaymentInput,
-  ...topUpPaymentStatusInput,
+export const createPaymentSchema = z.object({
+  ...paymentInput,
+  ...paymentStatusInput,
 })
 
-export const updateTopUpPaymentSchema = z.object({
+export const updatePaymentSchema = z.object({
   id: z.string({
     required_error: "ID is required",
     invalid_type_error: "ID must be a string",
   }),
-  ...topUpPaymentInput,
-  ...topUpPaymentStatusInput,
+  ...paymentInput,
+  ...paymentStatusInput,
 })
 
-export const updateTopUpPaymentStatusSchema = z.object({
-  ...topUpPaymentStatusInput,
+export const updatePaymentStatusSchema = z.object({
+  ...paymentStatusInput,
 })
 
-export type TopUpPaymentStatus = z.infer<typeof topUpPaymentStatus>
+export type PaymentStatus = z.infer<typeof paymentStatus>
 
-export type CreateTopUpPayment = z.infer<typeof createTopUpPaymentSchema>
-export type UpdateTopUpPayment = z.infer<typeof updateTopUpPaymentSchema>
-export type UpdateTopUpPaymentStatus = z.infer<
-  typeof updateTopUpPaymentStatusSchema
->
+export type CreatePayment = z.infer<typeof createPaymentSchema>
+export type UpdatePayment = z.infer<typeof updatePaymentSchema>
+export type UpdatePaymentStatus = z.infer<typeof updatePaymentStatusSchema>

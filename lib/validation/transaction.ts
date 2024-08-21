@@ -1,17 +1,17 @@
 import { z } from "zod"
 
-export const TOP_UP_ORDER_PROVIDER = ["digiflazz", "apigames"] as const
-export const TOP_UP_ORDER_STATUS = [
+export const TRANSACTION_PROVIDER = ["digiflazz", "apigames"] as const
+export const TRANSACTION_STATUS = [
   "processing",
   "success",
   "failed",
   "error",
 ] as const
 
-export const topUpOrderProvider = z.enum(TOP_UP_ORDER_PROVIDER)
-export const topUpOrderStatus = z.enum(TOP_UP_ORDER_STATUS)
+export const transactionProvider = z.enum(TRANSACTION_PROVIDER)
+export const transactionStatus = z.enum(TRANSACTION_STATUS)
 
-const topUpOrderInput = {
+const transactionInput = {
   invoiceId: z.string({
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
@@ -82,46 +82,44 @@ const topUpOrderInput = {
       invalid_type_error: "Voucher Code must be a string",
     })
     .optional(),
-  provider: z.enum(TOP_UP_ORDER_PROVIDER, {
-    required_error: "Top Up Provider is required",
-    invalid_type_error:
-      "your top up status type doesnt exist on available option.",
+  provider: z.enum(TRANSACTION_PROVIDER, {
+    required_error: "Transaction Provider is required",
+    invalid_type_error: "your provider input type exist on available option.",
   }),
 }
 
-const topUpOrderStatusInput = {
+const transactionStatusInput = {
   invoiceId: z.string({
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
-  status: z.enum(TOP_UP_ORDER_STATUS, {
-    required_error: "Top Up status is required",
-    invalid_type_error:
-      "your top up status type doesnt exist on available option.",
+  status: z.enum(TRANSACTION_STATUS, {
+    required_error: "Transaction Status is required",
+    invalid_type_error: "your status type doesnt exist on available option.",
   }),
 }
 
-export const createTopUpOrderSchema = z.object({
-  ...topUpOrderInput,
-  ...topUpOrderStatusInput,
+export const createTransactionSchema = z.object({
+  ...transactionInput,
+  ...transactionStatusInput,
 })
 
-export const updateTopUpOrderSchema = z.object({
+export const updateTransactionSchema = z.object({
   id: z.string({
     required_error: "ID is required",
     invalid_type_error: "ID must be a string",
   }),
-  ...topUpOrderInput,
-  ...topUpOrderStatusInput,
+  ...transactionInput,
+  ...transactionStatusInput,
 })
 
-export const updateTopUpOrderStatusSchema = z.object({
-  ...topUpOrderStatusInput,
+export const updateTransactionStatusSchema = z.object({
+  ...transactionStatusInput,
 })
 
-export type TopUpOrderStatus = z.infer<typeof topUpOrderStatus>
-export type CreateTopUpOrder = z.infer<typeof createTopUpOrderSchema>
-export type UpdateTopUpOrder = z.infer<typeof updateTopUpOrderSchema>
-export type UpdateTopUpOrderStatus = z.infer<
-  typeof updateTopUpOrderStatusSchema
+export type TransactionStatus = z.infer<typeof transactionStatus>
+export type CreateTransaction = z.infer<typeof createTransactionSchema>
+export type UpdateTransaction = z.infer<typeof updateTransactionSchema>
+export type UpdateTransactionStatus = z.infer<
+  typeof updateTransactionStatusSchema
 >

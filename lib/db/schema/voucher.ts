@@ -5,7 +5,6 @@ export const vouchers = pgTable("vouchers", {
   name: text("name").unique().notNull(),
   voucherCode: text("voucher_code").unique().notNull(),
   discountPercentage: integer("discount_percentage").notNull(),
-  // TODO: make this discont max
   discountMax: integer("discount_max").notNull(),
   voucherAmount: integer("voucher_amount").notNull(),
   description: text("description"),

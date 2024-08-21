@@ -2,22 +2,22 @@ import { relations } from "drizzle-orm"
 import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import {
-  TOP_UP_ORDER_PROVIDER,
-  TOP_UP_ORDER_STATUS,
-} from "@/lib/validation/top-up-order"
+  TRANSACTION_PROVIDER,
+  TRANSACTION_STATUS,
+} from "@/lib/validation/transaction"
 import { users } from "./user"
 
-export const topUpOrderStatusEnum = pgEnum(
-  "top_up_order_status",
-  TOP_UP_ORDER_STATUS,
+export const transactionStatusEnum = pgEnum(
+  "transaction_status",
+  TRANSACTION_STATUS,
 )
 
-export const topUpOrderProviderEnum = pgEnum(
-  "top_up_order_provider",
-  TOP_UP_ORDER_PROVIDER,
+export const transactionProviderEnum = pgEnum(
+  "transaction_provider",
+  TRANSACTION_PROVIDER,
 )
 
-export const topUpOrders = pgTable("top_up_orders", {
+export const transactions = pgTable("transactions", {
   id: text("id").primaryKey(),
   invoiceId: text("invoice_id").unique().notNull(),
   accountId: text("account_id").notNull(),
@@ -33,19 +33,19 @@ export const topUpOrders = pgTable("top_up_orders", {
   fee: integer("fee").notNull(),
   total: integer("total").notNull(),
   note: text("note"),
-  status: topUpOrderStatusEnum("status").notNull().default("processing"),
-  provider: topUpOrderProviderEnum("provider").notNull().default("digiflazz"),
+  status: transactionStatusEnum("status").notNull().default("processing"),
+  provider: transactionProviderEnum("provider").notNull().default("digiflazz"),
   userId: text("userId").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export const topUpOrdersRelations = relations(topUpOrders, ({ one }) => ({
+export const transactionsRelations = relations(transactions, ({ one }) => ({
   user: one(users, {
-    fields: [topUpOrders.userId],
+    fields: [transactions.userId],
     references: [users.id],
   }),
 }))
 
-export type InsertTopUpOrder = typeof topUpOrders.$inferInsert
-export type SelectTopUpOrder = typeof topUpOrders.$inferSelect
+export type InsertTransaction = typeof transactions.$inferInsert
+export type SelectTransaction = typeof transactions.$inferSelect
