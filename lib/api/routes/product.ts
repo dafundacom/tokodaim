@@ -14,7 +14,7 @@ import {
   updateProductSchema,
 } from "@/lib/validation/product"
 
-export const topUpRouter = createTRPCRouter({
+export const productRouter = createTRPCRouter({
   all: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.query.products.findMany({
