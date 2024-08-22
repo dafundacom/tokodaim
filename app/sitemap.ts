@@ -27,9 +27,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const promoEnPageCount = Math.ceil(promosEnCount! / perPage)
   const promosEn: RouteProps[] = []
 
-  const topUpsCount = await api.topUp.count()
-  const topUpPageCount = Math.ceil(topUpsCount! / perPage)
-  const topUps: RouteProps[] = []
+  const productsCount = await api.product.count()
+  const productPageCount = Math.ceil(productsCount! / perPage)
+  const products: RouteProps[] = []
 
   if (typeof articlePageCount === "number") {
     for (let i = 0; i < articlePageCount; i++) {
@@ -79,19 +79,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  if (typeof topUpPageCount === "number") {
-    for (let i = 0; i < topUpPageCount; i++) {
+  if (typeof productPageCount === "number") {
+    for (let i = 0; i < productPageCount; i++) {
       const obj = {
-        url: `https://${`${env.NEXT_PUBLIC_DOMAIN}/sitemap/top-up/${i + 1}`}`,
+        url: `https://${`${env.NEXT_PUBLIC_DOMAIN}/sitemap/${i + 1}`}`,
         lastModified: new Date()
           .toISOString()
           .split("T")[0] as unknown as string,
       }
-      topUps.push(obj)
+      products.push(obj)
     }
   }
 
-  const routes = ["", "/article", "/promo", "/top-up"].map((route) => ({
+  const routes = ["", "/article", "/promo"].map((route) => ({
     url: `${env.NEXT_PUBLIC_SITE_URL}${route}`,
     lastModified: new Date().toISOString().split("T")[0],
   }))
@@ -102,7 +102,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...articlesEn,
     ...promos,
     ...promosEn,
-    ...topUps,
+    ...products,
   ]
 }
 

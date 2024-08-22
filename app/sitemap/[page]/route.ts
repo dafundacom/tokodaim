@@ -6,7 +6,7 @@ import env from "@/env.mjs"
 import { api } from "@/lib/trpc/server"
 
 function generateSiteMap(
-  topUps:
+  products:
     | {
         slug: string
         updatedAt: Date | null
@@ -16,13 +16,13 @@ function generateSiteMap(
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      ${
-       topUps
-         ?.map((topUp) => {
+       products
+         ?.map((product) => {
            return `
        <url>
-           <loc>https://${`${env.NEXT_PUBLIC_DOMAIN}/top-up/${topUp.slug}`}</loc>
+           <loc>https://${`${env.NEXT_PUBLIC_DOMAIN}/${product.slug}`}</loc>
            <lastmod>${
-             new Date(topUp.updatedAt!).toISOString().split("T")[0]
+             new Date(product.updatedAt!).toISOString().split("T")[0]
            }</lastmod>
        </url>
      `
@@ -39,12 +39,12 @@ export async function GET(
 ) {
   const page = parseInt(params.page)
 
-  const topUps = await api.topUp.sitemap({
+  const products = await api.product.sitemap({
     page: page,
     perPage: 1000,
   })
 
-  const sitemap = generateSiteMap(topUps!)
+  const sitemap = generateSiteMap(products!)
 
   return new Response(sitemap, {
     status: 200,
