@@ -4,8 +4,7 @@ import { eq, sql } from "drizzle-orm"
 
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
-import { topUpPayments } from "@/lib/db/schema/top-up-payment"
-import { vouchers } from "@/lib/db/schema/voucher"
+import { payments, vouchers } from "@/lib/db/schema"
 import { digiflazz } from "@/lib/digiflazz"
 import type { PaymentStatus } from "@/lib/validation/payment"
 
@@ -51,12 +50,9 @@ export async function POST(request: NextRequest) {
 
   if (data.is_closed_payment === 1) {
     try {
-      const order = await db.query.topUpPayments.findFirst({
-        where: (topUpPayment, { and, eq }) =>
-          and(
-            eq(topUpPayment.invoiceId, invoiceId),
-            eq(topUpPayment.status, "unpaid"),
-          ),
+      const order = await db.query.payments.findFirst({
+        where: (payement, { and, eq }) =>
+          and(eq(payement.invoiceId, invoiceId), eq(payement.status, "unpaid")),
       })
 
       if (!order) {
@@ -92,9 +88,9 @@ export async function POST(request: NextRequest) {
       }
 
       if (updateStatus === "paid") {
-        const orderDetails = await db.query.topUpOrders.findFirst({
-          where: (topUpOrder, { eq }) => eq(topUpOrder.invoiceId, invoiceId),
-          orderBy: (topUpOrder, { desc }) => [desc(topUpOrder.createdAt)],
+        const orderDetails = await db.query.transactions.findFirst({
+          where: (transaction, { eq }) => eq(transaction.invoiceId, invoiceId),
+          orderBy: (transaction, { desc }) => [desc(transaction.createdAt)],
         })
 
         if (orderDetails && orderDetails.provider === "digiflazz") {
@@ -116,23 +112,24 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          const topUpPayload = {
+          const payload = {
             sku: orderDetails?.sku,
             testing: env.APP_ENV === "development" ? true : false,
             customerNo: orderDetails?.accountId,
             refId: invoiceId,
             msg: "TopUp",
           }
-          await digiflazz.transaksi(topUpPayload)
+
+          await digiflazz.transaksi(payload)
         }
       }
 
       await db
-        .update(topUpPayments)
+        .update(payments)
         .set({
           status: updateStatus,
         })
-        .where(eq(topUpPayments.invoiceId, invoiceId))
+        .where(eq(payments.invoiceId, invoiceId))
 
       return NextResponse.json({ success: true }, { status: 200 })
     } catch (err) {
