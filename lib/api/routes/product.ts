@@ -18,6 +18,9 @@ export const productRouter = createTRPCRouter({
   all: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.query.products.findMany({
+        with: {
+          featuredImage: true,
+        },
         orderBy: (products, { desc }) => [desc(products.featured)],
       })
       return data
@@ -63,6 +66,9 @@ export const productRouter = createTRPCRouter({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (products, { asc }) => [asc(products.title)],
+          with: {
+            featuredImage: true,
+          },
         })
         return data
       } catch (error) {
@@ -85,6 +91,9 @@ export const productRouter = createTRPCRouter({
         const data = await ctx.db.query.products.findMany({
           where: (products, { eq }) => eq(products.category, input),
           orderBy: (products, { desc }) => [desc(products.featured)],
+          with: {
+            featuredImage: true,
+          },
         })
         return data
       } catch (error) {
@@ -107,6 +116,7 @@ export const productRouter = createTRPCRouter({
         const data = await ctx.db.query.products.findFirst({
           where: (product, { eq }) => eq(product.id, input),
           with: {
+            featuredImage: true,
             items: true,
           },
         })
@@ -131,6 +141,7 @@ export const productRouter = createTRPCRouter({
         const data = await ctx.db.query.products.findFirst({
           where: (product, { eq }) => eq(product.id, input),
           with: {
+            featuredImage: true,
             items: true,
           },
         })
@@ -156,6 +167,9 @@ export const productRouter = createTRPCRouter({
             ilike(products.title, `%${input}%`),
             ilike(products.slug, `%${input}%`),
           ),
+        with: {
+          featuredImage: true,
+        },
         limit: 10,
       })
       return data
