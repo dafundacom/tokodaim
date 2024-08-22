@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { count, eq, sql } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
@@ -7,76 +7,18 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { ads } from "@/lib/db/schema/ad"
+import { items } from "@/lib/db/schema"
 import { cuid } from "@/lib/utils"
-import { adPosition, createAdSchema, updateAdSchema } from "@/lib/validation/ad"
+import { createItemSchema, updateItemSchema } from "@/lib/validation/item"
 
-export const adRouter = createTRPCRouter({
-  dashboard: adminProtectedProcedure
-    .input(z.object({ page: z.number(), perPage: z.number() }))
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.ads.findMany({
-          limit: input.perPage,
-          offset: (input.page - 1) * input.perPage,
-          orderBy: (ads, { desc }) => [desc(ads.createdAt)],
-        })
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        if (error instanceof TRPCError) {
-          throw error
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "An internal error occurred",
-          })
-        }
-      }
-    }),
-  byId: adminProtectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.ads.findFirst({
-          where: (ads, { eq }) => eq(ads.id, input),
-        })
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        if (error instanceof TRPCError) {
-          throw error
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "An internal error occurred",
-          })
-        }
-      }
-    }),
-  byPosition: publicProcedure
-    .input(adPosition)
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.ads.findMany({
-          where: (ads, { eq }) => eq(ads.position, input),
-        })
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Ad not found",
-        })
-      }
-    }),
-  count: adminProtectedProcedure.query(async ({ ctx }) => {
+export const itemRouter = createTRPCRouter({
+  all: publicProcedure.query(async ({ ctx }) => {
     try {
-      const data = await ctx.db.select({ value: count() }).from(ads)
+      const data = await ctx.db.query.items.findMany({
+        orderBy: (items, { asc }) => [asc(items.sku)],
+      })
 
-      return data[0].value
+      return data
     } catch (error) {
       console.error("Error:", error)
       if (error instanceof TRPCError) {
@@ -89,11 +31,77 @@ export const adRouter = createTRPCRouter({
       }
     }
   }),
+
+  byId: adminProtectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.items.findFirst({
+          where: (item, { eq }) => eq(item.id, input),
+        })
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
+  byProductId: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      try {
+        const data = await ctx.db.query.items.findMany({
+          where: (items, { eq }) => eq(items.productId, input),
+          with: {
+            product: true,
+          },
+        })
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }),
+
+  byProductIdAndType: publicProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+        type: z.string(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      try {
+        const data = await ctx.db.query.items.findMany({
+          where: (items, { and, eq }) =>
+            and(
+              eq(items.type, input.type),
+              eq(items.productId, input.productId),
+            ),
+          with: {
+            product: true,
+          },
+        })
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }),
+
   create: adminProtectedProcedure
-    .input(createAdSchema)
+    .input(createItemSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.insert(ads).values({
+        const data = await ctx.db.insert(items).values({
           id: cuid(),
           ...input,
         })
@@ -111,17 +119,18 @@ export const adRouter = createTRPCRouter({
         }
       }
     }),
+
   update: adminProtectedProcedure
-    .input(updateAdSchema)
+    .input(updateItemSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db
-          .update(ads)
+          .update(items)
           .set({
             ...input,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(ads.id, input.id))
+          .where(eq(items.id, input.id))
 
         return data
       } catch (error) {
@@ -136,11 +145,12 @@ export const adRouter = createTRPCRouter({
         }
       }
     }),
+
   delete: adminProtectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.delete(ads).where(eq(ads.id, input))
+        const data = await ctx.db.delete(items).where(eq(items.id, input))
         return data
       } catch (error) {
         console.error("Error:", error)

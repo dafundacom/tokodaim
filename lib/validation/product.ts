@@ -16,11 +16,9 @@ const productInput = {
     required_error: "Category is required",
     invalid_type_error: "Category must be a string",
   }),
-  description: z
-    .string({
-      invalid_type_error: "Description must be a string",
-    })
-    .optional(),
+  description: z.string({
+    invalid_type_error: "Description must be a string",
+  }),
   instruction: z
     .string({
       invalid_type_error: "Instruction must be a string",

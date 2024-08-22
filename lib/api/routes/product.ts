@@ -7,23 +7,25 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { medias } from "@/lib/db/schema/media"
-import { topUps, topUpTopUpProducts } from "@/lib/db/schema/top-up"
-import { topUpProducts } from "@/lib/db/schema/top-up-product"
+import { products } from "@/lib/db/schema/product"
 import { cuid, slugify } from "@/lib/utils"
-import { createTopUpSchema, updateTopUpSchema } from "@/lib/validation/top-up"
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "@/lib/validation/product"
 
 export const topUpRouter = createTRPCRouter({
   all: publicProcedure.query(async ({ ctx }) => {
     try {
-      const data = await ctx.db.query.topUps.findMany({
-        orderBy: (topUps, { desc }) => [desc(topUps.featured)],
+      const data = await ctx.db.query.products.findMany({
+        orderBy: (products, { desc }) => [desc(products.featured)],
       })
       return data
     } catch (error) {
       console.error("Error:", error)
     }
   }),
+
   sitemap: publicProcedure
     .input(
       z.object({
@@ -33,10 +35,10 @@ export const topUpRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.query.topUps.findMany({
+        const data = await ctx.db.query.products.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
-          orderBy: (topUps, { desc }) => [desc(topUps.featured)],
+          orderBy: (products, { desc }) => [desc(products.featured)],
           columns: {
             slug: true,
             updatedAt: true,
@@ -47,6 +49,7 @@ export const topUpRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
+
   dashboard: adminProtectedProcedure
     .input(
       z.object({
@@ -56,117 +59,105 @@ export const topUpRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.query.topUps.findMany({
+        const data = await ctx.db.query.products.findMany({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
-          orderBy: (topUps, { asc }) => [asc(topUps.title)],
+          orderBy: (products, { asc }) => [asc(products.title)],
         })
         return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
-  byCategorySlug: publicProcedure
+
+  byCategory: publicProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.query.topUps.findMany({
-          where: (topUps, { eq }) => eq(topUps.categorySlug, input),
-          orderBy: (topUps, { desc }) => [desc(topUps.featured)],
+        const data = await ctx.db.query.products.findMany({
+          where: (products, { eq }) => eq(products.category, input),
+          orderBy: (products, { desc }) => [desc(products.featured)],
         })
         return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
+
   byId: adminProtectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
-      const topUpData = await ctx.db
-        .select()
-        .from(topUps)
-        .leftJoin(medias, eq(medias.id, topUps.featuredImageId))
-        .leftJoin(medias, eq(medias.id, topUps.coverImageId))
-        .leftJoin(medias, eq(medias.id, topUps.guideImageId))
-        .where(eq(topUps.id, input))
-        .limit(1)
-
-      const topUpsTopUpProductsData = await ctx.db
-        .select({
-          id: topUpProducts.id,
-          name: topUpProducts.name,
+      try {
+        const data = await ctx.db.query.products.findFirst({
+          where: (product, { eq }) => eq(product.id, input),
+          with: {
+            items: true,
+          },
         })
-        .from(topUpTopUpProducts)
-        .leftJoin(topUps, eq(topUpTopUpProducts.topUpId, topUps.id))
-        .leftJoin(
-          topUpProducts,
-          eq(topUpTopUpProducts.topUpProductId, topUpProducts.id),
-        )
-        .where(eq(topUps.id, input))
-
-      const data = topUpData.map((item) => ({
-        ...item.top_ups,
-        featuredImage: {
-          id: item?.medias?.id,
-          url: item?.medias?.url,
-        },
-        topUpProducts: topUpsTopUpProductsData,
-      }))
-
-      return data[0]
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
     }),
-  bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    try {
-      const topUpData = await ctx.db
-        .select()
-        .from(topUps)
-        .leftJoin(medias, eq(medias.id, topUps.featuredImageId))
-        .leftJoin(medias, eq(medias.id, topUps.coverImageId))
-        .leftJoin(medias, eq(medias.id, topUps.guideImageId))
-        .where(eq(topUps.slug, input))
-        .limit(1)
 
-      const topUpsTopUpProductsData = await ctx.db
-        .select({
-          id: topUpProducts.id,
-          name: topUpProducts.name,
-          sku: topUpProducts.sku,
-          originalPrice: topUpProducts.originalPrice,
-          price: topUpProducts.price,
+  bySlug: adminProtectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.products.findFirst({
+          where: (product, { eq }) => eq(product.id, input),
+          with: {
+            items: true,
+          },
         })
-        .from(topUpTopUpProducts)
-        .leftJoin(topUps, eq(topUpTopUpProducts.topUpId, topUps.id))
-        .leftJoin(
-          topUpProducts,
-          eq(topUpTopUpProducts.topUpProductId, topUpProducts.id),
-        )
-        .where(eq(topUps.slug, input))
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
 
-      const data = topUpData.map((item) => ({
-        ...item.top_ups,
-        featuredImage: {
-          id: item?.medias?.id,
-          url: item?.medias?.url,
-        },
-        topUpProducts: topUpsTopUpProductsData,
-      }))
-
-      return data[0]
-    } catch (error) {
-      console.error("Error:", error)
-    }
-  }),
   search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
-      const data = await ctx.db.query.topUps.findMany({
-        where: (topUps, { ilike, or }) =>
+      const data = await ctx.db.query.products.findMany({
+        where: (products, { ilike, or }) =>
           or(
-            ilike(topUps.title, `%${input}%`),
-            ilike(topUps.slug, `%${input}%`),
+            ilike(products.title, `%${input}%`),
+            ilike(products.slug, `%${input}%`),
           ),
         limit: 10,
       })
-
       return data
     } catch (error) {
       console.error("Error:", error)
@@ -180,10 +171,10 @@ export const topUpRouter = createTRPCRouter({
       }
     }
   }),
+
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
-      const data = await ctx.db.select({ value: count() }).from(topUps)
-
+      const data = await ctx.db.select({ value: count() }).from(products)
       return data[0].value
     } catch (error) {
       console.error("Error:", error)
@@ -197,12 +188,12 @@ export const topUpRouter = createTRPCRouter({
       }
     }
   }),
+
   create: adminProtectedProcedure
-    .input(createTopUpSchema)
+    .input(createProductSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = slugify(input.title)
-        const categorySlug = slugify(input.category)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle
@@ -211,24 +202,16 @@ export const topUpRouter = createTRPCRouter({
           : input.metaDescription
 
         const data = await ctx.db
-          .insert(topUps)
+          .insert(products)
           .values({
             ...input,
             id: cuid(),
             slug: slug,
-            categorySlug: categorySlug,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
           })
           .returning()
 
-        const topUpProductValues = input.topUpProducts.map((topUpProduct) => ({
-          topUpId: data[0].id,
-          topUpProductId: topUpProduct,
-        }))
-
-        await ctx.db.insert(topUpTopUpProducts).values(topUpProductValues)
-
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -242,30 +225,19 @@ export const topUpRouter = createTRPCRouter({
         }
       }
     }),
+
   update: adminProtectedProcedure
-    .input(updateTopUpSchema)
+    .input(updateProductSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db
-          .update(topUps)
+          .update(products)
           .set({
             ...input,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(topUps.id, input.id))
+          .where(eq(products.id, input.id))
           .returning()
-
-        await ctx.db
-          .delete(topUpTopUpProducts)
-          .where(eq(topUpTopUpProducts.topUpId, input.id))
-
-        const topUpProductValues = input.topUpProducts.map((topUpProduct) => ({
-          topUpId: data[0].id,
-          topUpProductId: topUpProduct,
-        }))
-
-        await ctx.db.insert(topUpTopUpProducts).values(topUpProductValues)
-
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -279,19 +251,38 @@ export const topUpRouter = createTRPCRouter({
         }
       }
     }),
+
   updateTransactions: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db
-          .update(topUps)
+          .update(products)
           .set({
-            transactions: sql`${topUps.transactions} + 1`,
+            transactions: sql`${products.transactions} + 1`,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
-          .where(eq(topUps.title, input))
+          .where(eq(products.title, input))
           .returning()
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
 
+  delete: adminProtectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.delete(products).where(eq(products.id, input))
         return data
       } catch (error) {
         console.error("Error:", error)
