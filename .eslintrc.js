@@ -63,17 +63,6 @@ const config = {
       { blankLine: "always", prev: "function", next: "*" },
       { blankLine: "always", prev: "class", next: "*" },
     ],
-    "@typescript-eslint/padding-line-between-statements": [
-      "error",
-      { blankLine: "always", prev: "*", next: "function" },
-      { blankLine: "always", prev: "*", next: "class" },
-      { blankLine: "always", prev: "*", next: "type" },
-      { blankLine: "always", prev: "*", next: "interface" },
-      { blankLine: "always", prev: "function", next: "*" },
-      { blankLine: "always", prev: "class", next: "*" },
-      { blankLine: "always", prev: "type", next: "*" },
-      { blankLine: "always", prev: "interface", next: "*" },
-    ],
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       { prefer: "type-imports", fixStyle: "separate-type-imports" },
