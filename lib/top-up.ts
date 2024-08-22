@@ -9,8 +9,8 @@ import { cuid } from "@/lib/utils"
 import { digiflazzPriceList } from "./db/schema/digiflazz-price-list"
 import { getScopedI18n } from "./locales/server"
 
-export async function populateTopUps() {
-  const ts = await getScopedI18n("top_up")
+export async function populatePriceList() {
+  const ts = await getScopedI18n("price_list")
 
   const digiflazzPriceListPrePaid = (await digiflazz.daftarHarga(
     "prepaid",
@@ -62,69 +62,8 @@ export async function populateTopUps() {
       }),
     )
 
-    return { success: true, message: ts("sync_success") }
+    return { success: true, message: ts("update_success") }
   } else {
-    return { success: false, message: ts("sync_failed") }
-  }
-}
-
-export async function populateTopUpProducts() {
-  const ts = await getScopedI18n("top_up")
-
-  const digiflazzPriceListPrePaid = (await digiflazz.daftarHarga(
-    "prepaid",
-  )) as DaftarHargaPrePaidReturnProps
-
-  if (Array.isArray(digiflazzPriceListPrePaid.data)) {
-    const digiflazzPriceListPrePaidData = digiflazzPriceListPrePaid.data.map(
-      (item) => ({
-        productName: item.product_name,
-        sku: item.buyer_sku_code,
-        brand: item.brand,
-        category: item.category,
-        price: item.price,
-      }),
-    )
-
-    await Promise.all(
-      digiflazzPriceListPrePaidData.map(async (item) => {
-        await db
-          .insert(digiflazzPriceList)
-          .values({
-            ...item,
-            id: cuid(),
-          })
-          .onConflictDoUpdate({
-            target: digiflazzPriceList.sku,
-            set: {
-              ...item,
-              updatedAt: sql`CURRENT_TIMESTAMP`,
-            },
-          })
-      }),
-    )
-
-    const existingPriceList = await db.query.digiflazzPriceList.findMany()
-
-    const existingPriceListSKUs = existingPriceList.map((item) => item.sku)
-    const newTopUpProducts = digiflazzPriceListPrePaidData.map(
-      (item) => item.sku,
-    )
-
-    const priceListToRemove = existingPriceListSKUs.filter(
-      (sku) => !newTopUpProducts.includes(sku),
-    )
-
-    await Promise.all(
-      priceListToRemove.map(async (sku) => {
-        await db
-          .delete(digiflazzPriceList)
-          .where(eq(digiflazzPriceList.sku, sku))
-      }),
-    )
-
-    return { success: true, message: ts("sync_product_success") }
-  } else {
-    return { success: false, message: ts("sync_product_failed") }
+    return { success: false, message: ts("update_failed") }
   }
 }
