@@ -1,21 +1,23 @@
+// TODO: translate
+
 "use client"
 
 import * as React from "react"
 import dayjs from "dayjs"
 
 import { Badge } from "@/components/ui/badge"
-import type { SelectTopUpPayment } from "@/lib/db/schema"
+import type { SelectPayment } from "@/lib/db/schema"
 import { api } from "@/lib/trpc/react"
 import { formatDate } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
-type OrderItemProps = SelectTopUpPayment
+type TransactionCardProps = SelectPayment
 
-const OrderItemCard = (props: OrderItemProps) => {
+const TransactionCard = (props: TransactionCardProps) => {
   const { status, invoiceId, expiredAt, total } = props
   const [timeLeft, setTimeLeft] = React.useState(getTimeLeft(expiredAt!))
 
-  const { data: orderData } = api.topUpOrder.byInvoiceId.useQuery(invoiceId, {
+  const { data: orderData } = api.transaction.byInvoiceId.useQuery(invoiceId, {
     enabled: !!invoiceId,
   })
 
@@ -42,7 +44,7 @@ const OrderItemCard = (props: OrderItemProps) => {
   return (
     <div className="mb-0">
       <a
-        className="flex h-full w-full cursor-pointer flex-col rounded-[20px] bg-background p-4 shadow-lg active:opacity-30 md:p-5"
+        className="flex size-full cursor-pointer flex-col rounded-[20px] bg-background p-4 shadow-lg active:opacity-30 md:p-5"
         href={`/top-up/order/details/${invoiceId}`}
       >
         <div className="mb-3 flex items-center justify-between md:mb-4">
@@ -87,4 +89,4 @@ const OrderItemCard = (props: OrderItemProps) => {
   )
 }
 
-export default OrderItemCard
+export default TransactionCard

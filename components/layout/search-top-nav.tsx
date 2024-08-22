@@ -3,8 +3,8 @@
 import * as React from "react"
 
 import ArticleCardSearch from "@/components/article/article-card-search"
+import ProductCardSearch from "@/components/product/product-card-search"
 import PromoCardSearch from "@/components/promo/promo-card-search"
-import TopUpCardSearch from "@/components/top-up/top-up-card-search"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
@@ -41,7 +41,7 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
     language: locale,
   })
 
-  const { data: topUps } = api.topUp.search.useQuery(searchQuery)
+  const { data: products } = api.product.search.useQuery(searchQuery)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -96,12 +96,12 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
               }}
               aria-expanded={searchVisibility ? "true" : "false"}
             >
-              {topUps && topUps.length > 0 && (
+              {products && products.length > 0 && (
                 <>
                   <h4 className="mb-2 border-b">{t("top_up")}</h4>
                   <div className="flex flex-col">
-                    {topUps.map((topUp) => (
-                      <TopUpCardSearch key={topUp.slug} topUp={topUp} />
+                    {products.map((product) => (
+                      <ProductCardSearch key={product.slug} product={product} />
                     ))}
                   </div>
                 </>
@@ -128,8 +128,8 @@ const SearchTopNav: React.FC<SearchTopNavProps> = ({ locale }) => {
               )}
               {(!articles || articles.length === 0) &&
                 (!promos || promos.length === 0) &&
-                (!topUps || topUps.length === 0) && (
-                  <p className="semibold text-lg">{ts("not_found")}</p>
+                (!products || products.length === 0) && (
+                  <p className="text-lg font-semibold">{ts("not_found")}</p>
                 )}
             </div>
           )}

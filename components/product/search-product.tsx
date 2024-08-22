@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { useI18n } from "@/lib/locales/client"
 
-const SearchTopUp: React.FC = () => {
+const SearchProduct: React.FC = () => {
   const t = useI18n()
 
   return (
@@ -33,4 +33,4 @@ const SearchTopUp: React.FC = () => {
   )
 }
 
-export default SearchTopUp
+export default SearchProduct

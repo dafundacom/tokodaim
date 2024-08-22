@@ -1,3 +1,5 @@
+// TODO: translate
+
 "use client"
 
 import * as React from "react"
@@ -30,7 +32,7 @@ const InputCustomerPhone = <TFieldValues extends FieldValues = FieldValues>(
   const { form, name } = props
 
   React.useEffect(() => {
-    const savedQuery = localStorage.getItem(`input-customer-phone`)
+    const savedQuery = localStorage.getItem("input-customer-phone")
     if (savedQuery) {
       form.setValue(
         name,
@@ -41,7 +43,7 @@ const InputCustomerPhone = <TFieldValues extends FieldValues = FieldValues>(
 
   const handleInputOnBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
-    localStorage.setItem(`input-customer-phone`, value)
+    localStorage.setItem("input-customer-phone", value)
   }
 
   return (

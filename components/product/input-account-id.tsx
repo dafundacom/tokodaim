@@ -9,12 +9,12 @@ interface InputAccountIdProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
   category: string
-  brand: string
+  productSlug: string
   setQueryAccountId: React.Dispatch<React.SetStateAction<string>>
 }
 
 const InputAccountId: React.FC<InputAccountIdProps> = (props) => {
-  const { label, category, brand, setQueryAccountId, ...rest } = props
+  const { label, category, productSlug, setQueryAccountId, ...rest } = props
 
   const placeholder = `Enter ${label}`
 
@@ -24,17 +24,17 @@ const InputAccountId: React.FC<InputAccountIdProps> = (props) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
-    const savedQuery = localStorage.getItem(`queryAccountId-${brand}`)
+    const savedQuery = localStorage.getItem(`input-account-id-${productSlug}`)
     if (savedQuery && inputRef.current) {
       inputRef.current.value = savedQuery
       setQueryAccountId(savedQuery)
     }
-  }, [brand, setQueryAccountId])
+  }, [productSlug, setQueryAccountId])
 
   const handleInputOnBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value
     setQueryAccountId(value)
-    localStorage.setItem(`queryAccountId-${brand}`, value)
+    localStorage.setItem(`input-account-id-${productSlug}`, value)
   }
 
   return (

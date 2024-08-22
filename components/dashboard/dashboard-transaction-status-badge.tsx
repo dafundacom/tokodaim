@@ -2,19 +2,19 @@ import * as React from "react"
 
 import { Badge, type BadgeProps } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import type { TopUpOrderStatus } from "@/lib/validation/top-up-order"
+import type { TransactionStatus } from "@/lib/validation/transaction"
 
-interface DashboardTopUpOrderStatusBadgeProsp extends BadgeProps {
-  status: TopUpOrderStatus
+interface DashboardTransactionStatusBadgeProps extends BadgeProps {
+  status: TransactionStatus
   children: React.ReactNode
 }
 
-const DashboardTopUpOrderStatusBadge: React.FC<
-  DashboardTopUpOrderStatusBadgeProsp
+const DashboardTransactionStatusBadge: React.FC<
+  DashboardTransactionStatusBadgeProps
 > = (props) => {
   const { status, className, children } = props
 
-  const statusToVariantMap: Record<TopUpOrderStatus, BadgeProps["variant"]> = {
+  const statusToVariantMap: Record<TransactionStatus, BadgeProps["variant"]> = {
     success: "success",
     error: "danger",
     processing: "warning",
@@ -29,4 +29,4 @@ const DashboardTopUpOrderStatusBadge: React.FC<
   )
 }
 
-export default DashboardTopUpOrderStatusBadge
+export default DashboardTransactionStatusBadge

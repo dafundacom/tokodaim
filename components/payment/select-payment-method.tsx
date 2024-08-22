@@ -1,3 +1,5 @@
+// TODO: translate
+
 import * as React from "react"
 
 import Image from "@/components/image"
@@ -39,11 +41,11 @@ const SelectPaymentMethod: React.FunctionComponent<SelectPaymentMethodProps> = (
       )}
       onClick={onSelect}
     >
-      <div className="relative h-full w-full">
+      <div className="relative size-full">
         <Input
           type="radio"
           name={name}
-          className="absolute h-full w-full opacity-0"
+          className="absolute size-full opacity-0"
           id={name}
         />
         <FormLabel

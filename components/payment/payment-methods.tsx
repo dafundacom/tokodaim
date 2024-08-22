@@ -206,7 +206,7 @@ const PaymentMethods = (props: PaymentMethodsProps) => {
                   Convenience Shop
                 </h2>
               </div>
-              <div className={`grid grid-cols-1 gap-4 xl:grid-cols-2`}>
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                 {paymentChannel.convenienceShop.map(
                   (paymentMethod: TripayPaymentMethodsProps) => {
                     const { totalPayment } = calculateTotalPrice(

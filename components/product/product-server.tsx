@@ -14,39 +14,37 @@ import {
 import { toast } from "@/components/ui/toast/use-toast"
 import { useI18n } from "@/lib/locales/client"
 
-interface TopUpServerProps extends React.HTMLAttributes<HTMLDivElement> {
-  brand: string
-  topUpServer: (_value: React.SetStateAction<string>) => void
+interface ProductServerProps extends React.HTMLAttributes<HTMLDivElement> {
+  title: string
+  server: (_value: React.SetStateAction<string>) => void
   queryAccountId: string
 }
 
-const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
-  const { brand, topUpServer, queryAccountId } = props
+const ProductServer: React.FunctionComponent<ProductServerProps> = (props) => {
+  const { title, server, queryAccountId } = props
 
-  const [queryTopUpServer, setTopUpServerQuery] = React.useState<string>("")
+  const [queryServer, setQueryServer] = React.useState<string>("")
 
   const t = useI18n()
 
   React.useEffect(() => {
-    const savedQuery = localStorage.getItem(`top-up-server-${brand}`)
+    const savedQuery = localStorage.getItem(`server-${title}`)
     if (savedQuery) {
-      topUpServer(savedQuery)
-      setTopUpServerQuery(savedQuery)
+      server(savedQuery)
+      setQueryServer(savedQuery)
     }
-  }, [topUpServer, brand])
+  }, [server, title])
 
-  const topUpServerList = topUpGamesWithServer.find(
-    (list) => list.name === brand,
-  )
+  const serverList = gamesWithServer.find((list) => list.name === title)
 
   React.useEffect(() => {
-    if (topUpServerList) {
-      topUpServer(topUpServerList?.gameServers[0]?.value!)
-      setTopUpServerQuery(topUpServerList?.gameServers[0]?.value!)
+    if (serverList) {
+      server(serverList?.gameServers[0]?.value!)
+      setQueryServer(serverList?.gameServers[0]?.value!)
     }
-  }, [topUpServer, topUpServerList])
+  }, [server, serverList])
 
-  function checkGameIdAndServer(game: string, id: string, zone?: string) {
+  function checkIGNAndServer(game: string, id: string, zone?: string) {
     let isMatch = true
     switch (game.toLocaleLowerCase()) {
       case "genshin impact":
@@ -81,7 +79,6 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
           })
           isMatch = false
         }
-
         break
       case "honkai star rail":
         if (id.startsWith("6") && zone !== "os_usa") {
@@ -124,31 +121,31 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
 
   const handleSelectChange = (value: string) => {
     if (value.length > 0) {
-      const isMatch = checkGameIdAndServer(brand, queryAccountId, value)
+      const isMatch = checkIGNAndServer(title, queryAccountId, value)
       if (isMatch) {
-        topUpServer(value)
-        setTopUpServerQuery(value)
-        localStorage.setItem(`top-up-server-${brand}`, value)
+        server(value)
+        setQueryServer(value)
+        localStorage.setItem(`server-${title}`, value)
       }
     }
   }
 
   const handleInputChange = (event: { target: { value: string } }) => {
-    topUpServer(event.target.value)
-    setTopUpServerQuery(event.target.value)
-    localStorage.setItem(`top-up-server-${brand}`, event.target.value)
+    server(event.target.value)
+    setQueryServer(event.target.value)
+    localStorage.setItem(`server-${title}`, event.target.value)
   }
 
-  if (topUpServerList) {
+  if (serverList) {
     return (
       <div className="w-full">
         <FormLabel>Server</FormLabel>
-        <Select onValueChange={handleSelectChange} value={queryTopUpServer}>
+        <Select onValueChange={handleSelectChange} value={queryServer}>
           <SelectTrigger>
             <SelectValue placeholder={t("server_placeholder_select")} />
           </SelectTrigger>
           <SelectContent>
-            {topUpServerList.gameServers.map((gameServer) => (
+            {serverList.gameServers.map((gameServer) => (
               <SelectItem key={gameServer.value} value={gameServer.value}>
                 {gameServer.name}
               </SelectItem>
@@ -163,7 +160,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
       <FormLabel>Server</FormLabel>
       <Input
         onChange={handleInputChange}
-        value={queryTopUpServer}
+        value={queryServer}
         className="dark:bg-[#4b6584]"
         placeholder={t("server_placeholder")}
       />
@@ -171,7 +168,7 @@ const TopUpServer: React.FunctionComponent<TopUpServerProps> = (props) => {
   )
 }
 
-export const topUpGamesWithServer = [
+export const gamesWithServer = [
   {
     name: "Genshin Impact",
     gameServers: [
@@ -367,4 +364,4 @@ export const topUpGamesWithServer = [
   },
 ]
 
-export default TopUpServer
+export default ProductServer

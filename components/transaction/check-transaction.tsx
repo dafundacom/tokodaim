@@ -1,3 +1,5 @@
+// TODO: translate
+
 "use client"
 
 import * as React from "react"
@@ -23,25 +25,25 @@ interface FormData {
   queryInvoice: string
 }
 
-function CheckTopUp() {
+function CheckTransaction() {
   const [queryInvoice, setQueryInvoice] = React.useState("")
   const form = useForm<FormData>()
 
-  const { data: paymentData } = api.topUpPayment.byInvoiceId.useQuery(
+  const { data: paymentData } = api.payment.byInvoiceId.useQuery(queryInvoice, {
+    enabled: !!queryInvoice,
+  })
+
+  const { data: transactionData } = api.transaction.byInvoiceId.useQuery(
     queryInvoice,
     {
       enabled: !!queryInvoice,
     },
   )
 
-  const { data: orderData } = api.topUpOrder.byInvoiceId.useQuery(
-    queryInvoice,
-    { enabled: !!queryInvoice },
-  )
-
   const onSubmitInvoice: SubmitHandler<FormData> = (values) => {
     setQueryInvoice(values.queryInvoice)
   }
+
   return (
     <>
       <div>
@@ -51,7 +53,7 @@ function CheckTopUp() {
             className="container relative z-20 py-2 text-left"
           >
             <h2 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
-              Track your order by invoice number!
+              Track your transaction by invoice number!
             </h2>
 
             <div className="mt-6 max-w-xl">
@@ -99,8 +101,10 @@ function CheckTopUp() {
                         Account Data
                       </div>
                       <div className="col-span-5 flex flex-col md:col-span-4">
-                        {orderData?.ign && <div>{orderData?.ign}</div>}
-                        <div>{orderData?.accountId}</div>
+                        {transactionData?.ign && (
+                          <div>{transactionData?.ign}</div>
+                        )}
+                        <div>{transactionData?.accountId}</div>
                       </div>
                       <div className="col-span-3 flex items-center md:col-span-4">
                         Invoice Number
@@ -130,15 +134,16 @@ function CheckTopUp() {
                         <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
                           <Badge
                             variant={
-                              orderData?.status?.toLocaleLowerCase() === "paid"
+                              transactionData?.status?.toLocaleLowerCase() ===
+                              "paid"
                                 ? "success"
-                                : orderData?.status?.toLocaleLowerCase() ===
+                                : transactionData?.status?.toLocaleLowerCase() ===
                                     "failed"
                                   ? "danger"
                                   : "warning"
                             }
                           >
-                            {orderData?.status ?? ""}
+                            {transactionData?.status ?? ""}
                           </Badge>
                         </span>
                       </div>
@@ -219,4 +224,4 @@ function CheckTopUp() {
   )
 }
 
-export default CheckTopUp
+export default CheckTransaction

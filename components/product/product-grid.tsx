@@ -3,17 +3,16 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import type { SelectTopUps } from "@/lib/db/schema/top-up"
 import { useI18n } from "@/lib/locales/client"
-import TopUpCard from "./top-up-card"
+import ProductCard, { type ProductDataProps } from "./product-card"
 
-interface TopUpGridProps {
+interface ProductGridProps {
   title: string
-  topUps: SelectTopUps[]
+  products: ProductDataProps[]
 }
 
-const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
-  const { title, topUps } = props
+const ProductGrid: React.FC<ProductGridProps> = (props) => {
+  const { title, products } = props
 
   const [visibleCount, setVisibleCount] = React.useState<number>(15)
 
@@ -27,17 +26,17 @@ const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
     setVisibleCount(15)
   }
 
-  const visibleProducts = topUps?.slice(0, visibleCount)
+  const visibleProducts = products?.slice(0, visibleCount)
 
   return (
     <div className="space-y-4">
       <h2>{title}</h2>
       <div className="grid grid-cols-3 gap-4 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-5">
-        {visibleProducts?.map((topUpProduct) => (
-          <TopUpCard key={topUpProduct.slug} topUp={topUpProduct} />
+        {visibleProducts?.map((product) => (
+          <ProductCard key={product.slug} product={product} />
         ))}
       </div>
-      {visibleCount < topUps?.length && (
+      {visibleCount < products?.length && (
         <div className="flex justify-center">
           <Button
             onClick={handleShowMore}
@@ -63,4 +62,4 @@ const TopUpGrid: React.FC<TopUpGridProps> = (props) => {
   )
 }
 
-export default TopUpGrid
+export default ProductGrid
