@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
-import CheckTopUp from "@/components/top-up/check-top-up"
+import CheckTransaction from "@/components/top-up/check-top-up"
 import env from "@/env.mjs"
 import type { LanguageType } from "@/lib/validation/language"
 
@@ -64,7 +64,7 @@ export default function CheckTransaction() {
         ]}
       />
       <section className="fade-up-elemenet">
-        <CheckTopUp />
+        <CheckTransaction />
       </section>
     </>
   )

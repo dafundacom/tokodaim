@@ -17,58 +17,73 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Icon } from "@/components/ui/icon"
+import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { SelectTopUps } from "@/lib/db/schema/top-up"
+import type { SelectMedia, SelectProduct } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 
+interface ProductProps extends SelectProduct {
+  featuredImage: Pick<SelectMedia, "id" | "url">
+  coverImage: Pick<SelectMedia, "id" | "url"> | null
+  guideImage: Pick<SelectMedia, "id" | "url"> | null
+}
+
+interface EditProductFormProps {
+  product: ProductProps
+}
+
 interface FormValues {
   id: string
-  brand: string
+  title: string
   slug: string
   category: string
-  categorySlug: string
-  featuredImage?: string
   coverImage?: string
   guideImage?: string
-  productIcon?: string
-  description?: string
+  description: string
   instruction?: string
   featured: boolean
+  metaTitle?: string
+  metaDescription?: string
 }
 
-interface EditTopUpFormProps {
-  topUp: SelectTopUps
-}
-
-export default function EditTopUpForm(props: EditTopUpFormProps) {
-  const { topUp } = props
+export default function UpdateProductForm(props: EditProductFormProps) {
+  const { product } = props
 
   const [isPending, startTransition] = React.useTransition()
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
+  const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [imageType, setImageType] = React.useState<
-    "featuredImage" | "icon" | "coverImage" | "guideImage"
+    "featuredImage" | "coverImage" | "guideImage"
   >("featuredImage")
-  const [selectedFeaturedImage, setSelectedFeaturedImage] =
-    React.useState<string>("")
-  const [selectedProductIcon, setSelectedProductIcon] =
-    React.useState<string>("")
-  const [selectedCoverImage, setSelectedCoverImage] = React.useState<string>("")
-  const [selectedGuideImage, setSelectedGuideImage] = React.useState<string>("")
+  const [selectedFeaturedImage, setSelectedFeaturedImage] = React.useState<{
+    id: string
+    url: string
+  } | null>(null)
+  const [selectedCoverImage, setSelectedCoverImage] = React.useState<{
+    id: string
+    url: string
+  } | null>(null)
+  const [selectedGuideImage, setSelectedGuideImage] = React.useState<{
+    id: string
+    url: string
+  } | null>(null)
 
   const t = useI18n()
-  const ts = useScopedI18n("top_up")
+  const ts = useScopedI18n("product")
 
   const router = useRouter()
 
-  const { mutate: updateTopUp } = api.topUp.update.useMutation({
+  const { mutate: updateProduct } = api.product.update.useMutation({
     onSuccess: () => {
       toast({
         variant: "success",
         description: ts("update_success"),
       })
-      router.push("/dashboard/top-up")
+      router.push("/dashboard/product")
     },
     onError: (error) => {
       const errorData = error?.data?.zodError?.fieldErrors
@@ -95,68 +110,52 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
 
   const form = useForm<FormValues>({
     defaultValues: {
-      id: topUp.id,
-      brand: topUp.brand,
-      slug: topUp.slug,
-      category: topUp.category,
-      categorySlug: topUp.categorySlug,
-      featuredImage: topUp.featuredImage! ?? "",
-      coverImage: topUp.coverImage! ?? "",
-      guideImage: topUp.guideImage! ?? "",
-      productIcon: topUp.productIcon! ?? "",
-      description: topUp.description! ?? "",
-      instruction: topUp.instruction! ?? "",
-      featured: topUp.featured ?? false,
+      id: product.id,
+      title: product.title,
+      slug: product.slug,
+      category: product.category,
+      // featuredImageId: product.featuredImageId! ?? "",
+      // coverImageId: product.coverImageId! ?? "",
+      // guideImageId: product.guideImageId! ?? "",
+      description: product.description! ?? "",
+      instruction: product.instruction! ?? "",
+      featured: product.featured ?? false,
     },
   })
 
   React.useEffect(() => {
-    setSelectedFeaturedImage(topUp?.featuredImage!)
-    setSelectedProductIcon(topUp?.productIcon!)
-    setSelectedCoverImage(topUp?.coverImage!)
-    setSelectedGuideImage(topUp?.guideImage!)
-  }, [
-    topUp?.featuredImage,
-    topUp?.coverImage,
-    topUp?.productIcon,
-    topUp?.guideImage,
-  ])
+    setSelectedFeaturedImage(product?.featuredImage!)
+    setSelectedCoverImage(product?.coverImage!)
+    setSelectedGuideImage(product?.guideImage!)
+  }, [product?.featuredImage, product?.coverImage, product?.guideImage])
 
   const onSubmit = (values: FormValues) => {
     startTransition(() => {
       const mergedValues = {
         ...values,
-        featuredImage: selectedFeaturedImage,
-        productIcon: selectedProductIcon,
-        coverImage: selectedCoverImage,
-        guideImage: selectedGuideImage,
+        featuredImageId: selectedFeaturedImage?.id!,
+        ...(selectedCoverImage && { coverImageId: selectedCoverImage.id }),
+        ...(selectedGuideImage && { guideImageId: selectedGuideImage.id }),
       }
-      updateTopUp(mergedValues)
+      updateProduct(mergedValues)
     })
   }
 
-  const handleUpdateImage = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
+  const handleUpdateImage = (data: { id: string; url: string }) => {
     switch (imageType) {
       case "featuredImage":
-        setSelectedFeaturedImage(data.url)
+        setSelectedFeaturedImage(data)
         toast({ variant: "success", description: t("featured_image_selected") })
         break
-      case "icon":
-        setSelectedProductIcon(data.url)
-        toast({ variant: "success", description: ts("product_icon_selected") })
-        break
       case "coverImage":
-        setSelectedCoverImage(data.url)
+        setSelectedCoverImage(data)
         toast({
           variant: "success",
           description: ts("cover_image_selected"),
         })
         break
       case "guideImage":
-        setSelectedGuideImage(data.url)
+        setSelectedGuideImage(data)
         toast({
           variant: "success",
           description: ts("guide_image_selected"),
@@ -169,29 +168,25 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
   }
 
   const handleDeleteImage = (
-    type: "featuredImage" | "icon" | "coverImage" | "guideImage",
+    type: "featuredImage" | "coverImage" | "guideImage",
   ) => {
     switch (type) {
       case "featuredImage":
-        setSelectedFeaturedImage("")
+        setSelectedFeaturedImage(null)
         toast({
           variant: "success",
           description: t("featured_image_deleted"),
         })
         break
-      case "icon":
-        setSelectedProductIcon("")
-        toast({ variant: "success", description: ts("product_icon_deleted") })
-        break
       case "coverImage":
-        setSelectedCoverImage("")
+        setSelectedCoverImage(null)
         toast({
           variant: "success",
           description: ts("cover_image_deleted"),
         })
         break
       case "guideImage":
-        setSelectedGuideImage("")
+        setSelectedGuideImage(null)
         toast({
           variant: "success",
           description: ts("guide_image_deleted"),
@@ -206,18 +201,64 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
     <div className="mx-0 space-y-4 lg:mx-8 lg:p-5">
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <h1 className="pb-2 lg:pb-5">{ts("edit")}</h1>
-          <div className="lg:border-1 flex flex-col lg:flex-row lg:space-x-4 lg:border-border">
+          <h1 className="pb-2 lg:pb-5">{ts("update")}</h1>
+          <div className="flex flex-col lg:flex-row lg:space-x-4">
             <div className="w-full lg:w-6/12 lg:space-y-4">
               <div className="flex flex-col space-y-4">
-                <FormLabel>{t("brand")}</FormLabel>
-                <div className="relative inline-flex h-9 w-full min-w-0 appearance-none items-center rounded-md border border-input bg-muted/50 px-3 py-2 text-base text-muted-foreground transition-colors duration-75 ease-out focus:bg-background focus:outline-none focus:ring-2">
-                  <p className="line-clamp-1">{topUp.brand}</p>
-                </div>
-                <FormLabel>Slug</FormLabel>
-                <div className="relative inline-flex h-9 w-full min-w-0 appearance-none items-center rounded-md border border-input bg-muted/50 px-3 py-2 text-base text-muted-foreground transition-colors duration-75 ease-out focus:bg-background focus:outline-none focus:ring-2">
-                  <p className="line-clamp-1">{topUp.slug}</p>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="title"
+                  rules={{
+                    required: t("title_required"),
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("title")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("title_placeholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  rules={{
+                    required: t("slug_required"),
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("slug")}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t("slug_placeholder")} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  rules={{
+                    required: t("category_required"),
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("category")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("category_placeholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
               <div className="space-y-2">
                 <FormLabel>{t("description")}</FormLabel>
@@ -247,6 +288,59 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                   </FormItem>
                 )}
               />
+              <div className="rounded-lg bg-muted p-3 lg:p-5">
+                <div className="flex justify-between">
+                  <div className={showMetaData ? "pb-4" : "pb-0"}>
+                    <span className="flex align-top text-base font-semibold">
+                      Meta Data
+                    </span>
+                    <span className="text-xs">
+                      {t("extra_content_search_engine")}
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="border-none p-0"
+                    onClick={() => setShowMetaData(!showMetaData)}
+                  >
+                    {showMetaData ? <Icon.Close /> : <Icon.ChevronDown />}
+                  </Button>
+                </div>
+                <div className={showMetaData ? "flex flex-col" : "hidden"}>
+                  <FormField
+                    control={form.control}
+                    name="metaTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("meta_title")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("meta_title_placeholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="metaDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("meta_description")}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={t("meta_description_placeholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
             <div className="w-full lg:w-6/12 lg:space-y-4">
               <div>
@@ -267,7 +361,7 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedFeaturedImage}
+                          src={selectedFeaturedImage.url}
                           className="rounded-lg object-cover"
                           fill
                           alt={t("featured_image")}
@@ -302,58 +396,6 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                 )}
               </div>
               <div>
-                <FormLabel>{ts("product_icon")}</FormLabel>
-                {selectedProductIcon ? (
-                  <div className="relative overflow-hidden rounded-[18px]">
-                    <DeleteMediaButton
-                      description={ts("product_icon")}
-                      onDelete={() => handleDeleteImage("icon")}
-                    />
-                    <SelectMediaDialog
-                      handleSelectUpdateMedia={handleUpdateImage}
-                      open={openDialog && imageType === "icon"}
-                      setOpen={(isOpen) => {
-                        setOpenDialog(isOpen)
-                        if (isOpen) setImageType("icon")
-                      }}
-                    >
-                      <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
-                        <Image
-                          src={selectedProductIcon}
-                          className="rounded-lg object-cover"
-                          fill
-                          alt="Icon"
-                          onClick={() => {
-                            setOpenDialog(true)
-                            setImageType("icon")
-                          }}
-                          sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
-                        />
-                      </div>
-                    </SelectMediaDialog>
-                  </div>
-                ) : (
-                  <SelectMediaDialog
-                    handleSelectUpdateMedia={handleUpdateImage}
-                    open={openDialog && imageType === "icon"}
-                    setOpen={(isOpen) => {
-                      setOpenDialog(isOpen)
-                      if (isOpen) setImageType("icon")
-                    }}
-                  >
-                    <div
-                      onClick={() => {
-                        setOpenDialog(true)
-                        setImageType("icon")
-                      }}
-                      className="relative mr-auto flex aspect-video h-[150px] w-full cursor-pointer items-center justify-center rounded-lg border-border bg-muted text-foreground lg:h-full lg:max-h-[250px]"
-                    >
-                      <p>{ts("product_icon_placeholder")}</p>
-                    </div>
-                  </SelectMediaDialog>
-                )}
-              </div>
-              <div>
                 <FormLabel>{ts("cover_image")}</FormLabel>
                 {selectedCoverImage ? (
                   <div className="relative overflow-hidden rounded-[18px]">
@@ -371,7 +413,7 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedCoverImage}
+                          src={selectedCoverImage.url}
                           className="rounded-lg object-cover"
                           fill
                           alt="Cover Image"
@@ -423,7 +465,7 @@ export default function EditTopUpForm(props: EditTopUpFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedGuideImage}
+                          src={selectedGuideImage.url}
                           className="rounded-lg object-cover"
                           fill
                           alt="Guide Image"

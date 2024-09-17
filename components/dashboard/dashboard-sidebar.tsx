@@ -59,26 +59,23 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
             <SidebarItem href="/dashboard/voucher" icon={<Icon.Voucher />}>
               {t("vouchers")}
             </SidebarItem>
-            <SidebarItem href="/dashboard/top-up" icon={<Icon.TopUp />}>
-              {t("top_up")}
+            <SidebarItem href="/dashboard/product" icon={<Icon.Product />}>
+              {t("products")}
+            </SidebarItem>
+            <SidebarItem href="/dashboard/item" icon={<Icon.Item />}>
+              {t("items")}
             </SidebarItem>
             <SidebarItem
-              href="/dashboard/top-up/order"
+              href="/dashboard/transaction"
               icon={<Icon.Transaction />}
             >
-              {t("order")}
+              {t("transactions")}
             </SidebarItem>
-            <SidebarItem
-              href="/dashboard/top-up/payment"
-              icon={<Icon.Payment />}
-            >
+            <SidebarItem href="/dashboard/payment" icon={<Icon.Payment />}>
               {t("payment")}
             </SidebarItem>
-            <SidebarItem
-              href="/dashboard/top-up/manual"
-              icon={<Icon.ManualTopUp />}
-            >
-              Manual Top Up
+            <SidebarItem href="/dashboard/manual" icon={<Icon.ManualTopUp />}>
+              Manual
             </SidebarItem>
             <hr />
             <SidebarItem href="/dashboard/article" icon={<Icon.Article />}>
@@ -117,7 +114,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
         </div>
       </Sidebar>
       {isOpen && (
-        <div className="z-29 fixed inset-0 bg-primary/50 bg-opacity-50 dark:bg-opacity-80"></div>
+        <div className="fixed inset-0 z-30 bg-primary/50 dark:bg-primary/80"></div>
       )}
     </>
   )

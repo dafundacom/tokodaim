@@ -1,3 +1,4 @@
+import { AiOutlineProduct } from "react-icons/ai"
 import {
   BiCheckSquare,
   BiChevronsLeft,
@@ -208,6 +209,7 @@ export const Icon = {
   Image: MdImage,
   IndonesiaFlag: IndonesiaFlag,
   Instagram: FaInstagram,
+  Item: MdOutlineWallet,
   KeyboardArrowDown: MdOutlineKeyboardArrowDown,
   Lamp: LampIcon,
   Language: MdOutlineLanguage,
@@ -236,6 +238,7 @@ export const Icon = {
   Pinterest: FaPinterestP,
   PlayStation: FaPlaystation,
   PlusSquare: FaPlusSquare,
+  Product: AiOutlineProduct,
   Promo: MdDiscount,
   Receipt: MdOutlineReceipt,
   Reddit: FaRedditAlien,

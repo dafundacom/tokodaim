@@ -12,21 +12,67 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { SelectTopUps } from "@/lib/db/schema/top-up"
+import { toast } from "@/components/ui/toast/use-toast"
+import type { SelectMedia, SelectProduct } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
+import { api } from "@/lib/trpc/react"
 
-interface TopUpTableProps {
-  topUps: SelectTopUps[]
+interface ProductProps extends SelectProduct {
+  featuredImage: Pick<SelectMedia, "url"> | null
+  coverImage: Pick<SelectMedia, "url"> | null
+  guideImage: Pick<SelectMedia, "url"> | null
+}
+
+interface ProductTableProps {
+  products: ProductProps[]
   paramsName: string
   page: number
   lastPage: number
+  updateProducts: () => void
+  updateProductsCount: () => void
 }
 
-export default function TopUpTable(props: TopUpTableProps) {
-  const { topUps, paramsName, page, lastPage } = props
+export default function ProductTable(props: ProductTableProps) {
+  const {
+    products,
+    paramsName,
+    page,
+    lastPage,
+    updateProducts,
+    updateProductsCount,
+  } = props
 
   const t = useI18n()
-  const ts = useScopedI18n("top_up")
+  const ts = useScopedI18n("product")
+
+  const { mutate: deleteProduct } = api.product.delete.useMutation({
+    onSuccess: () => {
+      updateProducts()
+      updateProductsCount()
+      toast({ variant: "success", description: ts("delete_success") })
+    },
+    onError: (error) => {
+      const errorData = error?.data?.zodError?.fieldErrors
+
+      if (errorData) {
+        for (const field in errorData) {
+          if (errorData.hasOwnProperty(field)) {
+            errorData[field]?.forEach((errorMessage) => {
+              toast({
+                variant: "danger",
+                description: errorMessage,
+              })
+            })
+          }
+        }
+      } else {
+        toast({
+          variant: "danger",
+          description: ts("delete_failed"),
+        })
+      }
+    },
+  })
 
   return (
     <div className="relative w-full overflow-auto">
@@ -38,9 +84,6 @@ export default function TopUpTable(props: TopUpTableProps) {
               {t("featured_image")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
-              {ts("product_icon")}
-            </TableHead>
-            <TableHead className="hidden whitespace-nowrap lg:table-cell">
               {ts("cover_image")}
             </TableHead>
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
@@ -49,84 +92,71 @@ export default function TopUpTable(props: TopUpTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {topUps.map((topUp) => {
+          {products.map((product) => {
             return (
-              <TableRow key={topUp.brand}>
+              <TableRow key={product.title}>
                 <TableCell className="max-w-[120px] align-middle">
                   <div className="flex flex-col">
                     <span className="line-clamp-3 font-medium">
-                      {topUp.brand}
+                      {product.title}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
-                  <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {topUp.featuredImage ? (
+                  <div className="relative size-[100px] overflow-hidden rounded">
+                    {product.featuredImage ? (
                       <Image
                         className="object-cover"
-                        src={topUp.featuredImage}
-                        alt={topUp.brand}
+                        src={product.featuredImage.url}
+                        alt={product.title}
                       />
                     ) : (
                       <Icon.BrokenImage
                         aria-label="Broken Image"
-                        className="h-full w-full"
+                        className="size-full"
                       />
                     )}
                   </div>
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
-                  <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {topUp.productIcon ? (
+                  <div className="relative size-[100px] overflow-hidden rounded">
+                    {product.coverImage ? (
                       <Image
                         className="object-cover"
-                        src={topUp.productIcon}
-                        alt={topUp.brand}
+                        src={product.coverImage.url}
+                        alt={product.title}
                       />
                     ) : (
                       <Icon.BrokenImage
                         aria-label="Broken Image"
-                        className="h-full w-full"
+                        className="size-full"
                       />
                     )}
                   </div>
                 </TableCell>
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
-                  <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {topUp.coverImage ? (
+                  <div className="relative size-[100px] overflow-hidden rounded">
+                    {product.guideImage ? (
                       <Image
                         className="object-cover"
-                        src={topUp.coverImage}
-                        alt={topUp.brand}
+                        src={product.guideImage.url}
+                        alt={product.title}
                       />
                     ) : (
                       <Icon.BrokenImage
                         aria-label="Broken Image"
-                        className="h-full w-full"
-                      />
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
-                  <div className="relative h-[100px] w-[100px] overflow-hidden rounded">
-                    {topUp.guideImage ? (
-                      <Image
-                        className="object-cover"
-                        src={topUp.guideImage}
-                        alt={topUp.brand}
-                      />
-                    ) : (
-                      <Icon.BrokenImage
-                        aria-label="Broken Image"
-                        className="h-full w-full"
+                        className="size-full"
                       />
                     )}
                   </div>
                 </TableCell>
                 <TableCell className="p-4 align-middle">
                   <DashboardShowOptions
-                    editUrl={`/dashboard/top-up/edit/${topUp.slug}`}
-                    description={topUp.brand!}
+                    onDelete={() => {
+                      void deleteProduct(product.id)
+                    }}
+                    editUrl={`/dashboard/product/edit/${product.id}`}
+                    description={product.title!}
                   />
                 </TableCell>
               </TableRow>

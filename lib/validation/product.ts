@@ -9,9 +9,6 @@ const productInput = {
     required_error: "Title is required",
     invalid_type_error: "Title must be a string",
   }),
-  command: z.enum(PRODUCT_COMMAND, {
-    invalid_type_error: "Your command doesnt exist on available option.",
-  }),
   category: z.string({
     required_error: "Category is required",
     invalid_type_error: "Category must be a string",

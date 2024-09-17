@@ -68,6 +68,8 @@ export const productRouter = createTRPCRouter({
           orderBy: (products, { asc }) => [asc(products.title)],
           with: {
             featuredImage: true,
+            coverImage: true,
+            guideImage: true,
           },
         })
         return data
@@ -117,7 +119,9 @@ export const productRouter = createTRPCRouter({
           where: (product, { eq }) => eq(product.id, input),
           with: {
             featuredImage: true,
-            items: true,
+            coverImage: true,
+            guideImage: true,
+            // items: true,
           },
         })
         return data

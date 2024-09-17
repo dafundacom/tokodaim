@@ -35,7 +35,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = params
 
-  const topUp = await api.topUp.bySlug(slug)
+  const topUp = await api.product.bySlug(slug)
 
   return {
     title: `Top Up ${topUp?.brand}`,
@@ -73,8 +73,8 @@ export default async function TopUpPage({
     settingValues = { ...parsedSetting }
   }
 
-  const topUp = await api.topUp.bySlug(slug)
-  const topUpProducts = await api.topUpProduct.byBrandSlug(slug)
+  const topUp = await api.product.bySlug(slug)
+  const topUpProducts = await api.item.byBrandSlug(slug)
   const paymentChannel = await api.payment.tripayPaymentChannel()
   const cleanedText = topUp?.brand.replace(/\d+(\.\d+)?/g, "")
 

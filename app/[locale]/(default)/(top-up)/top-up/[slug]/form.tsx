@@ -260,7 +260,7 @@ const TopUpForm = (props: TopUpFormProps) => {
     },
   })
 
-  const { mutate: updateTopUpOrderCount } = api.topUp.updateOrder.useMutation()
+  const { mutate: updateTopUpOrderCount } = api.product.updateOrder.useMutation()
 
   const { mutate: createTopUpPayment } = api.topUpPayment.create.useMutation({
     onError: (error) => {
@@ -578,7 +578,7 @@ const TopUpForm = (props: TopUpFormProps) => {
                         : "ID"
                   }
                   id="server"
-                  brand={topUp?.brand ?? ""}
+                  productSlug={topUp?.brand ?? ""}
                   setQueryAccountId={setQueryAccountId}
                   category={`${
                     topUp.category === "E-Money"
