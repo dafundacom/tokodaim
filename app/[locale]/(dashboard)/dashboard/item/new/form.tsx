@@ -134,7 +134,7 @@ export default function CreateItemForm(props: CreateItemFormProps) {
   return (
     <div className="mx-0 space-y-4 lg:mx-8 lg:p-5">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <h1 className="pb-2 lg:pb-5">{ts("create")}</h1>
           <div className="flex flex-col lg:flex-row lg:space-x-4">
             <div className="w-full lg:w-6/12 lg:space-y-4">
@@ -407,7 +407,12 @@ export default function CreateItemForm(props: CreateItemFormProps) {
               </div>
             </div>
           </div>
-          <Button type="submit" className="mt-4" disabled={isPending}>
+          <Button
+            type="submit"
+            className="mt-4"
+            disabled={isPending}
+            onClick={() => form.handleSubmit(onSubmit)()}
+          >
             {t("submit")}
           </Button>
         </form>
