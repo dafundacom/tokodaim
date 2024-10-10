@@ -7,8 +7,8 @@ import type { LanguageType } from "@/lib/validation/language"
 
 const CreateProductForm = dynamicFn(
   async () => {
-    const CreateProdcutForm = await import("./form")
-    return CreateProdcutForm
+    const CreateProductForm = await import("./form")
+    return CreateProductForm
   },
   {
     ssr: false,
@@ -23,8 +23,8 @@ export function generateMetadata({
   const { locale } = params
 
   return {
-    title: "Create Prodcut Dashboard",
-    description: "Create Prodcut Dashboard",
+    title: "Create Product Dashboard",
+    description: "Create Product Dashboard",
     alternates: {
       canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/product/new/`,
     },

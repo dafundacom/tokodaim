@@ -3,7 +3,6 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
-import DashboardUpdatePriceListButton from "@/components/dashboard/dashboard-update-price-list-button"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -57,7 +56,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
 
   const t = useI18n()
   const ts = useScopedI18n("top_up")
-  const tsp = useScopedI18n("product")
+  const tsi = useScopedI18n("item")
 
   const form = useForm<FormValues>()
 
@@ -124,12 +123,12 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex max-w-2xl flex-col space-y-4">
-            <FormLabel>{tsp("name")}</FormLabel>
+            <FormLabel>{tsi("name")}</FormLabel>
             <FormField
               control={form.control}
               name="sku"
               rules={{
-                required: tsp("required"),
+                required: tsi("required"),
               }}
               render={({ field }) => (
                 <FormItem>
@@ -148,15 +147,15 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                             ? priceLists.find(
                                 (priceList) => field.value === priceList.sku,
                               )?.productName
-                            : tsp("placeholder")}
+                            : tsi("placeholder")}
                           <Icon.ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0" align="start">
                       <Command>
-                        <CommandInput placeholder={tsp("search_placeholder")} />
-                        <CommandEmpty>{tsp("not_found")}</CommandEmpty>
+                        <CommandInput placeholder={tsi("search_placeholder")} />
+                        <CommandEmpty>{tsi("not_found")}</CommandEmpty>
                         <CommandGroup>
                           <CommandList>
                             {priceLists.map((priceList) => (
@@ -240,7 +239,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                 {statusTopUp.message}
               </div>
               <div>
-                <span className="font-bold">{tsp("name")}: </span>
+                <span className="font-bold">{tsi("name")}: </span>
                 {statusTopUp.buyer_sku_code}
               </div>
               <div>

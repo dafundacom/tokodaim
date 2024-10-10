@@ -3,12 +3,13 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 
 import env from "@/env.mjs"
+import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const CreateProductForm = dynamicFn(
+const CreateItemForm = dynamicFn(
   async () => {
-    const CreateProdcutForm = await import("./form")
-    return CreateProdcutForm
+    const CreateItemForm = await import("./form")
+    return CreateItemForm
   },
   {
     ssr: false,
@@ -23,20 +24,25 @@ export function generateMetadata({
   const { locale } = params
 
   return {
-    title: "Create Prodcut Dashboard",
-    description: "Create Prodcut Dashboard",
+    title: "Create Item Dashboard",
+    description: "Create Item Dashboard",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/product/new/`,
+      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/item/new/`,
     },
     openGraph: {
-      title: "Create Product Dashboard",
-      description: "Create Product Dashboard",
-      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/product/new`,
+      title: "Create Item Dashboard",
+      description: "Create Item Dashboard",
+      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/item/new`,
       locale: locale,
     },
   }
 }
 
-export default function CreateProductDashboard() {
-  return <CreateProductForm />
+export default async function CreateItemDashboard() {
+  const priceLists = await api.digiflazz.priceList()
+  const products = await api.product.all()
+
+  console.log(products)
+
+  return <CreateItemForm priceLists={priceLists} products={products} />
 }
