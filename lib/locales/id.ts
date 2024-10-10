@@ -66,6 +66,7 @@ export default {
   "item.icon_deleted": "Ikon berhasil dihapus",
   "item.icon_placeholder": "Masukan Ikon",
   "item.icon_selected": "Ikon berhasil dipilih",
+  "item.not_found": "Item tidak ditemukan",
   "item.original_price": "Harga Asli (Dari Digiflazz)",
   "item.price": "Harga",
   "media.add": "Tambah Media Baru",

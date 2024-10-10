@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { eq, sql } from "drizzle-orm"
+import { count, eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import {
@@ -31,6 +31,37 @@ export const itemRouter = createTRPCRouter({
       }
     }
   }),
+
+  dashboard: adminProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.items.findMany({
+          limit: input.perPage,
+          offset: (input.page - 1) * input.perPage,
+          orderBy: (items, { asc }) => [asc(items.title)],
+          with: {
+            product: true,
+          },
+        })
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
 
   byId: adminProtectedProcedure
     .input(z.string())
@@ -96,6 +127,43 @@ export const itemRouter = createTRPCRouter({
         console.error("Error:", error)
       }
     }),
+
+  search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    try {
+      const data = await ctx.db.query.items.findMany({
+        where: (items, { ilike }) => ilike(items.title, `%${input}%`),
+        limit: 10,
+      })
+      return data
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
+    }
+  }),
+
+  count: adminProtectedProcedure.query(async ({ ctx }) => {
+    try {
+      const data = await ctx.db.select({ value: count() }).from(items)
+      return data[0].value
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
+    }
+  }),
 
   create: adminProtectedProcedure
     .input(createItemSchema)

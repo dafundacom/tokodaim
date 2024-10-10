@@ -5,28 +5,28 @@ import { useSearchParams } from "next/navigation"
 
 import { useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
-import DashboardVoucherHeader from "./header"
-import VoucherTable from "./table"
+import DashboardItemHeader from "./header"
+import ItemTable from "./table"
 
-export default function DashboardVoucherContent() {
+export default function DashboardItemContent() {
   const searchParams = useSearchParams()
 
   const page = searchParams.get("page")
 
-  const ts = useScopedI18n("voucher")
+  const ts = useScopedI18n("item")
 
   const perPage = 10
 
-  const { data: vouchersCount, refetch: updateVouchersCount } =
-    api.voucher.count.useQuery()
+  const { data: itemsCount, refetch: updateItemsCount } =
+    api.item.count.useQuery()
 
-  const lastPage = vouchersCount && Math.ceil(vouchersCount / perPage)
+  const lastPage = itemsCount && Math.ceil(itemsCount / perPage)
 
   const {
-    data: vouchers,
+    data: items,
     isLoading,
-    refetch: updateVouchers,
-  } = api.voucher.dashboard.useQuery({
+    refetch: updateItems,
+  } = api.item.dashboard.useQuery({
     page: page ? parseInt(page) : 1,
     perPage: perPage,
   })
@@ -39,15 +39,15 @@ export default function DashboardVoucherContent() {
 
   return (
     <>
-      <DashboardVoucherHeader />
-      {!isLoading && vouchers !== undefined && vouchers.length > 0 ? (
-        <VoucherTable
-          vouchers={vouchers ?? 1}
+      <DashboardItemHeader />
+      {!isLoading && items !== undefined && items.length > 0 ? (
+        <ItemTable
+          items={items ?? 1}
           paramsName="page"
           page={page ? parseInt(page) : 1}
           lastPage={lastPage ?? 3}
-          updateVouchers={updateVouchers}
-          updateVouchersCount={updateVouchersCount}
+          updateItems={updateItems}
+          updateItemsCount={updateItemsCount}
         />
       ) : (
         <div className="my-64 flex items-center justify-center">

@@ -64,6 +64,7 @@ export default {
   "item.icon_deleted": "Icon has been deleted",
   "item.icon_placeholder": "Add Icon",
   "item.icon_selected": "Icon has been selected",
+  "item.not_found": "Item not found",
   "item.original_price": "Original Price (From Digiflazz)",
   "item.price": "Price",
   "media.add": "Add New Media",
