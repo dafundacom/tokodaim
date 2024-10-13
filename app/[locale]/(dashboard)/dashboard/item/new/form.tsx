@@ -111,6 +111,7 @@ export default function CreateItemForm(props: CreateItemFormProps) {
     startTransition(() => {
       const mergedValues = {
         ...values,
+        price: Number(values.price),
         ...(selectedIcon && { iconId: selectedIcon.id }),
       }
       createItem(mergedValues)
@@ -307,7 +308,7 @@ export default function CreateItemForm(props: CreateItemFormProps) {
                               <CommandEmpty>{tsp("not_found")}</CommandEmpty>
                               <CommandGroup>
                                 <CommandList>
-                                  {products?.map((product) => (
+                                  {products.map((product) => (
                                     <CommandItem
                                       value={product.id}
                                       key={product.id}

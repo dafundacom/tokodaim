@@ -1,5 +1,5 @@
 {
-  "id": "2333eb62-b1ce-4334-8483-323f4901e801",
+  "id": "b5080bd0-b30c-4d5e-b287-7064d124931e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -614,6 +614,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "product_id": {
+          "name": "product_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -637,6 +643,19 @@
           "tableTo": "medias",
           "columnsFrom": [
             "icon_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "items_product_id_products_id_fk": {
+          "name": "items_product_id_products_id_fk",
+          "tableFrom": "items",
+          "tableTo": "products",
+          "columnsFrom": [
+            "product_id"
           ],
           "columnsTo": [
             "id"
@@ -1027,63 +1046,6 @@
           ]
         }
       }
-    },
-    "public._product_items": {
-      "name": "_product_items",
-      "schema": "",
-      "columns": {
-        "product_id": {
-          "name": "product_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "item_id": {
-          "name": "item_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "_product_items_product_id_products_id_fk": {
-          "name": "_product_items_product_id_products_id_fk",
-          "tableFrom": "_product_items",
-          "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "_product_items_item_id_items_id_fk": {
-          "name": "_product_items_item_id_items_id_fk",
-          "tableFrom": "_product_items",
-          "tableTo": "items",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "_product_items_product_id_item_id_pk": {
-          "name": "_product_items_product_id_item_id_pk",
-          "columns": [
-            "product_id",
-            "item_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
     },
     "public.products": {
       "name": "products",

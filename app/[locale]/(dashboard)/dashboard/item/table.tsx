@@ -96,6 +96,13 @@ export default function ItemTable(props: ItemTableProps) {
                 <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                   <div className="flex">
                     <span className="overflow-hidden text-ellipsis font-medium">
+                      {item.sku}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                  <div className="flex">
+                    <span className="overflow-hidden text-ellipsis font-medium">
                       {item.originalPrice}
                     </span>
                   </div>

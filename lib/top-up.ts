@@ -1,3 +1,5 @@
+// TODO: update original price from item db
+
 "use server"
 
 import { eq, sql } from "drizzle-orm"
