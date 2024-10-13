@@ -28,8 +28,8 @@ const PromoCarousel = dynamicFn(
 
 const ProductGrid = dynamicFn(
   async () => {
-    const ProductProductGrid = await import("@/components/product/product-grid")
-    return ProductProductGrid
+    const ProductGrid = await import("@/components/product/product-grid")
+    return ProductGrid
   },
   {
     ssr: false,
