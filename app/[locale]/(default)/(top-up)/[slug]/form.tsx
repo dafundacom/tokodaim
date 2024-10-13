@@ -7,12 +7,11 @@ import { useRouter } from "next/navigation"
 import { useForm, type SubmitHandler } from "react-hook-form"
 
 import Image from "@/components/image"
-import AddVoucher from "@/components/top-up/add-voucher"
-import InputAccountId from "@/components/top-up/input-account-id"
-import InputCustomerPhone from "@/components/top-up/input-customer-phone"
-import PaymentMethods from "@/components/top-up/payment-methods"
-import SelectTopUpProduct from "@/components/top-up/select-top-up-product"
-import TopUpServer from "@/components/top-up/top-up-server"
+import ItemList from "@/components/item/item-list"
+import PaymentMethods from "@/components/payment/payment-methods"
+import InputAccountId from "@/components/product/input-account-id"
+import InputCustomerPhone from "@/components/product/input-customer-phone"
+import ProductServer from "@/components/product/product-server"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -31,10 +30,10 @@ import {
 import { Icon } from "@/components/ui/icon"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
+import AddVoucher from "@/components/voucher/add-voucher"
 import env from "@/env.mjs"
 import type { AuthSession } from "@/lib/auth/utils"
-import type { SelectTopUps } from "@/lib/db/schema/top-up"
-import type { SelectTopUpProducts } from "@/lib/db/schema/top-up-product"
+import type { SelectItem, SelectMedia, SelectProduct } from "@/lib/db/schema"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
 import type {
   ClosedPaymentCode,
@@ -44,7 +43,6 @@ import type {
 import { api } from "@/lib/trpc/react"
 import { uniqueCharacter } from "@/lib/utils"
 import {
-  calculateTotalPriceWithProfit,
   changePriceToIDR,
   getFormattedGameNameIfAvailable,
   getTopUpInputAccountIdDetail,
@@ -55,15 +53,24 @@ import { handleCheckIgn } from "./action"
 
 type TripayPaymentMethodsProps = PaymentChannelReturnProps["data"][number]
 
-interface TopUpFormProps {
-  topUpProducts: SelectTopUpProducts[]
-  topUp: SelectTopUps
+interface ProductProps extends SelectProduct {
+  featuredImage: Pick<SelectMedia, "url">
+  coverImage?: Pick<SelectMedia, "url"> | null
+  guideImage?: Pick<SelectMedia, "url"> | null
+}
+
+interface ItemProps extends SelectItem {
+  icon: Pick<SelectMedia, "url"> | null
+}
+
+interface ProductFormProps {
+  items: ItemProps[]
+  product: ProductProps
   paymentChannel?: {
     eWallet: TripayPaymentMethodsProps[] | undefined
     virtualAccount: TripayPaymentMethodsProps[] | undefined
     convenienceShop: TripayPaymentMethodsProps[] | undefined
   } | null
-  profit: string | null
   session: AuthSession["session"]
 }
 
@@ -75,35 +82,35 @@ interface FormValues {
   note?: string
 }
 
-const TopUpForm = (props: TopUpFormProps) => {
-  const { topUpProducts, topUp, paymentChannel, profit, session } = props
+const TopUpForm = (props: ProductFormProps) => {
+  const { items, product, paymentChannel, session } = props
 
-  const [selectedProductPrice, setSelectedProductPrice] =
-    React.useState<string>("")
+  const [selectedItemPrice, setSelectedItemPrice] = React.useState<string>("")
+  const [fixedPrice, setFixedPrice] = React.useState<number>(0)
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     React.useState<string>("")
   const [topUpServer, setTopUpServer] = React.useState<string>("")
-  const [fixedPrice, setFixedPrice] = React.useState<number>(0)
   const [voucher, setVoucher] = React.useState<SelectVoucher | null>(null)
-  const [selectedTopUpProduct, setSelectedTopUpProduct] =
-    React.useState<SelectTopUpProducts | null>(null)
+  const [selectedItem, setSelectedItem] = React.useState<SelectItem | null>(
+    null,
+  )
   const [paymentMethod, setPaymentMethod] =
     React.useState<TripayPaymentMethodsProps | null>(null)
   const [queryAccountId, setQueryAccountId] = React.useState("")
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-  const [nickname, setNickname] = React.useState("")
+  const [gameIGN, setGameIGN] = React.useState("")
   const [paymentReference, setPaymentReference] = React.useState("")
-  const totalProfit = profit !== null ? parseInt(profit) : 15
 
   const router = useRouter()
 
   const user = session?.user
 
   const { isTopUpServer } = React.useMemo(
-    () => isTopInputTopUpAccountIdWithServer(topUp.brand),
-    [topUp?.brand],
+    () => isTopInputTopUpAccountIdWithServer(product.title),
+    [product?.title],
   )
 
+  // TODO: move to other file this function
   function addAreaCodePublishingGrayRaven(game: string, zone?: string) {
     let isMatch = true
     let punishingGrayRavenServerCode: undefined | string
@@ -143,9 +150,9 @@ const TopUpForm = (props: TopUpFormProps) => {
     [],
   )
 
-  const handleSelectPrice = React.useCallback(
-    (data: SelectTopUpProducts, price: number) => {
-      setSelectedTopUpProduct({ ...data, price: price })
+  const handleSelectItem = React.useCallback(
+    (data: SelectItem, price: number) => {
+      setSelectedItem({ ...data, price: price })
       const methodsSection = document.getElementById("select-payment-methods")
       if (methodsSection) {
         methodsSection.scrollIntoView({ behavior: "smooth" })
@@ -159,7 +166,7 @@ const TopUpForm = (props: TopUpFormProps) => {
       toast({ variant: "danger", description: "Silahkan Pilih Server" })
     } else if (!queryAccountId) {
       toast({ variant: "danger", description: "Silahkan Masukkan ID" })
-    } else if (!selectedTopUpProduct) {
+    } else if (!selectedItem) {
       toast({
         variant: "danger",
         description: "Silahkan Pilih Metode Pembayaran",
@@ -169,14 +176,14 @@ const TopUpForm = (props: TopUpFormProps) => {
     } else {
       if (
         queryAccountId &&
-        getFormattedGameNameIfAvailable(selectedTopUpProduct.brand)
+        getFormattedGameNameIfAvailable(selectedItem.title)
       ) {
         let isMatch = true
         let punishingGrayRavenServerCode: undefined | string
 
         if (topUpServer) {
           const checkGameData = addAreaCodePublishingGrayRaven(
-            selectedTopUpProduct.brand,
+            selectedItem.title,
             topUpServer,
           )
           isMatch = checkGameData.isMatch
@@ -186,9 +193,7 @@ const TopUpForm = (props: TopUpFormProps) => {
         if (isMatch) {
           try {
             const inputIgn = {
-              game: getFormattedGameNameIfAvailable(
-                selectedTopUpProduct.brand,
-              )!,
+              game: getFormattedGameNameIfAvailable(selectedItem.title)!,
               id: queryAccountId,
               zone: punishingGrayRavenServerCode ?? topUpServer ?? undefined,
             }
@@ -197,7 +202,7 @@ const TopUpForm = (props: TopUpFormProps) => {
             if (results?.success) {
               setOpenDialog(true)
               if (results?.name) {
-                setNickname(decodeURIComponent(results?.name))
+                setGameIGN(decodeURIComponent(results?.name))
               }
             }
           } catch (error) {
@@ -212,13 +217,7 @@ const TopUpForm = (props: TopUpFormProps) => {
         setOpenDialog(true)
       }
     }
-  }, [
-    selectedTopUpProduct,
-    isTopUpServer,
-    paymentMethod,
-    queryAccountId,
-    topUpServer,
-  ])
+  }, [selectedItem, isTopUpServer, paymentMethod, queryAccountId, topUpServer])
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -230,11 +229,11 @@ const TopUpForm = (props: TopUpFormProps) => {
 
   const noteValue = form.watch("note")
 
-  const { mutate: createTopUpOrder } = api.topUpOrder.create.useMutation({
+  const { mutate: createTransaction } = api.transaction.create.useMutation({
     onSuccess: (data: { invoiceId: string }) => {
       if (data) {
         router.push(
-          `/top-up/order/details/${data.invoiceId}?tripay_reference=${paymentReference}`,
+          `/transaction/details/${data.invoiceId}?tripay_reference=${paymentReference}`,
         )
       }
     },
@@ -260,9 +259,10 @@ const TopUpForm = (props: TopUpFormProps) => {
     },
   })
 
-  const { mutate: updateTopUpOrderCount } = api.product.updateOrder.useMutation()
+  const { mutate: updateProductTransactionCount } =
+    api.product.updateTransaction.useMutation()
 
-  const { mutate: createTopUpPayment } = api.topUpPayment.create.useMutation({
+  const { mutate: createPayment } = api.payment.create.useMutation({
     onError: (error) => {
       const errorData = error?.data?.zodError?.fieldErrors
       if (errorData) {
@@ -279,19 +279,20 @@ const TopUpForm = (props: TopUpFormProps) => {
       } else {
         toast({
           variant: "danger",
+          // TODO: translate
           description: "Failed to top up! Please try again later",
         })
       }
     },
   })
 
-  const { mutate: postTripayTransactionClosed } =
-    api.payment.tripayCreateClosedTransaction.useMutation({
+  const { mutate: createTripayClosedTransaction } =
+    api.tripay.createClosedTransaction.useMutation({
       onSuccess: (data) => {
-        if (data && paymentMethod && selectedTopUpProduct) {
+        if (data && paymentMethod && selectedItem) {
           setPaymentReference(data.reference!)
           const { accountId } = getTopUpInputAccountIdDetail(
-            topUp.brand,
+            product.title,
             decodeURIComponent(queryAccountId),
             topUpServer,
           )
@@ -299,8 +300,8 @@ const TopUpForm = (props: TopUpFormProps) => {
           const orderInput = {
             invoiceId: data.merchant_ref!,
             accountId: accountId,
-            sku: selectedTopUpProduct?.sku ?? "",
-            productName: selectedTopUpProduct.productName,
+            sku: selectedItem?.sku ?? "",
+            productName: selectedItem.title,
             price: data.amount_received!,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
@@ -312,34 +313,32 @@ const TopUpForm = (props: TopUpFormProps) => {
             ...(session?.user?.id && { userId: session.user.id }),
             voucherCode: voucher?.voucherCode ?? "",
             discountAmount:
-              fixedPrice > 0
-                ? selectedTopUpProduct.price! - fixedPrice
-                : undefined,
+              fixedPrice > 0 ? selectedItem.price! - fixedPrice : undefined,
             note: noteValue!,
             status: "processing" as const,
-            ign: nickname.length > 0 ? nickname : undefined,
+            ign: gameIGN.length > 0 ? gameIGN : undefined,
           }
 
           const paymentInput = {
-            tripayReference: data.reference,
+            reference: data.reference,
             invoiceId: data.merchant_ref!,
-            paymentMethod: paymentMethod.code as ClosedPaymentCode,
+            method: paymentMethod.code as ClosedPaymentCode,
             customerName: session?.user?.name ?? data.customer_name,
             customerEmail: session?.user?.email ?? data.customer_email,
             customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
             amount: data.amount_received!,
             fee: data?.total_fee!,
             total: data.amount,
-            paymentProvider: "tripay" as const,
-            expiredAt: new Date(data.expired_time * 1000),
             status: "unpaid" as const,
-            ...(session?.user?.id && { userId: session.user.id }),
+            provider: "tripay" as const,
             paidAt: new Date(),
+            expiredAt: new Date(data.expired_time * 1000),
+            ...(session?.user?.id && { userId: session.user.id }),
           }
 
-          createTopUpPayment(paymentInput)
-          createTopUpOrder(orderInput)
-          updateTopUpOrderCount(selectedTopUpProduct.brand)
+          createPayment(paymentInput)
+          createTransaction(orderInput)
+          updateProductTransactionCount(selectedItem.title)
         }
       },
       onError: (error) => {
@@ -358,56 +357,56 @@ const TopUpForm = (props: TopUpFormProps) => {
         } else {
           toast({
             variant: "danger",
+            // TODO: translate this
             description: "Failed to top up! Please try again later",
           })
         }
       },
     })
 
-  const generatedInvoiceId = selectedTopUpProduct?.sku + uniqueCharacter()
+  const generatedInvoiceId = selectedItem?.sku + uniqueCharacter()
   const invoiceId = generatedInvoiceId.toUpperCase()
 
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
     (data) => {
       if (!queryAccountId) {
         toast({ variant: "danger", description: "Silahkan Masukkan ID" })
-      } else if (!selectedTopUpProduct) {
+      } else if (!selectedItem) {
         toast({
           variant: "danger",
           description: "Silahkan Pilih Metode Pembayaran",
         })
       } else if (!paymentMethod) {
         toast({ variant: "danger", description: "Silahkan Pilih Nominal" })
-      } else if (selectedTopUpProduct && paymentMethod) {
+      } else if (selectedItem && paymentMethod) {
         try {
-          const productPrice =
-            fixedPrice > 0 ? fixedPrice : selectedTopUpProduct.price
+          const itemPrice = fixedPrice > 0 ? fixedPrice : selectedItem.price
 
-          const products = [
+          const items = [
             {
-              sku: selectedTopUpProduct.sku,
-              name: selectedTopUpProduct.productName,
-              price: productPrice!,
+              sku: selectedItem.sku,
+              name: selectedItem.title,
+              price: itemPrice!,
               quantity: 1,
-              subtotal: productPrice!,
-              product_url: topUp.featuredImage ?? "",
-              image_url: topUp.featuredImage ?? "",
+              subtotal: itemPrice!,
+              product_url: product.featuredImage.url ?? "",
+              image_url: product.featuredImage.url ?? "",
             },
           ]
 
-          const totalPrice = products.reduce((initialValue, product) => {
-            return initialValue + product.price
+          const totalPrice = items.reduce((initialValue, item) => {
+            return initialValue + item.price
           }, 0)
 
-          postTripayTransactionClosed({
+          createTripayClosedTransaction({
             ...data,
             merchantRef: invoiceId,
             paymentMethod:
               `${paymentMethod.code}` as unknown as PaymentMethodProps,
             amount: totalPrice,
-            orderItems: products,
+            orderItems: items,
             callbackUrl: `${env.NEXT_PUBLIC_API}/payment/tripay/callback`,
-            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/details/${invoiceId}`,
+            returnUrl: `${env.NEXT_PUBLIC_SITE_URL}/transaction/details/${invoiceId}`,
             expiredTime: Math.floor(new Date().getTime() / 1000) + 24 * 60 * 60,
           })
         } catch (error) {
@@ -419,11 +418,11 @@ const TopUpForm = (props: TopUpFormProps) => {
     [
       invoiceId,
       queryAccountId,
-      selectedTopUpProduct,
+      selectedItem,
       paymentMethod,
       fixedPrice,
-      postTripayTransactionClosed,
-      topUp.featuredImage,
+      createTripayClosedTransaction,
+      product.featuredImage,
     ],
   )
 
@@ -456,16 +455,16 @@ const TopUpForm = (props: TopUpFormProps) => {
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="rounded-lg border bg-background p-4 dark:bg-muted">
-            {topUp.orders > 0 && (
+            {product.transactions > 0 && (
               <div className="mb-4 inline-flex w-full max-w-[250px] items-center justify-center rounded-full border border-border bg-gradient-to-r from-warning/30 to-danger/30 px-5 py-2 font-black md:mb-5">
                 <NextImage
                   src="/icon/animated-flash.gif"
                   className="mr-2"
-                  alt={topUp.brand}
+                  alt={product.title}
                   width={20}
                   height={20}
                 />
-                {topUp.orders} item telah dibeli!
+                {product.transactions} item telah dibeli!
               </div>
             )}
             <div className="mb-4 flex items-center md:mb-5">
@@ -479,28 +478,22 @@ const TopUpForm = (props: TopUpFormProps) => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {topUpProducts.map((topUpProduct) => {
-                const priceWithProfit = calculateTotalPriceWithProfit(
-                  topUpProduct.price!,
-                  totalProfit,
-                )
-                const name = removeNonDigitCharsBeforeNumber(
-                  topUpProduct.productName,
-                )
-                const idrPrice = changePriceToIDR(priceWithProfit)
+              {items.map((item) => {
+                const name = removeNonDigitCharsBeforeNumber(item.title)
+                const idrPrice = changePriceToIDR(item.price)
                 return (
-                  <SelectTopUpProduct
-                    key={topUpProduct.productName}
+                  <ItemList
+                    key={item.title}
                     label={name!}
                     price={idrPrice}
-                    active={selectedProductPrice}
-                    brand={topUp.brand}
-                    productName={topUpProduct.productName}
+                    active={selectedItemPrice}
+                    productTitle={product.title}
+                    itemTitle={item.title}
                     onSelect={() => {
-                      handleSelectPrice(topUpProduct, priceWithProfit)
-                      setSelectedProductPrice(name!)
+                      handleSelectItem(item, item.price)
+                      setSelectedItemPrice(name!)
                     }}
-                    productIcon={topUp?.productIcon!}
+                    icon={item?.icon?.url!}
                   />
                 )
               })}
@@ -514,7 +507,7 @@ const TopUpForm = (props: TopUpFormProps) => {
               paymentChannel={paymentChannel}
               onSelectPaymentMethod={handleSelectPaymentMethod}
               selectedPaymentMethod={selectedPaymentMethod}
-              amount={selectedTopUpProduct?.price!}
+              amount={selectedItem?.price!}
               setSelectedPaymentMethod={setSelectedPaymentMethod}
             />
           </div>
@@ -531,10 +524,11 @@ const TopUpForm = (props: TopUpFormProps) => {
                   Masukan Data Akun
                 </h2>
               </div>
-              {topUp.category === "Games" && topUp.guideImage && (
+              {product.category === "Games" && product.guideImage && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <div className="mt-1 inline-flex flex-grow cursor-pointer justify-end md:justify-start">
+                    <div className="mt-1 inline-flex grow cursor-pointer justify-end md:justify-start">
+                      {/* TODO: move icon to components/icon */}
                       <svg
                         focusable="false"
                         aria-hidden="true"
@@ -552,14 +546,14 @@ const TopUpForm = (props: TopUpFormProps) => {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      Cara mengetahui ID Akun {topUp.brand}
+                      Cara mengetahui ID Akun {product.title}
                     </DialogHeader>
-                    {topUp.guideImage && (
+                    {product.guideImage && (
                       <div className="relative h-[250px] w-full max-w-[600px]">
                         <Image
-                          src={topUp.guideImage!}
+                          src={product.guideImage.url!}
                           className="object-contain"
-                          alt={topUp.brand}
+                          alt={product.title}
                         />
                       </div>
                     )}
@@ -571,29 +565,29 @@ const TopUpForm = (props: TopUpFormProps) => {
               <FormControl>
                 <InputAccountId
                   label={
-                    topUp.category === "E-Money"
+                    product.category === "E-Money"
                       ? "Nomor E-Wallet"
-                      : topUp.category === "Pulsa"
+                      : product.category === "Pulsa"
                         ? "Nomor HP"
                         : "ID"
                   }
                   id="server"
-                  productSlug={topUp?.brand ?? ""}
+                  productSlug={product?.slug ?? ""}
                   setQueryAccountId={setQueryAccountId}
                   category={`${
-                    topUp.category === "E-Money"
+                    product.category === "E-Money"
                       ? "Nomor E-Wallet"
-                      : topUp.category === "Pulsa"
+                      : product.category === "Pulsa"
                         ? "Nomor HP"
                         : "ID"
                   }`}
                 />
               </FormControl>
               {isTopUpServer && (
-                <TopUpServer
+                <ProductServer
                   queryAccountId={queryAccountId}
-                  brand={topUp.brand}
-                  topUpServer={setTopUpServer}
+                  title={product.title}
+                  server={setTopUpServer}
                 />
               )}
             </div>
@@ -640,16 +634,16 @@ const TopUpForm = (props: TopUpFormProps) => {
               )}
             />
           </div>
-          {selectedTopUpProduct?.price && selectedTopUpProduct?.price > 0 && (
+          {selectedItem?.price && selectedItem?.price > 0 && (
             <AddVoucher
-              normalPrice={selectedTopUpProduct?.price}
+              normalPrice={selectedItem?.price}
               setVoucherData={setVoucher}
               setDiscount={setFixedPrice}
             />
           )}
         </form>
       </Form>
-      <div className="fixed bottom-0 right-0 z-[100] w-full border border-t border-border bg-background px-4 shadow-md lg:pl-[92px]">
+      <div className="fixed bottom-0 right-0 z-[100] w-full border-t border-border bg-background px-4 shadow-md lg:pl-[92px]">
         <div className="cursor-pointer">
           <div className="bg-background">
             <div className="flex justify-end lg:px-48">
@@ -658,21 +652,21 @@ const TopUpForm = (props: TopUpFormProps) => {
                   <div>
                     <div className="flex items-center">
                       <div className="flex-1">
-                        {selectedProductPrice &&
+                        {selectedItemPrice &&
                         selectedPaymentMethod &&
-                        selectedTopUpProduct?.price ? (
+                        selectedItem?.price ? (
                           <>
                             <p className="text-base font-bold md:text-[20px]">
                               {changePriceToIDR(
                                 fixedPrice > 0
                                   ? fixedPrice
-                                  : selectedTopUpProduct.price
-                                    ? selectedTopUpProduct.price
+                                  : selectedItem.price
+                                    ? selectedItem.price
                                     : 0,
                               )}
                             </p>
                             <p className="text-xs font-medium md:text-sm">
-                              {selectedProductPrice},{selectedPaymentMethod}
+                              {selectedItemPrice},{selectedPaymentMethod}
                             </p>
                           </>
                         ) : (
@@ -704,7 +698,7 @@ const TopUpForm = (props: TopUpFormProps) => {
           <DialogHeader>Create Order</DialogHeader>
           <form>
             <div>
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-success">
                 <Icon.Check aria-label="Create Order" />
               </div>
               <div className="mt-3 text-center sm:mt-5">
@@ -717,18 +711,18 @@ const TopUpForm = (props: TopUpFormProps) => {
                 </p>
                 <div className="mt-2">
                   <div className="my-4 grid grid-cols-3 gap-4 rounded-lg p-4 text-left">
-                    {nickname && (
+                    {gameIGN && (
                       <>
                         <div>Nickname</div>
-                        <div className="col-span-2">{`: ${nickname}`}</div>
+                        <div className="col-span-2">{`: ${gameIGN}`}</div>
                       </>
                     )}
                     <div>Account ID</div>
                     <div className="col-span-2">{`: ${decodeURIComponent(queryAccountId)}`}</div>
                     <div>Item</div>
-                    <div className="col-span-2">{`: ${selectedTopUpProduct?.productName}`}</div>
+                    <div className="col-span-2">{`: ${selectedItem?.title}`}</div>
                     <div>Product</div>
-                    <div className="col-span-2">{`: ${topUp.brand}`}</div>
+                    <div className="col-span-2">{`: ${product.title}`}</div>
                     <div>Payment</div>
                     <div className="col-span-2">{`: ${paymentMethod?.name}`}</div>
                   </div>

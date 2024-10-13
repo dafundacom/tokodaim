@@ -4,27 +4,27 @@ import Image from "@/components/image"
 import { FormLabel } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ItemListProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
-  productName: string
+  itemTitle: string
   onSelect: () => void
   price: string
-  brand: string
+  productTitle: string
   active: string
-  productIcon?: string
+  icon?: string
 }
 
-const SelectItem: React.FunctionComponent<SelectItemProps> = (props) => {
-  const { active, productName, label, onSelect, price, brand, productIcon } =
+const ItemList: React.FunctionComponent<ItemListProps> = (props) => {
+  const { active, itemTitle, label, onSelect, price, productTitle, icon } =
     props
 
   return (
     <div onClick={onSelect} className="relative cursor-pointer">
       <Input
         type="radio"
-        name={productName}
+        name={itemTitle}
         className="absolute size-full cursor-pointer px-1 opacity-0"
-        id={productName}
+        id={itemTitle}
       />
       <FormLabel
         className={`${
@@ -35,10 +35,10 @@ const SelectItem: React.FunctionComponent<SelectItemProps> = (props) => {
         {/*   Termurah */}
         {/* </div> */}
         <div className="relative size-[32px] md:size-[40px]">
-          {productIcon && <Image src={productIcon} alt={brand} />}
+          {icon && <Image src={icon} alt={productTitle} />}
         </div>
         <p className="flex items-start text-left text-sm font-medium">
-          {productName}
+          {itemTitle}
         </p>
         <div className="mx-[-8px] mb-[-12px] mt-[6px] flex h-[47px] flex-wrap items-center bg-[#FFF8E1] px-3 py-[8px] dark:bg-[#4b6584]">
           <div className="flex w-full items-center">
@@ -53,4 +53,4 @@ const SelectItem: React.FunctionComponent<SelectItemProps> = (props) => {
   )
 }
 
-export default SelectItem
+export default ItemList

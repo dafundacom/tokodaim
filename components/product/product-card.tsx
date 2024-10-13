@@ -21,7 +21,7 @@ const ProductCard: React.FunctionComponent<ProductCardProps> = (props) => {
     <NextLink
       aria-label={title}
       className="group relative overflow-hidden rounded-2xl duration-300 ease-in-out hover:shadow-2xl hover:ring-2 hover:ring-primary hover:ring-offset-2 hover:ring-offset-primary"
-      href={`/top-up/${slug}`}
+      href={`/${slug}`}
     >
       <div className="relative aspect-[4/6] overflow-hidden">
         {featuredImage ? (

@@ -82,7 +82,7 @@ const paymentInput = {
     required_error: "Total is required",
     invalid_type_error: "Total must be a number",
   }),
-  paymentProvider: z.enum(PAYMENT_PROVIDER, {
+  provider: z.enum(PAYMENT_PROVIDER, {
     required_error: "Payment Provider is required",
     invalid_type_error:
       "your payment provider type doesnt exist on available option.",

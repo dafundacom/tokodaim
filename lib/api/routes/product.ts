@@ -143,9 +143,11 @@ export const productRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.products.findFirst({
-          where: (product, { eq }) => eq(product.id, input),
+          where: (product, { eq }) => eq(product.slug, input),
           with: {
+            coverImage: true,
             featuredImage: true,
+            guideImage: true,
             items: true,
           },
         })
@@ -270,7 +272,7 @@ export const productRouter = createTRPCRouter({
       }
     }),
 
-  updateTransactions: publicProcedure
+  updateTransaction: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {

@@ -95,6 +95,7 @@ export const itemRouter = createTRPCRouter({
         const data = await ctx.db.query.items.findMany({
           where: (items, { eq }) => eq(items.productId, input),
           with: {
+            icon: true,
             product: true,
           },
         })
