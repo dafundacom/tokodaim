@@ -131,10 +131,12 @@ export default function UpdateItemForm(props: EditItemFormProps) {
   const originalPrice = form.watch("originalPrice")
 
   React.useEffect(() => {
-    setSelectedIcon({
-      id: item?.icon?.id!,
-      url: item?.icon?.url!,
-    })
+    if (item.icon) {
+      setSelectedIcon({
+        id: item?.icon?.id!,
+        url: item?.icon?.url!,
+      })
+    }
   }, [item])
 
   const onSubmit = (values: FormValues) => {
