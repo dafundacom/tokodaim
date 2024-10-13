@@ -326,7 +326,7 @@ export default {
   brand: "Brand",
   brand_placeholder: "Enter Brand (Optional)",
   cancel: "Cancel",
-  category_placeholder: "Enter Category",
+  category_placeholder: "Select Category",
   category_required: "Category is required",
   category: "Category",
   close: "Close",

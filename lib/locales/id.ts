@@ -325,7 +325,7 @@ export default {
   brand: "Merek",
   brand_placeholder: "Masukan Merek (Opsional)",
   cancel: "Batal",
-  category_placeholder: "Masukan Kategori",
+  category_placeholder: "Pilih Kategori",
   category_required: "Kategori Diperlukan",
   category: "Kategori",
   close: "Tutup",
