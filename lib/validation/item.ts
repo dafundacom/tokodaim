@@ -36,9 +36,9 @@ const itemInput = {
     })
     .optional()
     .nullish(),
-  iconImageId: z
+  iconId: z
     .string({
-      invalid_type_error: "Cover Image Id must be a string",
+      invalid_type_error: "Icon Id must be a string",
     })
     .optional()
     .nullish(),

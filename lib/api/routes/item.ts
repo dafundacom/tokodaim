@@ -69,6 +69,9 @@ export const itemRouter = createTRPCRouter({
       try {
         const data = await ctx.db.query.items.findFirst({
           where: (item, { eq }) => eq(item.id, input),
+          with: {
+            icon: true,
+          },
         })
 
         return data

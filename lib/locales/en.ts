@@ -75,6 +75,8 @@ export default {
   "item.price_placeholder": "Enter Price",
   "item.required": "Item is Required",
   "item.search_placeholder": "Search Item",
+  "item.update_failed": "Failed to update item! Please try again later",
+  "item.update_success": "Item is successfully updated",
   "media.add": "Add New Media",
   "media.all": "All Media",
   "media.copy_link": "Media Permalink Copied",

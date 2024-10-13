@@ -77,6 +77,8 @@ export default {
   "item.price_placeholder": "Masukan Harga",
   "item.required": "Item Diperluakan",
   "item.search_placeholder": "Cari Item",
+  "item.update_failed": "Gagal memperbaharui item! Coba lagi nanti",
+  "item.update_success": "Item berhasil diperbaharui",
   "media.add": "Tambah Media Baru",
   "media.all": "Semua Media",
   "media.copy_link": "Tautan Media berhasil disalin",
