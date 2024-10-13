@@ -360,51 +360,51 @@ export default function CreateItemForm(props: CreateItemFormProps) {
                 <FormLabel>{t("description")}</FormLabel>
                 <TextEditor control={form.control} name="description" />
               </div>
-              <div className="w-full lg:w-6/12 lg:space-y-4">
-                <div>
-                  <FormLabel>{ts("icon")}</FormLabel>
-                  {selectedIcon ? (
-                    <div className="relative overflow-hidden rounded-[18px]">
-                      <DeleteMediaButton
-                        description="Icon"
-                        onDelete={() => handleDeleteImage()}
-                      />
-                      <SelectMediaDialog
-                        handleSelectUpdateMedia={handleUpdateImage}
-                        open={openDialog}
-                        setOpen={setOpenDialog}
-                      >
-                        <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
-                          <Image
-                            src={selectedIcon.url}
-                            className="rounded-lg object-cover"
-                            fill
-                            alt={ts("icon")}
-                            onClick={() => {
-                              setOpenDialog(true)
-                            }}
-                            sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
-                          />
-                        </div>
-                      </SelectMediaDialog>
-                    </div>
-                  ) : (
+            </div>
+            <div className="w-full lg:w-6/12 lg:space-y-4">
+              <div>
+                <FormLabel>{ts("icon")}</FormLabel>
+                {selectedIcon ? (
+                  <div className="relative overflow-hidden rounded-[18px]">
+                    <DeleteMediaButton
+                      description="Icon"
+                      onDelete={() => handleDeleteImage()}
+                    />
                     <SelectMediaDialog
                       handleSelectUpdateMedia={handleUpdateImage}
                       open={openDialog}
                       setOpen={setOpenDialog}
                     >
-                      <div
-                        onClick={() => {
-                          setOpenDialog(true)
-                        }}
-                        className="relative mr-auto flex aspect-video h-[150px] w-full cursor-pointer items-center justify-center rounded-lg border-border bg-muted text-foreground lg:h-full lg:max-h-[250px]"
-                      >
-                        <p>{ts("icon_placeholder")}</p>
+                      <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
+                        <Image
+                          src={selectedIcon.url}
+                          className="rounded-lg object-cover"
+                          fill
+                          alt={ts("icon")}
+                          onClick={() => {
+                            setOpenDialog(true)
+                          }}
+                          sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
+                        />
                       </div>
                     </SelectMediaDialog>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <SelectMediaDialog
+                    handleSelectUpdateMedia={handleUpdateImage}
+                    open={openDialog}
+                    setOpen={setOpenDialog}
+                  >
+                    <div
+                      onClick={() => {
+                        setOpenDialog(true)
+                      }}
+                      className="relative mr-auto flex aspect-video h-[150px] w-full cursor-pointer items-center justify-center rounded-lg border-border bg-muted text-foreground lg:h-full lg:max-h-[250px]"
+                    >
+                      <p>{ts("icon_placeholder")}</p>
+                    </div>
+                  </SelectMediaDialog>
+                )}
               </div>
             </div>
           </div>
