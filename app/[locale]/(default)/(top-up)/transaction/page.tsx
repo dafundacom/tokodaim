@@ -58,8 +58,7 @@ export default function CheckTopUpTransaction() {
           },
         ]}
       />
-      {/* eslint-disable-next-line tailwindcss/no-custom-classname  */}
-      <section className="fade-up-elemenet">
+      <section className="fade-up-element">
         <CheckTransaction />
       </section>
     </>

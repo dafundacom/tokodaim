@@ -34,7 +34,6 @@ interface FormValues {
   tiktok_username: string
   whatsapp_channel: string
   youtube_channel: string
-  profit_percentage: string
 }
 
 interface UpsertSettingFormProps {
@@ -330,26 +329,6 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
                   <FormControl>
                     <Input
                       placeholder={t("support_whatsapp_placeholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="profit_percentage"
-              rules={{
-                required: tsTopUp("profit_percentage_required"),
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tsTopUp("profit_percentage")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder={tsTopUp("profit_percentage_required")}
                       {...field}
                     />
                   </FormControl>
