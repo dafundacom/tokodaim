@@ -113,7 +113,7 @@ export default async function TopUpPage({
             priceCurrency: "IDR",
             priceValidUntil: date7DaysFromNow(),
             availability: "https://schema.org/InStock",
-            url: `${env.NEXT_PUBLIC_SITE_URL}/top-up/${slug}`,
+            url: `${env.NEXT_PUBLIC_SITE_URL}/${slug}`,
             seller: {
               name: env.NEXT_PUBLIC_SITE_TITLE,
             },

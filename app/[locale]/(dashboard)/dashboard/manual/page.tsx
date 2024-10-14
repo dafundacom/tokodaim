@@ -27,12 +27,12 @@ export function generateMetadata({
     title: "Dashboard Manual Top Up",
     description: "Dashboard Manual Top Up",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/top-up/manual`,
+      canonical: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/manual`,
     },
     openGraph: {
       title: "Dashboard Manual Top Up",
       description: "Dashboard Manual Top Up",
-      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/top-up/manual`,
+      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/manual`,
       locale: locale,
     },
   }
