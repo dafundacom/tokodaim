@@ -1,6 +1,5 @@
-import createTripayConfig from "tripay-sdk"
-
 import env from "@/env.mjs"
+import createTripayConfig from "@/lib/sdk/tripay"
 
 export const tripay = createTripayConfig({
   apiKey:

@@ -27,6 +27,7 @@ export const tripayRouter = createTRPCRouter({
       try {
         const res = (await ctx.tripay.instruction({
           code: input.code,
+          pay_code: input.payCode,
           amount: input.amount,
           allow_html: input.allowHtml,
         })) as InstructionReturnProps
