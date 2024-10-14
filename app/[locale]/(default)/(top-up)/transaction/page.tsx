@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
-import CheckTransaction from "@/components/top-up/check-top-up"
+import CheckTransaction from "@/components/transaction/check-transaction"
 import env from "@/env.mjs"
 import type { LanguageType } from "@/lib/validation/language"
 
@@ -16,21 +16,21 @@ export function generateMetadata({
     title: "Check Top Up Transaction",
     description: "Teknodaim Check Top Up Transaction",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/top-up/transactions`,
+      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/transaction`,
       languages: {
-        en: `${env.NEXT_PUBLIC_SITE_URL}/top-up/transactions`,
+        en: `${env.NEXT_PUBLIC_SITE_URL}/transaction`,
       },
     },
     openGraph: {
       title: "Check Top Up Transaction",
       description: "Teknodaim Check Top Up Transaction",
-      url: `${env.NEXT_PUBLIC_SITE_TITLE}/top-up/transactions`,
+      url: `${env.NEXT_PUBLIC_SITE_TITLE}/transaction`,
       locale: locale,
     },
   }
 }
 
-export default function CheckTransaction() {
+export default function CheckTopUpTransaction() {
   return (
     <>
       <BreadcrumbJsonLd
@@ -43,13 +43,8 @@ export default function CheckTransaction() {
           },
           {
             position: 2,
-            name: "Top Up",
-            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up`,
-          },
-          {
-            position: 3,
-            name: "Order",
-            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
+            name: "Transaction",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/transaction`,
           },
         ]}
       />
@@ -63,6 +58,7 @@ export default function CheckTransaction() {
           },
         ]}
       />
+      {/* eslint-disable-next-line tailwindcss/no-custom-classname  */}
       <section className="fade-up-elemenet">
         <CheckTransaction />
       </section>

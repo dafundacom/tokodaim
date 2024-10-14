@@ -1,3 +1,5 @@
+// TODO: transalate
+
 "use client"
 
 import * as React from "react"
@@ -8,7 +10,7 @@ import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import type { SelectTopUpPayment } from "@/lib/db/schema/top-up-payment"
+import type { SelectPayment } from "@/lib/db/schema"
 import type { CreateClosedTransactionReturnProps } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
@@ -16,7 +18,7 @@ import { changePriceToIDR } from "@/lib/utils/top-up"
 
 interface DetailTransactionContentProps {
   tripayPaymentDetails?: CreateClosedTransactionReturnProps["data"]
-  paymentDetails?: SelectTopUpPayment
+  paymentDetails?: SelectPayment
 }
 
 export function DetailTransactionContent(props: DetailTransactionContentProps) {
@@ -26,7 +28,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
 
   const invoiceId = params.invoiceId
 
-  const { data: orderDetails } = api.topUpOrder.byInvoiceId.useQuery(
+  const { data: orderDetails } = api.transaction.byInvoiceId.useQuery(
     invoiceId,
     {
       refetchInterval: 3000,
@@ -268,7 +270,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               )}
           </div>
           {tripayPaymentDetails?.status === "UNPAID" && (
-            <div className="flex-grow rounded-md p-5 shadow-md">
+            <div className="grow rounded-md p-5 shadow-md">
               <h2 className="mb-3 text-xl font-bold">Cara Membayar</h2>
               <div className="space-y-4">
                 {tripayPaymentDetails?.instructions.map(

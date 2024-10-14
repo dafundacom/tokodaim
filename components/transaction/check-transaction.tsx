@@ -25,7 +25,7 @@ interface FormData {
   queryInvoice: string
 }
 
-function CheckTransaction() {
+export default function CheckTransaction() {
   const [queryInvoice, setQueryInvoice] = React.useState("")
   const form = useForm<FormData>()
 
@@ -223,5 +223,3 @@ function CheckTransaction() {
     </>
   )
 }
-
-export default CheckTransaction

@@ -1,3 +1,6 @@
+// TODO: Translate
+// TODO: add invoiceId to metadata
+
 import * as React from "react"
 import type { Metadata } from "next"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
@@ -18,15 +21,15 @@ export function generateMetadata({
     title: "Top Up Transaction",
     description: "Teknodaim Top Up Transaction",
     alternates: {
-      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/shop/top-up/transaction`,
+      canonical: `${env.NEXT_PUBLIC_SITE_TITLE}/transaction`,
       languages: {
-        en: `${env.NEXT_PUBLIC_SITE_URL}/shop/top-up/transaction`,
+        en: `${env.NEXT_PUBLIC_SITE_URL}/transaction`,
       },
     },
     openGraph: {
       title: "Top Up Transaction",
       description: "Teknodaim Top Up Transaction",
-      url: `${env.NEXT_PUBLIC_SITE_TITLE}/shop/top-up/transaction`,
+      url: `${env.NEXT_PUBLIC_SITE_TITLE}/transaction`,
       locale: locale,
     },
   }
@@ -40,10 +43,10 @@ export default async function TransactionPage({
 }) {
   const { invoiceId } = params
 
-  const paymentDetails = await api.topUpPayment.byInvoiceId(invoiceId ?? "")
+  const paymentDetails = await api.payment.byInvoiceId(invoiceId ?? "")
 
-  const tripayPaymentDetails = await api.payment.tripayClosedTransactionDetail(
-    paymentDetails?.tripayReference ?? "",
+  const tripayPaymentDetails = await api.tripay.closedTransactionDetail(
+    paymentDetails?.reference ?? "",
   )
 
   return (
@@ -58,18 +61,13 @@ export default async function TransactionPage({
           },
           {
             position: 2,
-            name: "Top Up",
-            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up`,
+            name: "Transaction",
+            item: `${env.NEXT_PUBLIC_SITE_URL}/transaction`,
           },
           {
             position: 3,
-            name: "Order",
-            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order`,
-          },
-          {
-            position: 4,
-            name: `${invoiceId} Order Details`,
-            item: `${env.NEXT_PUBLIC_SITE_URL}/top-up/order/${invoiceId}`,
+            name: `${invoiceId} Transaction Details`,
+            item: `${env.NEXT_PUBLIC_SITE_URL}/transaction/${invoiceId}`,
           },
         ]}
       />
