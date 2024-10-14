@@ -354,6 +354,7 @@ export default {
   hide: "Hide",
   home: "Home",
   icon: "Icon",
+  icon_selected: "Icon has been selected",
   information: "Information",
   item: "Item",
   items: "Items",

@@ -353,6 +353,7 @@ export default {
   hide: "Sembunyikan",
   home: "Beranda",
   icon: "Ikon",
+  icon_selected: "Ikon sudah dipilih",
   information: "Informasi",
   item: "Item",
   items: "Item",
