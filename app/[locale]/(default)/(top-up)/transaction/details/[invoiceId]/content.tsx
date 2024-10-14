@@ -28,7 +28,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
 
   const invoiceId = params.invoiceId
 
-  const { data: orderDetails } = api.transaction.byInvoiceId.useQuery(
+  const { data: transactionDetails } = api.transaction.byInvoiceId.useQuery(
     invoiceId,
     {
       refetchInterval: 3000,
@@ -47,9 +47,9 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                 : "Payment has been successful"}
             </p>
             <p className="mt-2 text-base">
-              Your order
+              Your transaction
               <span className="font-semibold">
-                {` ${paymentDetails?.invoiceId ?? orderDetails?.invoiceId} `}
+                {` ${paymentDetails?.invoiceId ?? transactionDetails?.invoiceId} `}
               </span>
               {paymentDetails?.status !== "paid"
                 ? "is waiting for payment before it is sent."
@@ -77,19 +77,19 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
               <div className="flex flex-auto flex-col">
                 <div className="">
                   <h4 className="text-lg font-black">
-                    {orderDetails?.productName ?? ""}
+                    {transactionDetails?.productName ?? ""}
                   </h4>
                   <div className="mt-8 text-sm font-medium">
                     <div className="flex flex-col gap-4 pb-2">
                       <h5>Account Data</h5>
                       <div className="col-span-2">
-                        {orderDetails?.ign && (
+                        {transactionDetails?.ign && (
                           <p className="break-words font-medium">
-                            {orderDetails?.ign}
+                            {transactionDetails?.ign}
                           </p>
                         )}
                         <p className="break-words font-medium">
-                          {orderDetails?.accountId}
+                          {transactionDetails?.accountId}
                         </p>
                       </div>
                     </div>
@@ -127,18 +127,18 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                       <Button
                         aria-label="Copy Invoice"
                         onClick={() =>
-                          copyToClipboard(orderDetails?.invoiceId!)
+                          copyToClipboard(transactionDetails?.invoiceId!)
                         }
                         type="button"
                         className="flex items-center space-x-2 rounded-md border border-border px-2.5 py-1 print:hidden"
                       >
                         <div className="max-w-[172px] truncate md:w-auto">
-                          {orderDetails?.invoiceId}
+                          {transactionDetails?.invoiceId}
                         </div>
                         <Icon.Copy aria-label="Copy Invoice" />
                       </Button>
                       <span className="hidden print:block">
-                        {orderDetails?.invoiceId}
+                        {transactionDetails?.invoiceId}
                       </span>
                     </div>
                     <div className="col-span-3 md:col-span-4">
@@ -148,14 +148,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                       <span className="inline-flex rounded-sm px-2 text-xs font-semibold leading-5 print:p-0">
                         <Badge
                           variant={
-                            orderDetails?.status === "success"
+                            transactionDetails?.status === "success"
                               ? "success"
-                              : orderDetails?.status === "processing"
+                              : transactionDetails?.status === "processing"
                                 ? "warning"
                                 : "danger"
                           }
                         >
-                          {orderDetails?.status.toUpperCase()}
+                          {transactionDetails?.status.toUpperCase()}
                         </Badge>
                       </span>
                     </div>
@@ -217,13 +217,14 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                   <dt className="font-medium">Subtotal</dt>
                   <dd>
                     {changePriceToIDR(
-                      tripayPaymentDetails?.amount - (orderDetails?.fee ?? 0),
+                      tripayPaymentDetails?.amount -
+                        (transactionDetails?.fee ?? 0),
                     )}
                   </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="font-medium">Fee</dt>
-                  <dd>{changePriceToIDR(orderDetails?.fee ?? 0)}</dd>
+                  <dd>{changePriceToIDR(transactionDetails?.fee ?? 0)}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-xl font-bold md:text-2xl print:text-sm">
