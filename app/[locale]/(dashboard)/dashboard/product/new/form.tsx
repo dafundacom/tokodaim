@@ -36,7 +36,6 @@ interface FormValues {
   title: string
   slug: string
   category: string
-  categorySlug: string
   featuredImage?: string
   coverImage?: string
   guideImage?: string

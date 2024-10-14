@@ -124,7 +124,7 @@ export default {
   "product.cover_image_selected": "Gambar Sampul berhasil dipilih",
   "product.create": "Tambah Produk",
   "product.create_failed": "Gagal membuat Produk! Coba lagi",
-  "product.create_success": "Berhasil membnuat Produk",
+  "product.create_success": "Berhasil membuat Produk",
   "product.delete_failed": "Gagal menghapus Produk! Coba lagi",
   "product.delete_success": "Berhasil menghapus Produk",
   "product.edit": "Edit Produk",
