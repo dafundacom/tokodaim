@@ -45,7 +45,7 @@ const TransactionCard = (props: TransactionCardProps) => {
     <div className="mb-0">
       <a
         className="flex size-full cursor-pointer flex-col rounded-[20px] bg-background p-4 shadow-lg active:opacity-30 md:p-5"
-        href={`/order/details/${invoiceId}`}
+        href={`/transaction/details/${invoiceId}`}
       >
         <div className="mb-3 flex items-center justify-between md:mb-4">
           <div className="text-xs md:text-sm">
