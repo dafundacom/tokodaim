@@ -47,7 +47,6 @@ export default function UpsertSettingForm(props: UpsertSettingFormProps) {
 
   const t = useI18n()
   const tsSetting = useScopedI18n("setting")
-  const tsTopUp = useScopedI18n("top_up")
 
   const { mutate: upsertSetting } = api.setting.upsert.useMutation({
     onSuccess: () => {
