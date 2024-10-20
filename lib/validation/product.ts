@@ -22,10 +22,11 @@ const productInput = {
     })
     .optional()
     .nullish(),
-  featured: z.boolean({
-    required_error: "Featured is required",
-    invalid_type_error: "Featured must be a boolean",
-  }),
+  featured: z
+    .boolean({
+      invalid_type_error: "Featured must be a boolean",
+    })
+    .optional(),
   metaTitle: z
     .string({
       invalid_type_error: "Meta Title must be a string",
