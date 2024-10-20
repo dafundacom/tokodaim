@@ -110,6 +110,7 @@ export default {
   "payment.delete_failed": "Failed to delete payment! Please try again later",
   "payment.delete_success": "Payment is successfully deleted",
   "payment.method": "Payment Method",
+  "payment.not_found": "Payment not found",
   "payment.invoice_id": "Invoice ID",
   "price_list.upate": "Update Price List",
   "price_list.update_failed":
