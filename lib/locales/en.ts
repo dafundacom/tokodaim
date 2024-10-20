@@ -136,6 +136,7 @@ export default {
   "product.not_found": "Product not found",
   "product.placeholder": "Select Product",
   "product.required": "Product is required",
+  "product.search_placeholder": "Find Product ...",
   "product.update": "Update Product",
   "product.update_failed": "Failed to update Product! Please try again later",
   "product.update_success": "Product is successfully updated",
