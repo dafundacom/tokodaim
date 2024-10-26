@@ -1,47 +1,12 @@
 {
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1716813603459,
-      "tag": "0000_ordinary_ravenous",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1717011644995,
-      "tag": "0001_soft_romulus",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1717142646212,
-      "tag": "0002_panoramic_thunderbolt_ross",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
       "version": "7",
-      "when": 1717447084293,
-      "tag": "0003_romantic_zaran",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1717454927481,
-      "tag": "0004_keen_naoko",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1717760715642,
-      "tag": "0005_confused_azazel",
+      "when": 1728777995023,
+      "tag": "0000_adorable_dormammu",
       "breakpoints": true
     }
   ]

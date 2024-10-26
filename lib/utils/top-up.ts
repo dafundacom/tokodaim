@@ -52,6 +52,7 @@ export function removeNonDigitCharsBeforeNumber(text: string): string {
   }
 
   const regex = /\D*(\d.*)/ // Match any non-digit characters before the first digit
+  // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
   const matches = cleanedText.match(regex)
 
   if (matches && matches.length > 1) {

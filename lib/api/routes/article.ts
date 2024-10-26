@@ -223,12 +223,6 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              // not(
-              //   eq(
-              //     articleTopics.articleId,
-              //     "de749d11-2438-4521-99a1-847f5d37b103",
-              //   ),
-              // ),
             ),
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
@@ -818,16 +812,12 @@ export const articleRouter = createTRPCRouter({
         const data = await ctx.db
           .insert(articles)
           .values({
+            ...input,
             id: articleId,
-            language: input.language,
-            title: input.title,
             slug: slug,
-            content: input.content,
-            status: input.status,
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            featuredImageId: input.featuredImageId,
             articleTranslationId: articleTranslation[0].id,
           })
           .returning()
@@ -1117,8 +1107,8 @@ export const articleRouter = createTRPCRouter({
             .where(eq(articleAuthors.articleId, input))
           await ctx.db
             .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input)),
-            await ctx.db.delete(articles).where(eq(articles.id, input))
+            .where(eq(articleEditors.articleId, input))
+          await ctx.db.delete(articles).where(eq(articles.id, input))
         })
         return data
       } catch (error) {

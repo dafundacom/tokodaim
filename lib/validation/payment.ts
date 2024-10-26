@@ -1,46 +1,32 @@
 import { z } from "zod"
 
-const PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
-  "MYBVA",
-  "PERMATAVA",
+export const PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
+
+export const PAYMENT_METHOD = [
+  "ALFAMART",
+  "ALFAMIDI",
+  "BCAVA",
   "BNIVA",
   "BRIVA",
-  "MANDIRIVA",
-  "BCAVA",
-  "SMSVA",
-  "MUAMALATVA",
-  "CIMBVA",
-  "SAMPOERNAVA",
   "BSIVA",
-  "DANAMONVA",
+  "CIMBVA",
   "DANA",
-  "ALFAMART",
+  "DANAMONVA",
   "INDOMARET",
-  "ALFAMIDI",
+  "MANDIRIVA",
+  "MUAMALATVA",
+  "MYBVA",
   "OVO",
+  "PERMATAVA",
   "QRIS",
   "QRIS2",
   "QRISC",
+  "SAMPOERNAVA",
   "SHOPEEPAY",
-  "DANA",
+  "SMSVA",
 ] as const
 
-export const paymentTripayClosedPaymentCodeType = z.enum(
-  PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE,
-)
-
-const PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE = [
-  "BNIVAOP",
-  "HANAVAOP",
-  "DANAMONOP",
-  "CIMBVAOP",
-  "BRIVAOP",
-  "QRISOP",
-  "QRISCOP",
-  "BSIVAOP",
-] as const
-
-const PAYMENT_STATUS = [
+export const PAYMENT_STATUS = [
   "unpaid",
   "paid",
   "failed",
@@ -50,97 +36,28 @@ const PAYMENT_STATUS = [
 ] as const
 
 export const paymentStatus = z.enum(PAYMENT_STATUS)
+export const paymentProvider = z.enum(PAYMENT_PROVIDER)
 
-export const paymentTripayOpenPaymentCodeType = z.enum(
-  PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE,
-)
-
-const paymentTripayPaymentInstructionInput = {
-  code: z.enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
-    invalid_type_error:
-      "your payment code type doesnt exist on available option.",
+const paymentInput = {
+  invoiceId: z.string({
+    required_error: "Invoice Id is required",
+    invalid_type_error: "Invoice Id must be a string",
   }),
-  payCode: z
+  method: z.enum(PAYMENT_METHOD, {
+    required_error: "Payment Method is required",
+    invalid_type_error:
+      "your payment method type doesnt exist on available option.",
+  }),
+  reference: z
     .string({
-      invalid_type_error: "Pay Code must be a string",
+      invalid_type_error: "Reference must be a string",
     })
     .optional(),
-  amount: z
-    .number({
-      invalid_type_error: "Amount must be a number",
+  userId: z
+    .string({
+      invalid_type_error: "User Id must be a string",
     })
     .optional(),
-  allowHtml: z
-    .boolean({
-      invalid_type_error: "Allow HTML must be a boolean",
-    })
-    .optional(),
-}
-
-const paymentTripayFeeCalculatorInput = {
-  amount: z.number({
-    required_error: "Amount is required",
-    invalid_type_error: "Amount must be a number",
-  }),
-  code: z
-    .enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
-      invalid_type_error:
-        "your payment code type doesnt exist on available option.",
-    })
-    .optional(),
-}
-
-const paymentTripayOrderItemsInput = z.object(
-  {
-    sku: z.string({
-      required_error: "SKU is required",
-      invalid_type_error: "SKU must be a string",
-    }),
-    name: z.string({
-      required_error: "Product Name is required",
-      invalid_type_error: "Product Name must be a string",
-    }),
-    price: z.number({
-      required_error: "Price is required",
-      invalid_type_error: "Price must be a number",
-    }),
-    quantity: z.number({
-      required_error: "Quantity is required",
-      invalid_type_error: "Quantity must be a number",
-    }),
-    subtotal: z.number({
-      required_error: "Subtotal is required",
-      invalid_type_error: "Subtotal must be a number",
-    }),
-    product_url: z.string({
-      required_error: "Product Url is required",
-      invalid_type_error: "Product Url must be a string",
-    }),
-    image_url: z.string({
-      required_error: "Image Url is required",
-      invalid_type_error: "Image Url must be a string",
-    }),
-  },
-  {
-    required_error: "Order Items is required",
-    invalid_type_error: "Order Items must be an object",
-  },
-)
-
-const paymentTripayCreateClosedTransactionInput = {
-  amount: z.number({
-    required_error: "Amount is required",
-    invalid_type_error: "Amount must be a number",
-  }),
-  paymentMethod: z.enum(PAYMENT_TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
-    required_error: "Method is required",
-    invalid_type_error:
-      "your payment code type doesnt exist on available option.",
-  }),
-  merchantRef: z.string({
-    required_error: "Merchant Ref is required",
-    invalid_type_error: "Merchant Ref must be a string",
-  }),
   customerName: z.string({
     required_error: "Customer Name is required",
     invalid_type_error: "Customer Name must be a string",
@@ -153,65 +70,66 @@ const paymentTripayCreateClosedTransactionInput = {
     required_error: "Customer Phone Number is required",
     invalid_type_error: "Customer Phone Number must be a string",
   }),
-  orderItems: z.array(paymentTripayOrderItemsInput, {
-    required_error: "Order Items Required",
-    invalid_type_error: "Order Items must be an array",
+  amount: z.number({
+    required_error: "Amount is required",
+    invalid_type_error: "Amount must be a number",
   }),
-  callbackUrl: z
-    .string({
-      invalid_type_error: "Callback Url must be a string",
-    })
-    .optional(),
-  returnUrl: z
-    .string({
-      invalid_type_error: "Return Url must be a string",
-    })
-    .optional(),
-  expiredTime: z
-    .number({
-      invalid_type_error: "Expired Time must be a number",
-    })
-    .optional(),
-}
-
-const paymentTripayCreateOpenTransactionInput = {
-  merchantRef: z.string({
-    required_error: "Merchant Ref is required",
-    invalid_type_error: "Merchant Ref must be a string",
+  fee: z.number({
+    required_error: "Fee is required",
+    invalid_type_error: "Fee must be a number",
   }),
-  paymentMethod: z.enum(PAYMENT_TRIPAY_OPEN_PAYMENT_CODE_TYPE, {
-    required_error: "Method is required",
+  total: z.number({
+    required_error: "Total is required",
+    invalid_type_error: "Total must be a number",
+  }),
+  provider: z.enum(PAYMENT_PROVIDER, {
+    required_error: "Payment Provider is required",
     invalid_type_error:
-      "your payment code type doesnt exist on available option.",
+      "your payment provider type doesnt exist on available option.",
   }),
-  customerName: z.string({
-    required_error: "Customer Name is required",
-    invalid_type_error: "Customer Name must be a string",
+  paidAt: z
+    .date({
+      invalid_type_error: "Paid At must be a date",
+    })
+    .optional(),
+  expiredAt: z.date({
+    required_error: "Expired At is required",
+    invalid_type_error: "Expired At must be a date",
   }),
 }
 
-export const paymentTripayPaymentInstructionSchema = z.object({
-  ...paymentTripayPaymentInstructionInput,
+const paymentStatusInput = {
+  invoiceId: z.string({
+    required_error: "Invoice Id is required",
+    invalid_type_error: "Invoice Id must be a string",
+  }),
+  status: z.enum(PAYMENT_STATUS, {
+    required_error: "Payment status is required",
+    invalid_type_error:
+      "your payment status type doesnt exist on available option.",
+  }),
+}
+
+export const createPaymentSchema = z.object({
+  ...paymentInput,
+  ...paymentStatusInput,
 })
 
-export const paymentTripayFeeCalculatorSchema = z.object({
-  ...paymentTripayFeeCalculatorInput,
+export const updatePaymentSchema = z.object({
+  id: z.string({
+    required_error: "ID is required",
+    invalid_type_error: "ID must be a string",
+  }),
+  ...paymentInput,
+  ...paymentStatusInput,
 })
 
-export const paymentTripayCreateClosedTransactionSchema = z.object({
-  ...paymentTripayCreateClosedTransactionInput,
+export const updatePaymentStatusSchema = z.object({
+  ...paymentStatusInput,
 })
-
-export const paymentTripayCreateOpenTransactionSchema = z.object({
-  ...paymentTripayCreateOpenTransactionInput,
-})
-
-export type PaymentTripayClosedPaymentCodeType = z.infer<
-  typeof paymentTripayClosedPaymentCodeType
->
-
-export type PaymentTripayOpenPaymentCodeType = z.infer<
-  typeof paymentTripayOpenPaymentCodeType
->
 
 export type PaymentStatus = z.infer<typeof paymentStatus>
+
+export type CreatePayment = z.infer<typeof createPaymentSchema>
+export type UpdatePayment = z.infer<typeof updatePaymentSchema>
+export type UpdatePaymentStatus = z.infer<typeof updatePaymentStatusSchema>

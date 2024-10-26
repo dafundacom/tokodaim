@@ -1,220 +1,192 @@
-import { sql } from "drizzle-orm"
+import { TRPCError } from "@trpc/server"
+import { count, eq, sql } from "drizzle-orm"
 import { z } from "zod"
 
-import { createTRPCRouter, publicProcedure } from "@/lib/api/trpc"
-import { settings } from "@/lib/db/schema/setting"
-import type {
-  CreateClosedTransactionReturnProps,
-  CreateOpenTransactionReturnProps,
-  FeeCalculatorReturnProps,
-  InstructionReturnProps,
-  OpenTransactionsReturnProps,
-  PaymentChannelReturnProps,
-  TransactionsReturnProps,
-} from "@/lib/sdk/tripay"
+import {
+  adminProtectedProcedure,
+  createTRPCRouter,
+  publicProcedure,
+} from "@/lib/api/trpc"
+import { payments } from "@/lib/db/schema/payment"
 import { cuid } from "@/lib/utils"
 import {
-  paymentTripayCreateClosedTransactionSchema,
-  paymentTripayCreateOpenTransactionSchema,
-  paymentTripayFeeCalculatorSchema,
-  paymentTripayPaymentInstructionSchema,
+  createPaymentSchema,
+  updatePaymentSchema,
+  updatePaymentStatusSchema,
 } from "@/lib/validation/payment"
 
 export const paymentRouter = createTRPCRouter({
-  tripayInstruction: publicProcedure
-    .input(paymentTripayPaymentInstructionSchema)
+  dashboard: adminProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.instruction({
-          code: input.code,
-          amount: input.amount,
-          allow_html: input.allowHtml,
-        })) as InstructionReturnProps
-
-        const { data } = res
-
-        return data ?? undefined
+        const data = await ctx.db.query.payments.findMany({
+          limit: input.perPage,
+          offset: (input.page - 1) * input.perPage,
+          orderBy: (payments, { desc }) => [desc(payments.createdAt)],
+        })
+        return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
-  tripayPaymentChannel: publicProcedure.query(async ({ ctx }) => {
+  byInvoiceId: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      try {
+        const data = await ctx.db.query.payments.findFirst({
+          where: (payment, { eq }) => eq(payment.invoiceId, input),
+          orderBy: (payment, { desc }) => [desc(payment.createdAt)],
+        })
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+  byUserId: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
     try {
-      const paymentChannel =
-        (await ctx.tripay.paymentChannel()) as PaymentChannelReturnProps
-      if (Array.isArray(paymentChannel?.data)) {
-        const eWallet = paymentChannel?.data.filter((data) =>
-          data.group.includes("E-Wallet"),
-        )
-
-        const virtualAccount = paymentChannel?.data.filter((data) =>
-          data.group.includes("Virtual Account"),
-        )
-
-        const convenienceShop = paymentChannel?.data.filter((data) =>
-          data.group.includes("Convenience Store"),
-        )
-
-        await ctx.db
-          .insert(settings)
-          .values({
-            id: cuid(),
-            key: "tripay_payment_channel",
-            value: JSON.stringify({ eWallet, virtualAccount, convenienceShop }),
-          })
-          .onConflictDoUpdate({
-            target: settings.key,
-            set: {
-              value: JSON.stringify({
-                eWallet,
-                virtualAccount,
-                convenienceShop,
-              }),
-              updatedAt: sql`CURRENT_TIMESTAMP`,
-            },
-          })
-      }
-
-      const paymentChannelData = await ctx.db.query.settings.findFirst({
-        where: (setting, { eq }) => eq(setting.key, "tripay_payment_channel"),
+      const data = await ctx.db.query.payments.findMany({
+        where: (payment, { eq }) => eq(payment.userId, input),
+        orderBy: (payment, { desc }) => [desc(payment.createdAt)],
       })
-
-      let paymentChannelValue
-
-      if (
-        paymentChannelData?.value &&
-        typeof paymentChannelData?.value === "string"
-      ) {
-        paymentChannelValue = JSON.parse(paymentChannelData?.value)
-      } else {
-        paymentChannelValue = paymentChannelData?.value
-      }
-
-      return paymentChannelValue ?? undefined
+      return data
     } catch (error) {
       console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
     }
   }),
-  tripayFeeCalculator: publicProcedure
-    .input(paymentTripayFeeCalculatorSchema)
-    .query(async ({ input, ctx }) => {
-      try {
-        const res = (await ctx.tripay.feeCalculator({
-          code: input.code,
-          amount: input.amount,
-        })) as FeeCalculatorReturnProps
-
-        const { data } = res
-
-        return data[0] ?? undefined
-      } catch (error) {
-        console.error("Error:", error)
+  count: adminProtectedProcedure.query(async ({ ctx }) => {
+    try {
+      const data = await ctx.db.select({ value: count() }).from(payments)
+      return data[0].value
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
       }
-    }),
-  tripayClosedTransactionList: publicProcedure
-    .input(z.object({ page: z.number(), per_page: z.number() }))
-    .query(async ({ input, ctx }) => {
-      try {
-        const res = (await ctx.tripay.transactions({
-          page: input.page,
-          per_page: input.per_page,
-        })) as TransactionsReturnProps
-
-        const { data } = res
-
-        return data ?? undefined
-      } catch (error) {
-        console.error("Error:", error)
-      }
-    }),
-  tripayOpenTransactionList: publicProcedure
-    .input(z.string())
-    .query(async ({ input, ctx }) => {
-      try {
-        const res = (await ctx.tripay.openTransactions({
-          uuid: input,
-        })) as OpenTransactionsReturnProps
-
-        const { data } = res
-        return data ?? undefined
-      } catch (error) {
-        console.error("Error:", error)
-      }
-    }),
-  tripayCreateClosedTransaction: publicProcedure
-    .input(paymentTripayCreateClosedTransactionSchema)
+    }
+  }),
+  create: publicProcedure
+    .input(createPaymentSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.createClosedTransaction({
-          method: input.paymentMethod,
-          merchant_ref: input.merchantRef,
-          amount: input.amount,
-          customer_name: input.customerName,
-          customer_email: input.customerEmail,
-          customer_phone: input.customerPhone,
-          order_items: input.orderItems,
-          callback_url: input.callbackUrl,
-          return_url: input.returnUrl,
-          expired_time: input.expiredTime,
-        })) as CreateClosedTransactionReturnProps
-
-        const { data } = res
-
-        if (res?.success) {
-          return data ?? undefined
+        const data = await ctx.db
+          .insert(payments)
+          .values({
+            id: cuid(),
+            ...input,
+          })
+          .returning()
+        return data[0]
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
         } else {
-          console.error("Error:", res?.message)
-          return undefined
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
         }
-      } catch (error) {
-        console.error("Error:", error)
       }
     }),
-  tripayCreateOpenTransaction: publicProcedure
-    .input(paymentTripayCreateOpenTransactionSchema)
+  update: adminProtectedProcedure
+    .input(updatePaymentSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.createOpenTransaction({
-          method: input.paymentMethod,
-          merchant_ref: input.merchantRef,
-          customer_name: input.customerName,
-        })) as CreateOpenTransactionReturnProps
-
-        const { data } = res
-
-        return data ?? undefined
+        const data = await ctx.db
+          .update(payments)
+          .set({
+            ...input,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(payments.id, input.id))
+        return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
-  tripayClosedTransactionDetail: publicProcedure
-    .input(z.string())
-    .query(async ({ input, ctx }) => {
+  updateStatus: publicProcedure
+    .input(updatePaymentStatusSchema)
+    .mutation(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.closedTransactionDetail({
-          reference: input,
-        })) as CreateClosedTransactionReturnProps
-
-        const { data } = res
-
-        return data ?? undefined
+        const data = await ctx.db
+          .update(payments)
+          .set({
+            status: input.status,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(eq(payments.invoiceId, input.invoiceId))
+        return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
-  tripayOpenTransactionDetail: publicProcedure
+  delete: adminProtectedProcedure
     .input(z.string())
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
-        const res = (await ctx.tripay.openTransactionDetail({
-          uuid: input,
-        })) as CreateOpenTransactionReturnProps
-
-        const { data } = res
-
-        return data ?? undefined
+        const data = await ctx.db.delete(payments).where(eq(payments.id, input))
+        return data
       } catch (error) {
         console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
       }
     }),
 })

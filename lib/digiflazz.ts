@@ -1,5 +1,6 @@
+import createDigiflazzConfig from "digiflazz-sdk"
+
 import env from "@/env.mjs"
-import createDigiflazzConfig from "@/lib/sdk/digiflazz"
 
 export const digiflazz = createDigiflazzConfig({
   username: env.DIGIFLAZZ_USERNAME!,

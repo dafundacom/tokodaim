@@ -1,1 +1,0 @@
-ALTER TABLE "top_up_orders" ADD COLUMN "ign" text;

@@ -62,7 +62,9 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
 
       startTransition(() => {
         if (data) {
-          setToggleUpload && setToggleUpload((prev) => !prev)
+          if (setToggleUpload) {
+            setToggleUpload((prev) => !prev)
+          }
           setPreviewImages([])
           form.reset()
           toast({ variant: "success", description: ts("upload_success") })
@@ -108,7 +110,7 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
               )}
             </form>
           </Form>
-          <div className="align-center flex justify-center">
+          <div className="flex justify-center">
             <Button
               type="button"
               onClick={form.handleSubmit(onSubmit)}

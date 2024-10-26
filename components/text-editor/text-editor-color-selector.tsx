@@ -139,12 +139,13 @@ export const TextEditorColorSelector: React.FunctionComponent<
               key={index}
               onClick={() => {
                 editor.commands.unsetColor()
-                name !== "Default" &&
+                if (name !== "Default") {
                   editor
                     .chain()
                     .focus()
                     .setColor(color || "")
                     .run()
+                }
               }}
               className="flex items-center justify-between rounded-sm px-2 py-1 text-sm text-stone-600 hover:bg-stone-100"
               type="button"
@@ -159,7 +160,7 @@ export const TextEditorColorSelector: React.FunctionComponent<
                 <span>{name}</span>
               </div>
               {editor.isActive("textStyle", { color }) && (
-                <Icon.Check className="h-4 w-4" />
+                <Icon.Check className="size-4" />
               )}
             </button>
           ))}
@@ -169,7 +170,9 @@ export const TextEditorColorSelector: React.FunctionComponent<
               key={index}
               onClick={() => {
                 editor.commands.unsetHighlight()
-                name !== "Default" && editor.commands.setHighlight({ color })
+                if (name !== "Default") {
+                  editor.commands.setHighlight({ color })
+                }
               }}
               className="flex items-center justify-between rounded-sm px-2 py-1 text-sm text-stone-600 hover:bg-stone-100"
               type="button"
@@ -184,7 +187,7 @@ export const TextEditorColorSelector: React.FunctionComponent<
                 <span>{name}</span>
               </div>
               {editor.isActive("highlight", { color }) && (
-                <Icon.Check className="h-4 w-4" />
+                <Icon.Check className="size-4" />
               )}
             </button>
           ))}

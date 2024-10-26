@@ -42,7 +42,6 @@ export const adRouter = createTRPCRouter({
         const data = await ctx.db.query.ads.findFirst({
           where: (ads, { eq }) => eq(ads.id, input),
         })
-
         return data
       } catch (error) {
         console.error("Error:", error)

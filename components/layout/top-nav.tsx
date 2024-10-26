@@ -27,7 +27,7 @@ const TopNav: React.FC<TopNavProps> = async () => {
           <SearchTopNav locale="id" />
           {session?.user ? (
             <NextLink
-              className="relative ml-2 h-[40px] w-[40px] text-muted-foreground transition-all group-hover:text-primary"
+              className="relative ml-2 size-[40px] text-muted-foreground transition-all group-hover:text-primary"
               href="/user/profile"
             >
               <Image

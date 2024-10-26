@@ -20,8 +20,8 @@ export default async function DashboardPage() {
 
   const t = await getI18n()
 
-  const topUpOrders = await api.topUpOrder.count()
-  const topUpPayments = await api.topUpPayment.count()
+  const transactions = await api.transaction.count()
+  const payments = await api.payment.count()
   const promos = await api.promo.count()
   const vouchers = await api.voucher.count()
 
@@ -39,14 +39,14 @@ export default async function DashboardPage() {
           <DashboardBoxIconWrapper>
             <Icon.Transaction />
           </DashboardBoxIconWrapper>
-          <DashboardBoxCount>{topUpOrders}</DashboardBoxCount>
+          <DashboardBoxCount>{transactions}</DashboardBoxCount>
           <DashboardBoxDescription>{t("order")}</DashboardBoxDescription>
         </DashboardBox>
         <DashboardBox>
           <DashboardBoxIconWrapper>
             <Icon.Payment />
           </DashboardBoxIconWrapper>
-          <DashboardBoxCount>{topUpPayments}</DashboardBoxCount>
+          <DashboardBoxCount>{payments}</DashboardBoxCount>
           <DashboardBoxDescription>{t("payment")}</DashboardBoxDescription>
         </DashboardBox>
         <DashboardBox>

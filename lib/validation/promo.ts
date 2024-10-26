@@ -46,10 +46,11 @@ export const promoInput = {
         "only published, draft, rejected and in_review are accepted",
     })
     .optional(),
-  featured: z.boolean({
-    required_error: "Featured is required",
-    invalid_type_error: "Featured must be a boolean",
-  }),
+  featured: z
+    .boolean({
+      invalid_type_error: "Featured must be a boolean",
+    })
+    .optional(),
   featuredImageId: z.string({
     invalid_type_error: "Featured Image must be a string",
   }),

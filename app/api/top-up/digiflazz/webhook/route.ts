@@ -4,8 +4,8 @@ import { eq } from "drizzle-orm"
 
 import env from "@/env.mjs"
 import { db } from "@/lib/db"
-import { topUpOrders } from "@/lib/db/schema/top-up-order"
-import type { TopUpOrderStatus } from "@/lib/validation/top-up-order"
+import { transactions } from "@/lib/db/schema"
+import type { TransactionStatus } from "@/lib/validation/transaction"
 
 const privateKey = env.DIGIFLAZZ_WEBHOOK_SECRET
 
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   if (requestSignature === `sha1=${signature}`) {
     const status = String(data.status)
 
-    let updateStatus: TopUpOrderStatus = "processing"
+    let updateStatus: TransactionStatus = "processing"
 
     switch (status) {
       case "Sukses":
@@ -58,11 +58,11 @@ export async function POST(request: NextRequest) {
     }
 
     await db
-      .update(topUpOrders)
+      .update(transactions)
       .set({
         status: updateStatus,
       })
-      .where(eq(topUpOrders.invoiceId, data.ref_id))
+      .where(eq(transactions.invoiceId, data.ref_id))
 
     return NextResponse.json(
       { success: true, message: "Webhook received and verified" },

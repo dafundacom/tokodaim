@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata as gameProducts } from "next"
 import dynamicFn from "next/dynamic"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
@@ -26,10 +26,10 @@ const PromoCarousel = dynamicFn(
   },
 )
 
-const TopUpGrid = dynamicFn(
+const ProductGrid = dynamicFn(
   async () => {
-    const TopUpProductGrid = await import("@/components/top-up/top-up-grid")
-    return TopUpProductGrid
+    const ProductGrid = await import("@/components/product/product-grid")
+    return ProductGrid
   },
   {
     ssr: false,
@@ -40,7 +40,7 @@ export async function generateMetadata({
   params,
 }: {
   params: { locale: LanguageType }
-}): Promise<Metadata> {
+}): Promise<gameProducts> {
   const { locale } = params
 
   const data = await api.setting.byKey("settings")
@@ -76,9 +76,9 @@ export async function generateMetadata({
 
 export default async function Home() {
   const adsBelowHeader = await api.ad.byPosition("article_below_header")
-  const topUpProductsGames = await api.topUp.byCategorySlug("games")
-  const topUpProductsEMoney = await api.topUp.byCategorySlug("e-money")
-  const topUpProductsPulsa = await api.topUp.byCategorySlug("pulsa")
+  const gameProducts = await api.product.byCategory("games")
+  const eMoneyProducts = await api.product.byCategory("e-money")
+  const pulsaProducts = await api.product.byCategory("pulsa")
   const featuredPromos = await api.promo.featured()
 
   return (
@@ -110,9 +110,9 @@ export default async function Home() {
           })}
         {featuredPromos.length > 0 && <PromoCarousel promos={featuredPromos} />}
         <div className="my-2 flex w-full flex-col space-y-4 lg:space-y-8">
-          <TopUpGrid title="Games" topUps={topUpProductsGames!} />
-          <TopUpGrid title="Pulsa" topUps={topUpProductsPulsa!} />
-          <TopUpGrid title="e-Money" topUps={topUpProductsEMoney!} />
+          <ProductGrid title="Games" products={gameProducts!} />
+          <ProductGrid title="Pulsa" products={pulsaProducts!} />
+          <ProductGrid title="e-Money" products={eMoneyProducts!} />
         </div>
       </section>
     </>

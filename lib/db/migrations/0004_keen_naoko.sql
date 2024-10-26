@@ -1,1 +1,0 @@
-ALTER TABLE "promos" ADD COLUMN "featured" boolean DEFAULT false NOT NULL;
