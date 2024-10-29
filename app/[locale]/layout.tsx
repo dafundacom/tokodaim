@@ -65,7 +65,7 @@ export async function generateMetadata(props: {
       ],
     },
     icons: {
-      shortcut: "/icon/favicon.ico",
+      shortcut: "/favicon.ico",
     },
   }
 }
