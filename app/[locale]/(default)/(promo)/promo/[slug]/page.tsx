@@ -20,17 +20,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
+import env from "@/env"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 import { formatDate } from "@/lib/utils"
 import type { LanguageType } from "@/lib/validation/language"
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { slug } = params
 
   const promo = await api.promo.bySlug(slug)
@@ -77,13 +76,14 @@ export async function generateMetadata({
 }
 
 interface PromoSlugPageProps {
-  params: {
+  params: Promise<{
     slug: string
     locale: LanguageType
-  }
+  }>
 }
 
-export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
+export default async function PromoSlugPage(props: PromoSlugPageProps) {
+  const params = await props.params
   const { slug } = params
 
   const t = await getI18n()

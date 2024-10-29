@@ -9,6 +9,7 @@ const config = {
     "plugin:@next/next/recommended",
     "plugin:tailwindcss/recommended",
     "next",
+    "next/typescript",
     "next/core-web-vitals",
     "prettier",
   ],
@@ -29,6 +30,9 @@ const config = {
     "drizzle",
   ],
   rules: {
+    "tailwindcss/classnames-order": "error",
+    "tailwindcss/no-custom-classname": "error",
+    "tailwindcss/enforces-shorthand": "error",
     "prettier/prettier": "error",
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off",
@@ -36,6 +40,7 @@ const config = {
     "no-prototype-builtins": "off",
     "no-unsafe-optional-chaining": "off",
     "import/consistent-type-specifier-style": "off",
+    "@typescript-eslint/no-empty-object-type": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       { prefer: "type-imports", fixStyle: "separate-type-imports" },
@@ -56,13 +61,6 @@ const config = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
-    "padding-line-between-statements": [
-      "error",
-      { blankLine: "always", prev: "*", next: "function" },
-      { blankLine: "always", prev: "*", next: "class" },
-      { blankLine: "always", prev: "function", next: "*" },
-      { blankLine: "always", prev: "class", next: "*" },
-    ],
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       { prefer: "type-imports", fixStyle: "separate-type-imports" },
@@ -70,7 +68,6 @@ const config = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-empty-object-type": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",

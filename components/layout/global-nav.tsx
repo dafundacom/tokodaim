@@ -2,12 +2,12 @@ import * as React from "react"
 import NextLink from "next/link"
 
 import { Icon } from "@/components/ui/icon"
-import { getSession } from "@/lib/auth/utils"
+import { getCurrentSession } from "@/lib/auth/session"
 import { getI18n } from "@/lib/locales/server"
 
 const GlobalNav: React.FC = async () => {
   const t = await getI18n()
-  const { session } = await getSession()
+  const { session } = await getCurrentSession()
 
   return (
     <aside id="global-navigation">

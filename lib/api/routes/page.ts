@@ -8,7 +8,8 @@ import {
   publicProcedure,
 } from "@/lib/api/trpc"
 import { pages, pageTranslations } from "@/lib/db/schema/page"
-import { cuid, slugify, trimText } from "@/lib/utils"
+import { cuid, trimText } from "@/lib/utils"
+import { generateUniquePageSlug } from "@/lib/utils/slug"
 import { languageType } from "@/lib/validation/language"
 import {
   createPageSchema,
@@ -342,7 +343,7 @@ export const pageRouter = createTRPCRouter({
     .input(createPageSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniquePageSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -447,7 +448,7 @@ export const pageRouter = createTRPCRouter({
     .input(translatePageSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniquePageSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -491,9 +492,32 @@ export const pageRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.delete(pages).where(eq(pages.id, input))
+        const page = await ctx.db.query.pages.findFirst({
+          where: (page, { eq }) => eq(page.id, input),
+        })
 
-        return data
+        if (page) {
+          const checkIfPageTranslationHasPage =
+            await ctx.db.query.pageTranslations.findMany({
+              where: (pageTranslations, { eq }) =>
+                eq(pageTranslations.id, page.pageTranslationId),
+              with: {
+                pages: true,
+              },
+            })
+
+          if (checkIfPageTranslationHasPage[0]?.pages.length === 1) {
+            const data = await ctx.db
+              .delete(pageTranslations)
+              .where(eq(pageTranslations.id, page.pageTranslationId))
+
+            return data
+          } else {
+            const data = await ctx.db.delete(pages).where(eq(pages.id, input))
+
+            return data
+          }
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

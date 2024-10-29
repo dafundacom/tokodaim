@@ -1,5 +1,7 @@
 "use client"
 
+import "@/styles/globals.css"
+
 import { Button } from "@/components/ui/button"
 
 export default function GlobalError({

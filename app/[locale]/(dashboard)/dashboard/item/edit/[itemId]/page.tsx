@@ -1,25 +1,19 @@
 import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const EditItemForm = dynamicFn(
-  async () => {
-    const EditItemForm = await import("./form")
-    return EditItemForm
-  },
-  {
-    ssr: false,
-  },
-)
+const EditItemForm = dynamicFn(async () => {
+  const EditItemForm = await import("./form")
+  return EditItemForm
+})
 
-export function generateMetadata({
-  params,
-}: {
-  params: { itemId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ itemId: string; locale: LanguageType }>
 }) {
+  const params = await props.params
   const { itemId, locale } = params
 
   return {
@@ -38,13 +32,13 @@ export function generateMetadata({
 }
 
 interface EditItemDashboardProps {
-  params: { itemId: string }
+  params: Promise<{ itemId: string }>
 }
 
 export default async function EditItemDashboard(props: EditItemDashboardProps) {
   const { params } = props
 
-  const { itemId } = params
+  const { itemId } = await params
 
   const item = await api.item.byId(itemId)
   const priceLists = await api.digiflazz.priceList()

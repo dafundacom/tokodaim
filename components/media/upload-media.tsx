@@ -56,9 +56,13 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
 
   const onSubmit = (values: FormValues) => {
     startTransition(async () => {
-      const filesArray = Array.from(values.files)
+      const filesArray = values.files ? Array.from(values.files) : []
 
-      const { data, error } = await uploadMultipleMediaAction(filesArray)
+      const mediaData = filesArray.map((file) => ({
+        file,
+      }))
+
+      const { data, error } = await uploadMultipleMediaAction(mediaData)
 
       startTransition(() => {
         if (data) {
@@ -76,6 +80,10 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
     })
   }
 
+  const handleDrop = (files: FileList) => {
+    form.setValue("files", files)
+  }
+
   return (
     <div className={toggleUpload === true ? "flex" : "hidden"}>
       <div className="flex-1 space-y-4">
@@ -87,6 +95,7 @@ const UploadMedia: React.FunctionComponent<UploadMediaProps> = (props) => {
             >
               <DropZone
                 className={cn(previewImages.length > 0 && "hidden")}
+                onDrop={handleDrop}
                 {...form.register("files")}
               />
               {previewImages.length > 0 && (

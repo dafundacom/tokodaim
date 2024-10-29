@@ -9,7 +9,8 @@ import {
 } from "@/lib/api/trpc"
 import { medias } from "@/lib/db/schema/media"
 import { promos, promoTranslations } from "@/lib/db/schema/promo"
-import { cuid, slugify, trimText } from "@/lib/utils"
+import { cuid, trimText } from "@/lib/utils"
+import { generateUniquePromoSlug } from "@/lib/utils/slug"
 import { languageType } from "@/lib/validation/language"
 import {
   createPromoSchema,
@@ -511,7 +512,7 @@ export const promoRouter = createTRPCRouter({
     .input(createPromoSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniquePromoSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -619,7 +620,7 @@ export const promoRouter = createTRPCRouter({
     .input(translatePromoSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniquePromoSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -666,9 +667,32 @@ export const promoRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.delete(promos).where(eq(promos.id, input))
+        const promo = await ctx.db.query.promos.findFirst({
+          where: (promo, { eq }) => eq(promo.id, input),
+        })
 
-        return data
+        if (promo) {
+          const checkIfPromoTranslationHasPromo =
+            await ctx.db.query.promoTranslations.findMany({
+              where: (promoTranslations, { eq }) =>
+                eq(promoTranslations.id, promo.promoTranslationId),
+              with: {
+                promos: true,
+              },
+            })
+
+          if (checkIfPromoTranslationHasPromo[0]?.promos.length === 1) {
+            const data = await ctx.db
+              .delete(promoTranslations)
+              .where(eq(promoTranslations.id, promo.promoTranslationId))
+
+            return data
+          } else {
+            const data = await ctx.db.delete(promos).where(eq(promos.id, input))
+
+            return data
+          }
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

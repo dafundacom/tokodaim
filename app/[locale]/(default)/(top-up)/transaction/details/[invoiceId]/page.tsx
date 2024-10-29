@@ -5,16 +5,15 @@ import * as React from "react"
 import type { Metadata } from "next"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 import { DetailTransactionContent } from "./content"
 
-export function generateMetadata({
-  params,
-}: {
-  params: { slug: string; locale: LanguageType }
-}): Metadata {
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string; locale: LanguageType }>
+}): Promise<Metadata> {
+  const params = await props.params
   const { locale } = params
 
   return {
@@ -35,12 +34,11 @@ export function generateMetadata({
   }
 }
 
-export default async function TransactionPage({
-  params,
-}: {
-  params: { invoiceId: string }
-  searchParams: Record<string, string | undefined>
+export default async function TransactionPage(props: {
+  params: Promise<{ invoiceId: string }>
+  searchParams: Promise<Record<string, string | undefined>>
 }) {
+  const params = await props.params
   const { invoiceId } = params
 
   const paymentDetails = await api.payment.byInvoiceId(invoiceId ?? "")

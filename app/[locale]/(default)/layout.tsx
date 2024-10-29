@@ -3,20 +3,26 @@ import * as React from "react"
 import Footer from "@/components/layout/footer"
 import GlobalNav from "@/components/layout/global-nav"
 import TopNav from "@/components/layout/top-nav"
+import type { LanguageType } from "@/lib/validation/language"
 
 interface DefaultLayoutProps {
   children: React.ReactNode
+  params: Promise<{
+    locale: LanguageType
+  }>
 }
 
-export default function DefaultLayout(props: DefaultLayoutProps) {
-  const { children } = props
+export default async function DefaultLayout(props: DefaultLayoutProps) {
+  const { children, params } = props
+
+  const { locale } = await params
 
   return (
     <>
       <GlobalNav />
       {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className="w-[calc(100% - 92px)] ml-0 lg:ml-[92px]">
-        <TopNav />
+        <TopNav locale={locale} />
         <div className="absolute left-0 top-0 -z-10 min-h-screen w-full">
           <div
             className="pointer-events-none absolute inset-x-0 transform-gpu overflow-hidden blur-3xl sm:-top-80"

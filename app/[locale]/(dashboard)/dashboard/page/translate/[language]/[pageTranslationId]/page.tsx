@@ -3,31 +3,27 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { redirect } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const TranslatePageForm = dynamicFn(
-  async () => {
-    const TranslatePageForm = await import("./form")
-    return TranslatePageForm
-  },
-  {
-    ssr: false,
-  },
-)
+const TranslatePageForm = dynamicFn(async () => {
+  const TranslatePageForm = await import("./form")
+  return TranslatePageForm
+})
 
 interface TranslatePageMetaDataProps {
-  params: {
+  params: Promise<{
     locale: LanguageType
     pageTranslationId: string
     language: LanguageType
-  }
+  }>
 }
 
-export async function generateMetadata({
-  params,
-}: TranslatePageMetaDataProps): Promise<Metadata> {
+export async function generateMetadata(
+  props: TranslatePageMetaDataProps,
+): Promise<Metadata> {
+  const params = await props.params
   const { locale, pageTranslationId, language } = params
 
   const pageTranslation = await api.page.pageTranslationById(pageTranslationId)
@@ -48,15 +44,16 @@ export async function generateMetadata({
 }
 
 interface TranslatePageDashboardProps {
-  params: {
+  params: Promise<{
     pageTranslationId: string
     language: LanguageType
-  }
+  }>
 }
 
-export default async function TranslatePageDashboardPage({
-  params,
-}: TranslatePageDashboardProps) {
+export default async function TranslatePageDashboardPage(
+  props: TranslatePageDashboardProps,
+) {
+  const params = await props.params
   const { pageTranslationId, language } = params
 
   const pageTranslation = await api.page.pageTranslationById(pageTranslationId)

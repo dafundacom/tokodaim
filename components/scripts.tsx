@@ -1,6 +1,6 @@
 import Script from "next/script"
 
-import env from "@/env.mjs"
+import env from "@/env"
 
 const Scripts = () => {
   if (process.env.APP_ENV === "production") {

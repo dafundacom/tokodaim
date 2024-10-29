@@ -2,25 +2,19 @@ import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 
-import env from "@/env.mjs"
-import { getSession } from "@/lib/auth/utils"
+import env from "@/env"
+import { getCurrentSession } from "@/lib/auth/session"
 import type { LanguageType } from "@/lib/validation/language"
 
-const CreateArticleForm = dynamicFn(
-  async () => {
-    const CreateArticleForm = await import("./form")
-    return CreateArticleForm
-  },
-  {
-    ssr: false,
-  },
-)
+const CreateArticleForm = dynamicFn(async () => {
+  const CreateArticleForm = await import("./form")
+  return CreateArticleForm
+})
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: LanguageType }
-}): Metadata {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: LanguageType }>
+}): Promise<Metadata> {
+  const params = await props.params
   const { locale } = params
 
   return {
@@ -39,7 +33,7 @@ export function generateMetadata({
 }
 
 export default async function CreateArticlesDashboard() {
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
 
-  return <CreateArticleForm session={session} />
+  return <CreateArticleForm user={user} />
 }

@@ -13,25 +13,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
+import env from "@/env"
 import { getI18n } from "@/lib/locales/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const PromoList = dynamicFn(
-  async () => {
-    const PromoList = await import("@/components/promo/promo-list")
-    return PromoList
-  },
-  {
-    ssr: false,
-  },
-)
+const PromoList = dynamicFn(async () => {
+  const PromoList = await import("@/components/promo/promo-list")
+  return PromoList
+})
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: LanguageType }
-}): Metadata {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: LanguageType }>
+}): Promise<Metadata> {
+  const params = await props.params
   const { locale } = params
 
   return {
@@ -49,11 +43,10 @@ export function generateMetadata({
   }
 }
 
-export default async function PromoPage({
-  params,
-}: {
-  params: { locale: LanguageType }
+export default async function PromoPage(props: {
+  params: Promise<{ locale: LanguageType }>
 }) {
+  const params = await props.params
   const { locale } = params
 
   const t = await getI18n()

@@ -8,7 +8,8 @@ import {
   publicProcedure,
 } from "@/lib/api/trpc"
 import { products } from "@/lib/db/schema/product"
-import { cuid, slugify } from "@/lib/utils"
+import { cuid } from "@/lib/utils"
+import { generateUniqueProductSlug } from "@/lib/utils/slug"
 import {
   createProductSchema,
   updateProductSchema,
@@ -213,7 +214,7 @@ export const productRouter = createTRPCRouter({
     .input(createProductSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniqueProductSlug(input.title)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle

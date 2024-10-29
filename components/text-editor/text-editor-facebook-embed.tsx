@@ -26,6 +26,7 @@ export const TextEditorFacebookEmbed = Node.create({
     return ["text-editor-facebook-embed", mergeAttributes(HTMLAttributes), 1]
   },
   addNodeView() {
+    // @ts-expect-error FIX: later
     return ReactNodeViewRenderer(TextEditorFacebookWrapper)
   },
 })

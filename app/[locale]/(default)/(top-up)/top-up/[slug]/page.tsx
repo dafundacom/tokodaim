@@ -13,26 +13,20 @@ import {
 import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
-import { getSession } from "@/lib/auth/utils"
+import env from "@/env"
+import { getCurrentSession } from "@/lib/auth/session"
 import { api } from "@/lib/trpc/server"
 import { date7DaysFromNow } from "@/lib/utils"
 
-const TopUpForm = dynamicFn(
-  async () => {
-    const TopUpForm = await import("./form")
-    return TopUpForm
-  },
-  {
-    ssr: false,
-  },
-)
+const TopUpForm = dynamicFn(async () => {
+  const TopUpForm = await import("./form")
+  return TopUpForm
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { slug } = params
 
   const product = await api.product.bySlug(slug)
@@ -55,14 +49,13 @@ export async function generateMetadata({
   }
 }
 
-export default async function TopUpPage({
-  params,
-}: {
-  params: { slug: string }
+export default async function TopUpPage(props: {
+  params: Promise<{ slug: string }>
 }) {
+  const params = await props.params
   const { slug } = params
 
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
 
   const product = await api.product.bySlug(slug)
 
@@ -245,7 +238,7 @@ export default async function TopUpPage({
               </div>
               <div className="w-full lg:w-2/3">
                 <TopUpForm
-                  session={session}
+                  user={user}
                   items={items!}
                   product={product!}
                   paymentChannel={paymentChannel}

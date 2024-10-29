@@ -2,25 +2,19 @@ import * as React from "react"
 import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const CreateItemForm = dynamicFn(
-  async () => {
-    const CreateItemForm = await import("./form")
-    return CreateItemForm
-  },
-  {
-    ssr: false,
-  },
-)
+const CreateItemForm = dynamicFn(async () => {
+  const CreateItemForm = await import("./form")
+  return CreateItemForm
+})
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: LanguageType }
-}): Metadata {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: LanguageType }>
+}): Promise<Metadata> {
+  const params = await props.params
   const { locale } = params
 
   return {

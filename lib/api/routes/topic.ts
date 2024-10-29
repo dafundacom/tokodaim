@@ -9,7 +9,8 @@ import {
 } from "@/lib/api/trpc"
 import { articleTopics } from "@/lib/db/schema/article"
 import { topics, topicTranslations } from "@/lib/db/schema/topic"
-import { cuid, slugify } from "@/lib/utils"
+import { cuid } from "@/lib/utils"
+import { generateUniqueTopicSlug } from "@/lib/utils/slug"
 import { languageType } from "@/lib/validation/language"
 import {
   createTopicSchema,
@@ -481,7 +482,7 @@ export const topicRouter = createTRPCRouter({
     .input(createTopicSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniqueTopicSlug(input.title)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle
@@ -559,7 +560,7 @@ export const topicRouter = createTRPCRouter({
     .input(translateTopicSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniqueTopicSlug(input.title)
         const generatedMetaTitle = !input.metaTitle
           ? input.title
           : input.metaTitle
@@ -599,14 +600,46 @@ export const topicRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.transaction(async () => {
-          await ctx.db
-            .delete(articleTopics)
-            .where(eq(articleTopics.topicId, input))
-          await ctx.db.delete(topics).where(eq(topics.id, input))
+        const topic = await ctx.db.query.topics.findFirst({
+          where: (topic, { eq }) => eq(topic.id, input),
         })
 
-        return data
+        if (topic) {
+          const checkIfTopicTranslationHasTopic =
+            await ctx.db.query.topicTranslations.findMany({
+              where: (topicTranslations, { eq }) =>
+                eq(topicTranslations.id, topic.topicTranslationId),
+              with: {
+                topics: true,
+              },
+            })
+
+          if (checkIfTopicTranslationHasTopic[0]?.topics.length === 1) {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.topicId, input))
+
+              await ctx.db.delete(topics).where(eq(topics.id, input))
+
+              await ctx.db
+                .delete(topicTranslations)
+                .where(eq(topicTranslations.id, topic.topicTranslationId))
+            })
+
+            return data
+          } else {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.topicId, input))
+
+              await ctx.db.delete(topics).where(eq(topics.id, input))
+            })
+
+            return data
+          }
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

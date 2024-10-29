@@ -10,7 +10,7 @@ import ThemeSwitcher from "@/components/theme/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { useOnClickOutside } from "@/hooks/use-on-click-outside"
-import { logout } from "@/lib/auth/utils"
+import { logout } from "@/lib/auth/logout"
 import { useI18n } from "@/lib/locales/client"
 
 interface DashboardSidebarProps
@@ -25,7 +25,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = (props) => {
 
   const ref = React.useRef(null)
 
-  useOnClickOutside(ref, onClose)
+  useOnClickOutside(ref as unknown as React.RefObject<HTMLElement>, onClose)
 
   const t = useI18n()
 

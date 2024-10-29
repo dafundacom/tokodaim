@@ -7,17 +7,16 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import Scripts from "@/components/scripts"
 import ThemeProvider from "@/components/theme/theme-provider"
 import { Toaster } from "@/components/ui/toast/toaster"
-import env from "@/env.mjs"
+import env from "@/env"
 import { I18nProviderClient } from "@/lib/locales/client"
 import TRPCReactProvider from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ locale: LanguageType }>
 }) {
-  const { locale } = params
+  const { params } = props
+  const { locale } = await params
 
   return {
     title: {
@@ -73,11 +72,13 @@ export function generateMetadata({
 
 interface RootLayoutProps {
   children: React.ReactNode
-  params: { locale: LanguageType }
+  params: Promise<{ locale: LanguageType }>
 }
 
-export default function RootLayout({ params, children }: RootLayoutProps) {
-  const { locale } = params
+export default async function RootLayout(props: RootLayoutProps) {
+  const { children, params } = props
+
+  const { locale } = await params
 
   return (
     <html lang="en" suppressHydrationWarning>

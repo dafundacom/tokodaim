@@ -2,45 +2,29 @@ import type { Metadata as gameProducts } from "next"
 import dynamicFn from "next/dynamic"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const Ad = dynamicFn(
-  async () => {
-    const Ad = await import("@/components/ad")
-    return Ad
-  },
-  {
-    ssr: false,
-  },
-)
+const Ad = dynamicFn(async () => {
+  const Ad = await import("@/components/ad")
+  return Ad
+})
 
-const PromoCarousel = dynamicFn(
-  async () => {
-    const PromoCarousel = await import("@/components/promo/promo-carousel")
-    return PromoCarousel
-  },
-  {
-    ssr: false,
-  },
-)
+const PromoCarousel = dynamicFn(async () => {
+  const PromoCarousel = await import("@/components/promo/promo-carousel")
+  return PromoCarousel
+})
 
-const ProductGrid = dynamicFn(
-  async () => {
-    const ProductGrid = await import("@/components/product/product-grid")
-    return ProductGrid
-  },
-  {
-    ssr: false,
-  },
-)
+const ProductGrid = dynamicFn(async () => {
+  const ProductGrid = await import("@/components/product/product-grid")
+  return ProductGrid
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ locale: LanguageType }>
 }): Promise<gameProducts> {
+  const params = await props.params
   const { locale } = params
 
   const data = await api.setting.byKey("settings")

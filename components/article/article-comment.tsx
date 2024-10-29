@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { AuthSession } from "@/lib/auth/utils"
+import type { SelectUser } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import { formatDate } from "@/lib/utils"
@@ -26,7 +26,7 @@ import ReplyArticleComment from "./reply-article-comment"
 
 interface ArticleCommentFormProps extends React.HTMLAttributes<HTMLDivElement> {
   articleId: string
-  session: AuthSession["session"]
+  user: SelectUser | null
 }
 
 interface FormValues {
@@ -37,7 +37,7 @@ interface FormValues {
 const ArticleComment: React.FunctionComponent<ArticleCommentFormProps> = (
   props,
 ) => {
-  const { articleId, session } = props
+  const { articleId, user } = props
 
   const [openDeleteAction, setOpenDeleteAction] = React.useState<string | null>(
     null,
@@ -48,8 +48,6 @@ const ArticleComment: React.FunctionComponent<ArticleCommentFormProps> = (
 
   const t = useI18n()
   const ts = useScopedI18n("comment")
-
-  const user = session?.user
 
   const { data: commentCount, refetch } =
     api.articleComment.countByArticleId.useQuery(articleId)
@@ -274,7 +272,7 @@ const ArticleComment: React.FunctionComponent<ArticleCommentFormProps> = (
                                   articleId={articleId ?? ""}
                                   replyToId={comment?.id ?? ""}
                                   avatar={user?.image}
-                                  username={user?.username}
+                                  username={user?.username!}
                                   onSuccess={() => {
                                     refetch()
                                     updateComment()

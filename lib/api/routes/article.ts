@@ -18,7 +18,8 @@ import {
 import { medias } from "@/lib/db/schema/media"
 import { topics } from "@/lib/db/schema/topic"
 import { users } from "@/lib/db/schema/user"
-import { cuid, slugify, trimText } from "@/lib/utils"
+import { cuid, trimText } from "@/lib/utils"
+import { generateUniqueArticleSlug } from "@/lib/utils/slug"
 import {
   createArticleSchema,
   translateArticleSchema,
@@ -223,6 +224,12 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
+              // not(
+              //   eq(
+              //     articleTopics.articleId,
+              //     "de749d11-2438-4521-99a1-847f5d37b103",
+              //   ),
+              // ),
             ),
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
@@ -788,7 +795,7 @@ export const articleRouter = createTRPCRouter({
     .input(createArticleSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniqueArticleSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -812,12 +819,16 @@ export const articleRouter = createTRPCRouter({
         const data = await ctx.db
           .insert(articles)
           .values({
-            ...input,
             id: articleId,
+            language: input.language,
+            title: input.title,
             slug: slug,
+            content: input.content,
+            status: input.status,
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
+            featuredImageId: input.featuredImageId,
             articleTranslationId: articleTranslation[0].id,
           })
           .returning()
@@ -986,7 +997,7 @@ export const articleRouter = createTRPCRouter({
     .input(translateArticleSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const slug = slugify(input.title)
+        const slug = await generateUniqueArticleSlug(input.title)
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -1068,20 +1079,53 @@ export const articleRouter = createTRPCRouter({
           })
         }
 
-        const data = await ctx.db.transaction(async () => {
-          await ctx.db
-            .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input))
-          await ctx.db
-            .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input))
-          await ctx.db
-            .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input))
-          await ctx.db.delete(articles).where(eq(articles.id, input))
-        })
+        if (article) {
+          const checkIfArticleTranslationHasArticle =
+            await ctx.db.query.articleTranslations.findMany({
+              where: (articleTranslations, { eq }) =>
+                eq(articleTranslations.id, article.articleTranslationId),
+              with: {
+                articles: true,
+              },
+            })
 
-        return data
+          if (checkIfArticleTranslationHasArticle[0]?.articles.length === 1) {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.articleId, input))
+
+              await ctx.db
+                .delete(articleAuthors)
+                .where(eq(articleAuthors.articleId, input))
+              await ctx.db
+                .delete(articleEditors)
+                .where(eq(articleEditors.articleId, input))
+              await ctx.db.delete(articles).where(eq(articles.id, input))
+
+              await ctx.db
+                .delete(articleTranslations)
+                .where(eq(articleTranslations.id, article.articleTranslationId))
+            })
+
+            return data
+          } else {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.articleId, input))
+              await ctx.db
+                .delete(articleAuthors)
+                .where(eq(articleAuthors.articleId, input))
+              await ctx.db
+                .delete(articleEditors)
+                .where(eq(articleEditors.articleId, input))
+              await ctx.db.delete(articles).where(eq(articles.id, input))
+            })
+
+            return data
+          }
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {
@@ -1098,19 +1142,57 @@ export const articleRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.transaction(async () => {
-          await ctx.db
-            .delete(articleTopics)
-            .where(eq(articleTopics.articleId, input))
-          await ctx.db
-            .delete(articleAuthors)
-            .where(eq(articleAuthors.articleId, input))
-          await ctx.db
-            .delete(articleEditors)
-            .where(eq(articleEditors.articleId, input))
-          await ctx.db.delete(articles).where(eq(articles.id, input))
+        const article = await ctx.db.query.articles.findFirst({
+          where: (article, { eq }) => eq(article.id, input),
         })
-        return data
+
+        if (article) {
+          const checkIfArticleTranslationHasArticle =
+            await ctx.db.query.articleTranslations.findMany({
+              where: (articleTranslations, { eq }) =>
+                eq(articleTranslations.id, article.articleTranslationId),
+              with: {
+                articles: true,
+              },
+            })
+
+          if (checkIfArticleTranslationHasArticle[0]?.articles.length === 1) {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.articleId, input))
+
+              await ctx.db
+                .delete(articleAuthors)
+                .where(eq(articleAuthors.articleId, input))
+              await ctx.db
+                .delete(articleEditors)
+                .where(eq(articleEditors.articleId, input))
+              await ctx.db.delete(articles).where(eq(articles.id, input))
+
+              await ctx.db
+                .delete(articleTranslations)
+                .where(eq(articleTranslations.id, article.articleTranslationId))
+            })
+
+            return data
+          } else {
+            const data = await ctx.db.transaction(async () => {
+              await ctx.db
+                .delete(articleTopics)
+                .where(eq(articleTopics.articleId, input))
+              await ctx.db
+                .delete(articleAuthors)
+                .where(eq(articleAuthors.articleId, input))
+              await ctx.db
+                .delete(articleEditors)
+                .where(eq(articleEditors.articleId, input))
+              await ctx.db.delete(articles).where(eq(articles.id, input))
+            })
+
+            return data
+          }
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

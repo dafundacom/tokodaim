@@ -10,7 +10,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import env from "@/env.mjs"
+import env from "@/env"
 import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 

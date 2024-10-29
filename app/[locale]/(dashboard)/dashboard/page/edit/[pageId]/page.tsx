@@ -3,25 +3,19 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const EditPageForm = dynamicFn(
-  async () => {
-    const EditPageForm = await import("./form")
-    return EditPageForm
-  },
-  {
-    ssr: false,
-  },
-)
+const EditPageForm = dynamicFn(async () => {
+  const EditPageForm = await import("./form")
+  return EditPageForm
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { pageId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ pageId: string; locale: LanguageType }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { pageId, locale } = params
 
   const page = await api.page.byId(pageId)
@@ -43,12 +37,13 @@ export async function generateMetadata({
 }
 
 interface EditPagesDashboardProps {
-  params: { pageId: string }
+  params: Promise<{ pageId: string }>
 }
 
-export default async function CreatePagesDashboard({
-  params,
-}: EditPagesDashboardProps) {
+export default async function CreatePagesDashboard(
+  props: EditPagesDashboardProps,
+) {
+  const params = await props.params
   const { pageId } = params
 
   const page = await api.page.byId(pageId)

@@ -33,7 +33,8 @@ import type { SelectDigiflazzPriceList } from "@/lib/db/schema/digiflazz-price-l
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import type { TransaksiReturnProps } from "@/lib/sdk/digiflazz"
 import { api } from "@/lib/trpc/react"
-import { cn, slugify, uniqueCharacter } from "@/lib/utils"
+import { cn, uniqueCharacter } from "@/lib/utils"
+import { slugify } from "@/lib/utils/slug"
 import DashboardManualTopUpHeader from "./header"
 
 interface FormValues {
