@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import LoadingProgress from "@/components/loading-progress"
-import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -11,10 +10,8 @@ import PromoCardVertical from "./promo-card-vertical"
 
 export type PromoListDataProps = Pick<
   SelectPromo,
-  "title" | "slug" | "excerpt"
-> & {
-  featuredImage: Pick<SelectMedia, "url">
-}
+  "title" | "slug" | "excerpt" | "featuredImage"
+>
 
 interface PromoListProps extends React.HTMLAttributes<HTMLDivElement> {
   locale: LanguageType

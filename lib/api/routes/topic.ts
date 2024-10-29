@@ -7,14 +7,12 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { articleTopics } from "@/lib/db/schema/article"
-import { topics, topicTranslations } from "@/lib/db/schema/topic"
+import { articleTopics, topics, topicTranslations } from "@/lib/db/schema"
 import { cuid } from "@/lib/utils"
 import { generateUniqueTopicSlug } from "@/lib/utils/slug"
 import { languageType } from "@/lib/validation/language"
 import {
   createTopicSchema,
-  topicType,
   topicVisibility,
   translateTopicSchema,
   updateTopicSchema,
@@ -32,7 +30,7 @@ export const topicRouter = createTRPCRouter({
           },
         })
 
-        return data
+        return data ?? null
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {
@@ -45,6 +43,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   dashboard: adminProtectedProcedure
     .input(
       z.object({
@@ -82,15 +81,13 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   byId: adminProtectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.topics.findFirst({
           where: (topics, { eq }) => eq(topics.id, input),
-          with: {
-            featuredImage: true,
-          },
         })
 
         return data
@@ -106,6 +103,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   byLanguage: publicProcedure
     .input(
       z.object({
@@ -125,9 +123,6 @@ export const topicRouter = createTRPCRouter({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (topics, { desc }) => [desc(topics.createdAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         return data
@@ -143,6 +138,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   byArticleCount: publicProcedure
     .input(
       z.object({
@@ -190,6 +186,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   sitemap: publicProcedure
     .input(
       z.object({
@@ -228,45 +225,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
-  byType: publicProcedure
-    .input(
-      z.object({
-        type: topicType,
-        language: languageType,
-        page: z.number(),
-        perPage: z.number(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and }) =>
-            and(
-              eq(topics.type, input.type),
-              eq(topics.language, input.language),
-              eq(topics.status, "published"),
-            ),
-          limit: input.perPage,
-          offset: (input.page - 1) * input.perPage,
-          orderBy: (topics, { desc }) => [desc(topics.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
-        })
 
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        if (error instanceof TRPCError) {
-          throw error
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "An internal error occurred",
-          })
-        }
-      }
-    }),
   byVisibility: publicProcedure
     .input(
       z.object({
@@ -288,9 +247,6 @@ export const topicRouter = createTRPCRouter({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (topics, { desc }) => [desc(topics.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         return data
@@ -306,6 +262,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
       const data = await ctx.db.query.topics.findFirst({
@@ -325,83 +282,13 @@ export const topicRouter = createTRPCRouter({
       }
     }
   }),
+
   search: publicProcedure
-    .input(z.object({ language: languageType, searchQuery: z.string() }))
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and, or, ilike }) =>
-            and(
-              eq(topics.language, input.language),
-              eq(topics.visibility, "public"),
-              eq(topics.status, "published"),
-              or(
-                ilike(topics.title, `%${input.searchQuery}%`),
-                ilike(topics.slug, `%${input.searchQuery}%`),
-              ),
-            ),
-          with: {
-            featuredImage: true,
-          },
-          limit: 10,
-        })
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        if (error instanceof TRPCError) {
-          throw error
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "An internal error occurred",
-          })
-        }
-      }
-    }),
-  searchDashboard: publicProcedure
-    .input(z.object({ language: languageType, searchQuery: z.string() }))
-    .query(async ({ ctx, input }) => {
-      try {
-        const data = await ctx.db.query.topics.findMany({
-          where: (topics, { eq, and, or, ilike }) =>
-            and(
-              eq(topics.language, input.language),
-              or(
-                ilike(topics.title, `%${input.searchQuery}%`),
-                ilike(topics.slug, `%${input.searchQuery}%`),
-              ),
-            ),
-          with: {
-            featuredImage: true,
-            topicTranslation: {
-              with: {
-                topics: true,
-              },
-            },
-          },
-          limit: 10,
-        })
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-        if (error instanceof TRPCError) {
-          throw error
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "An internal error occurred",
-          })
-        }
-      }
-    }),
-  searchByType: publicProcedure
     .input(
       z.object({
-        type: topicType,
         language: languageType,
         searchQuery: z.string(),
+        limit: z.number().optional().default(10),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -409,7 +296,6 @@ export const topicRouter = createTRPCRouter({
         const data = await ctx.db.query.topics.findMany({
           where: (topics, { eq, and, or, ilike }) =>
             and(
-              eq(topics.type, input.type),
               eq(topics.language, input.language),
               eq(topics.visibility, "public"),
               eq(topics.status, "published"),
@@ -418,10 +304,7 @@ export const topicRouter = createTRPCRouter({
                 ilike(topics.slug, `%${input.searchQuery}%`),
               ),
             ),
-          with: {
-            featuredImage: true,
-          },
-          limit: 10,
+          limit: input.limit,
         })
 
         return data
@@ -437,7 +320,68 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
+  searchDashboard: publicProcedure
+    .input(
+      z.object({
+        searchQuery: z.string(),
+        limit: z.number().optional().default(10),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.topics.findMany({
+          where: (topics, { or, ilike }) =>
+            or(
+              ilike(topics.title, `%${input.searchQuery}%`),
+              ilike(topics.slug, `%${input.searchQuery}%`),
+            ),
+          with: {
+            topicTranslation: {
+              with: {
+                topics: true,
+              },
+            },
+          },
+          limit: input.limit,
+        })
+
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
   count: publicProcedure.query(async ({ ctx }) => {
+    try {
+      const data = await ctx.db
+        .select({ value: count() })
+        .from(topics)
+        .where(eq(topics.status, "published"))
+
+      return data[0].value
+    } catch (error) {
+      console.error("Error:", error)
+      if (error instanceof TRPCError) {
+        throw error
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal error occurred",
+        })
+      }
+    }
+  }),
+
+  countDashboard: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(topics)
 
@@ -454,6 +398,7 @@ export const topicRouter = createTRPCRouter({
       }
     }
   }),
+
   countByLanguage: publicProcedure
     .input(languageType)
     .query(async ({ ctx, input }) => {
@@ -478,6 +423,30 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
+  countByLanguageDashboard: publicProcedure
+    .input(languageType)
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .select({ values: count() })
+          .from(topics)
+          .where(eq(topics.language, input))
+
+        return data[0].values
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
   create: adminProtectedProcedure
     .input(createTopicSchema)
     .mutation(async ({ ctx, input }) => {
@@ -504,17 +473,11 @@ export const topicRouter = createTRPCRouter({
           .insert(topics)
           .values({
             id: topicId,
-            language: input.language,
-            title: input.title,
             slug: slug,
-            description: input.description,
-            visibility: input.visibility,
-            type: input.type,
-            status: input.status,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            featuredImageId: input.featuredImageId,
             topicTranslationId: topicTranslation[0].id,
+            ...input,
           })
           .returning()
 
@@ -531,6 +494,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   update: adminProtectedProcedure
     .input(updateTopicSchema)
     .mutation(async ({ ctx, input }) => {
@@ -556,6 +520,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   translate: adminProtectedProcedure
     .input(translateTopicSchema)
     .mutation(async ({ ctx, input }) => {
@@ -570,17 +535,10 @@ export const topicRouter = createTRPCRouter({
 
         const data = await ctx.db.insert(topics).values({
           id: cuid(),
-          language: input.language,
-          title: input.title,
           slug: slug,
-          description: input.description,
-          visibility: input.visibility,
-          type: input.type,
-          status: input.status,
           metaTitle: generatedMetaTitle,
           metaDescription: generatedMetaDescription,
-          featuredImageId: input.featuredImageId,
-          topicTranslationId: input.topicTranslationId,
+          ...input,
         })
 
         return data
@@ -596,6 +554,7 @@ export const topicRouter = createTRPCRouter({
         }
       }
     }),
+
   delete: adminProtectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {

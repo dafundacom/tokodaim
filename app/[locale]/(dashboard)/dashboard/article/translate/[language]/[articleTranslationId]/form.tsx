@@ -26,9 +26,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useDisclosure } from "@/hooks/use-disclosure"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
-import type { SelectUser } from "@/lib/db/schema/user"
+import type { SelectArticle, SelectUser } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -51,7 +49,6 @@ interface TranslateArticleFormProps {
   language: LanguageType
   initialArticleData?: Partial<
     SelectArticle & {
-      featuredImage: Pick<SelectMedia, "id" | "url">
       authors: Pick<SelectUser, "id" | "name">[]
       editors: Pick<SelectUser, "id" | "name">[]
     }
@@ -81,18 +78,8 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
         })
       : [],
   )
-  const [selectedFeaturedImageId, setSelectedFeaturedImageId] =
-    React.useState<string>(
-      initialArticleData?.featuredImage
-        ? initialArticleData.featuredImage.id
-        : "",
-    )
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
-    React.useState<string>(
-      initialArticleData?.featuredImage
-        ? initialArticleData.featuredImage.url
-        : "",
-    )
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
+    React.useState<string>(initialArticleData?.featuredImage ?? "")
   const [selectedTopics, setSelectedTopics] = React.useState<
     { id: string; title: string }[] | []
   >([])
@@ -135,7 +122,7 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
       form.reset()
       setClearContent((prev) => !prev)
       setSelectedTopics([])
-      setSelectedFeaturedImageUrl("")
+      setSelectedFeaturedImage("")
       toast({
         variant: "success",
         description: ts("translate_success"),
@@ -156,6 +143,11 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
             })
           }
         }
+      } else if (error?.message) {
+        toast({
+          variant: "danger",
+          description: error.message,
+        })
       } else {
         toast({
           variant: "danger",
@@ -169,7 +161,7 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
     setLoading(true)
     const mergedValues = {
       ...values,
-      featuredImageId: selectedFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
       authors: authors,
       editors: editors,
     }
@@ -177,19 +169,14 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectedFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectedFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -336,7 +323,7 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
                         )}
                       />
                       {valueLanguage && (
-                        <div className="my-2 max-w-xl">
+                        <div className="my-2">
                           <DashboardAddTopics
                             mode="edit"
                             fieldName="topics"
@@ -346,11 +333,10 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
                             addTopics={setTopics}
                             selectedTopics={selectedTopics}
                             addSelectedTopics={setSelectedTopics}
-                            topicType="article"
                           />
                         </div>
                       )}
-                      {selectedFeaturedImageUrl ? (
+                      {selectedFeaturedImage ? (
                         <div className="relative overflow-hidden rounded-[18px]">
                           <DeleteMediaButton
                             description="Featured Image"
@@ -363,7 +349,7 @@ const TranslateArticleForm = (props: TranslateArticleFormProps) => {
                           >
                             <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                               <Image
-                                src={selectedFeaturedImageUrl}
+                                src={selectedFeaturedImage}
                                 className="rounded-lg object-cover"
                                 fill
                                 alt={t("featured_image")}

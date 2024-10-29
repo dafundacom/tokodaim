@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useForm } from "react-hook-form"
+import { slugify } from "transliteration"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -34,7 +35,6 @@ import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import type { TransaksiReturnProps } from "@/lib/sdk/digiflazz"
 import { api } from "@/lib/trpc/react"
 import { cn, uniqueCharacter } from "@/lib/utils"
-import { slugify } from "@/lib/utils/slug"
 import DashboardManualTopUpHeader from "./header"
 
 interface FormValues {
@@ -146,7 +146,8 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                         >
                           {field.value
                             ? priceLists.find(
-                                (priceList) => field.value === priceList.sku,
+                                (priceList) =>
+                                  field.value === priceList.productName,
                               )?.productName
                             : tsi("placeholder")}
                           <Icon.ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />

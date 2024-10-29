@@ -3,18 +3,15 @@
 import * as React from "react"
 
 import LoadingProgress from "@/components/loading-progress"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
+import type { SelectArticle } from "@/lib/db/schema"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
-import ArticleCardHorizontal from "./article-card-horizontal"
+import ArticleCardVertical from "./article-card-vertical"
 
 export type ArticleListByAuthorDataProps = Pick<
   SelectArticle,
-  "title" | "slug" | "excerpt"
-> & {
-  featuredImage: Pick<SelectMedia, "url">
-}
+  "title" | "slug" | "excerpt" | "featuredImage"
+>
 
 interface ArticleListByAuthorProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -22,9 +19,7 @@ interface ArticleListByAuthorProps
   locale: LanguageType
 }
 
-const ArticleListByAuthor: React.FunctionComponent<ArticleListByAuthorProps> = (
-  props,
-) => {
+const ArticleListByAuthor: React.FC<ArticleListByAuthorProps> = (props) => {
   const { authorId, locale } = props
 
   const loadMoreRef = React.useRef<HTMLDivElement>(null)
@@ -64,11 +59,13 @@ const ArticleListByAuthor: React.FunctionComponent<ArticleListByAuthorProps> = (
 
   return (
     <div>
-      {data?.pages.map((page) => {
-        return page.articles.map((article) => {
-          return <ArticleCardHorizontal article={article} key={article.id} />
-        })
-      })}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+        {data?.pages.map((page) => {
+          return page.articles.map((article) => {
+            return <ArticleCardVertical article={article} key={article.id} />
+          })
+        })}
+      </div>
       {hasNextPage && (
         <div ref={loadMoreRef}>
           <div className="text-center">

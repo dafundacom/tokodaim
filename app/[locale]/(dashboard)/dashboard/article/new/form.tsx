@@ -33,7 +33,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useDisclosure } from "@/hooks/use-disclosure"
-import type { SelectUser } from "@/lib/db/schema/user"
+import type { SelectUser } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -51,7 +51,7 @@ interface FormValues {
 }
 
 interface CreateArticleFormProps {
-  user: SelectUser | null
+  user: SelectUser
 }
 
 export default function CreateArticleForm(props: CreateArticleFormProps) {
@@ -61,20 +61,14 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [clearContent, setClearContent] = React.useState<boolean>(false)
-  const [selectedFeaturedImageId, setSelectedFeaturedImageId] =
-    React.useState<string>("")
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
     React.useState<string>("")
   const [topics, setTopics] = React.useState<string[]>([])
   const [selectedTopics, setSelectedTopics] = React.useState<
     { id: string; title: string }[] | []
   >([])
-  const [authors, setAuthors] = React.useState<string[]>(
-    user ? [user?.id!] : [],
-  )
-  const [editors, setEditors] = React.useState<string[]>(
-    user ? [user?.id!] : [],
-  )
+  const [authors, setAuthors] = React.useState<string[]>(user ? [user?.id] : [])
+  const [editors, setEditors] = React.useState<string[]>(user ? [user?.id] : [])
   const [selectedAuthors, setSelectedAuthors] = React.useState<
     { id: string; name: string }[] | []
   >(
@@ -118,8 +112,6 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
     onSuccess: () => {
       form.reset()
       setClearContent((prev) => !prev)
-      setSelectedTopics([])
-      setSelectedFeaturedImageUrl("")
       toast({
         variant: "success",
         description: ts("create_success"),
@@ -140,6 +132,11 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
             })
           }
         }
+      } else if (error?.message) {
+        toast({
+          variant: "danger",
+          description: error.message,
+        })
       } else {
         toast({
           variant: "danger",
@@ -153,7 +150,7 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
     setLoading(true)
     const mergedValues = {
       ...values,
-      featuredImageId: selectedFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
       authors: authors,
       editors: editors,
     }
@@ -161,19 +158,14 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectedFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectedFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -350,7 +342,7 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
                         )}
                       />
                       {valueLanguage && (
-                        <div className="my-2 max-w-xl">
+                        <div className="my-2">
                           <DashboardAddTopics
                             locale={valueLanguage}
                             fieldName="topics"
@@ -359,11 +351,10 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
                             addTopics={setTopics}
                             selectedTopics={selectedTopics}
                             addSelectedTopics={setSelectedTopics}
-                            topicType="article"
                           />
                         </div>
                       )}
-                      {selectedFeaturedImageUrl ? (
+                      {selectedFeaturedImage ? (
                         <div className="relative overflow-hidden rounded-[18px]">
                           <DeleteMediaButton
                             description="Featured Image"
@@ -376,7 +367,7 @@ export default function CreateArticleForm(props: CreateArticleFormProps) {
                           >
                             <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                               <Image
-                                src={selectedFeaturedImageUrl}
+                                src={selectedFeaturedImage}
                                 className="rounded-lg object-cover"
                                 fill
                                 alt={t("featured_image")}

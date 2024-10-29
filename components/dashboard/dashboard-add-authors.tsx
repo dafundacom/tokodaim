@@ -39,9 +39,7 @@ interface FormValues {
   name: string
 }
 
-const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
-  props,
-) => {
+const DashboardAddAuthors: React.FC<DashboardAddAuthorsProps> = (props) => {
   const { authors, addAuthors, selectedAuthors, addSelectedAuthors } = props
 
   const [searchQuery, setSearchQuery] = React.useState<string>("")
@@ -49,9 +47,12 @@ const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
   const t = useI18n()
   const ts = useScopedI18n("user")
 
-  const { data: searchResults } = api.user.search.useQuery(searchQuery, {
-    enabled: !!searchQuery,
-  })
+  const { data: searchResults } = api.user.search.useQuery(
+    { searchQuery: searchQuery, limit: 10 },
+    {
+      enabled: !!searchQuery,
+    },
+  )
 
   const form = useForm<FormValues>({ mode: "all", reValidateMode: "onChange" })
 
@@ -74,7 +75,7 @@ const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
       setSearchQuery(values.name)
       if (searchResults) {
         const searchResult = searchResults?.find(
-          (topic) => topic.name === values.name,
+          (author) => author.name === values.name,
         )
         if (searchResult) {
           if (
@@ -133,15 +134,15 @@ const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
   }
 
   return (
-    <div className="my-2 flex max-w-xl flex-col space-y-2">
+    <div className="space-y-2">
       <FormLabel>{t("authors")}</FormLabel>
-      <div className="rounded-md border border-muted/30 bg-muted/100">
-        <div className="flex max-w-[300px] flex-row flex-wrap items-center justify-start gap-2 p-2">
+      <div className="rounded-md border bg-muted/100">
+        <div className="flex w-full flex-row flex-wrap items-center justify-start gap-2 p-2">
           {selectedAuthors.length > 0 &&
             selectedAuthors.map((author) => {
               return (
                 <div
-                  className="flex items-center gap-2 bg-muted/20 px-2 py-1 text-[14px] text-foreground"
+                  className="flex items-center gap-2 rounded-full bg-background px-3 py-1 text-[14px] text-foreground"
                   key={author.id}
                 >
                   <span>{author.name}</span>
@@ -162,7 +163,7 @@ const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
             {...form.register("name", {
               required: selectedAuthors.length === 0 && ts("author_required"),
             })}
-            className="h-auto w-full min-w-[50px] max-w-full shrink grow basis-0 border-none !bg-transparent p-0 focus:border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="h-auto min-h-6 w-full min-w-[50px] shrink grow basis-0 border-none !bg-transparent px-2 py-0 focus:border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             name="name"
             id="searchAuthor"
             value={searchQuery}
@@ -173,7 +174,7 @@ const DashboardAddAuthors: React.FunctionComponent<DashboardAddAuthorsProps> = (
           <FormMessage />
         </div>
         {searchResults && searchResults.length > 0 && (
-          <ul className="border-t border-muted/30">
+          <ul className="border-t">
             {searchResults.map((searchAuthor) => {
               const authorsData = {
                 id: searchAuthor.id,

@@ -10,7 +10,6 @@ import {
 import { ARTICLE_VISIBILITY } from "@/lib/validation/article"
 import { articleComments } from "./article-comment"
 import { languageEnum } from "./language"
-import { medias } from "./media"
 import { statusEnum } from "./status"
 import { topics } from "./topic"
 import { users } from "./user"
@@ -40,9 +39,7 @@ export const articles = pgTable("articles", {
   articleTranslationId: text("article_translation_id")
     .notNull()
     .references(() => articleTranslations.id),
-  featuredImageId: text("featured_image_id")
-    .notNull()
-    .references(() => medias.id),
+  featuredImage: text("featured_image").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
@@ -51,10 +48,6 @@ export const articlesRelations = relations(articles, ({ one, many }) => ({
   articleTranslation: one(articleTranslations, {
     fields: [articles.articleTranslationId],
     references: [articleTranslations.id],
-  }),
-  featuredImage: one(medias, {
-    fields: [articles.featuredImageId],
-    references: [medias.id],
   }),
   topics: many(articleTopics),
   authors: many(articleAuthors),

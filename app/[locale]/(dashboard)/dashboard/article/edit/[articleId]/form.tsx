@@ -1,5 +1,3 @@
-//FIX: change topic type article or all not only article type
-
 "use client"
 
 import * as React from "react"
@@ -35,10 +33,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useDisclosure } from "@/hooks/use-disclosure"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
-import type { SelectTopic } from "@/lib/db/schema/topic"
-import type { SelectUser } from "@/lib/db/schema/user"
+import type { SelectArticle, SelectTopic, SelectUser } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -65,6 +60,7 @@ interface EditArticleFormProps {
     | "title"
     | "excerpt"
     | "content"
+    | "featuredImage"
     | "language"
     | "slug"
     | "metaTitle"
@@ -72,16 +68,13 @@ interface EditArticleFormProps {
     | "status"
     | "articleTranslationId"
   > & {
-    featuredImage: Pick<SelectMedia, "id" | "url">
     authors: Pick<SelectUser, "id" | "name">[]
     editors: Pick<SelectUser, "id" | "name">[]
     topics: Pick<SelectTopic, "id" | "title">[]
   }
 }
 
-const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
-  props,
-) => {
+const EditArticleForm: React.FC<EditArticleFormProps> = (props) => {
   const { article } = props
 
   const [loading, setLoading] = React.useState<boolean>(false)
@@ -110,10 +103,8 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
         })
       : [],
   )
-  const [selectedFeaturedImageId, setSelectedFeaturedImageId] =
-    React.useState<string>(article ? article.featuredImage.id : "")
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
-    React.useState<string>(article ? article.featuredImage.url : "")
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
+    React.useState<string>(article ? article.featuredImage : "")
   const [selectedTopics, setSelectedTopics] = React.useState<
     { id: string; title: string }[]
   >(
@@ -153,7 +144,7 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
       setClearContent((prev) => !prev)
       form.reset()
       setSelectedTopics([])
-      setSelectedFeaturedImageUrl("")
+      setSelectedFeaturedImage("")
       toast({ variant: "success", description: ts("update_success") })
       router.push("/dashboard/article")
     },
@@ -171,6 +162,11 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
             })
           }
         }
+      } else if (error?.message) {
+        toast({
+          variant: "danger",
+          description: error.message,
+        })
       } else {
         toast({
           variant: "danger",
@@ -207,7 +203,7 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
     setLoading(true)
     const mergedValues = {
       ...values,
-      featuredImageId: selectedFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
       authors: authors,
       editors: editors,
     }
@@ -215,19 +211,14 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectedFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectedFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -404,7 +395,7 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
                         )}
                       />
                       {valueLanguage && (
-                        <div className="my-2 max-w-xl">
+                        <div className="my-2">
                           <DashboardAddTopics
                             mode="edit"
                             fieldName="topics"
@@ -414,11 +405,10 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
                             addTopics={setTopics}
                             selectedTopics={selectedTopics}
                             addSelectedTopics={setSelectedTopics}
-                            topicType="article"
                           />
                         </div>
                       )}
-                      {selectedFeaturedImageUrl ? (
+                      {selectedFeaturedImage ? (
                         <div className="relative overflow-hidden rounded-[18px]">
                           <DeleteMediaButton
                             description="Featured Image"
@@ -431,7 +421,7 @@ const EditArticleForm: React.FunctionComponent<EditArticleFormProps> = (
                           >
                             <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                               <Image
-                                src={selectedFeaturedImageUrl}
+                                src={selectedFeaturedImage}
                                 className="rounded-lg object-cover"
                                 fill
                                 alt={t("featured_image")}

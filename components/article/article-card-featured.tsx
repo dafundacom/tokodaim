@@ -1,21 +1,18 @@
+// TODO: add falback image
+
 import * as React from "react"
 import NextLink from "next/link"
 
 import Image from "@/components/image"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
+import type { SelectArticle } from "@/lib/db/schema"
 import { cn } from "@/lib/utils"
 
 export interface ArticleCardFeaturedProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  article: Pick<SelectArticle, "title" | "slug"> & {
-    featuredImage?: Pick<SelectMedia, "url">
-  }
+  article: Pick<SelectArticle, "title" | "featuredImage" | "slug">
 }
 
-const ArticleCardFeatured: React.FunctionComponent<ArticleCardFeaturedProps> = (
-  props,
-) => {
+const ArticleCardFeatured: React.FC<ArticleCardFeaturedProps> = (props) => {
   const { article, className } = props
 
   const { title, featuredImage, slug } = article
@@ -24,7 +21,7 @@ const ArticleCardFeatured: React.FunctionComponent<ArticleCardFeaturedProps> = (
     <>
       <article
         className={cn(
-          "whitspace-normal relative flex h-auto min-h-[280px] w-full flex-col items-center justify-end overflow-hidden rounded-xl lg:min-h-full",
+          "whitspace-normal lg:min-h-fullll relative flex h-auto min-h-[280px] w-full flex-col items-center justify-end overflow-hidden rounded-xl",
           className,
         )}
       >
@@ -35,7 +32,7 @@ const ArticleCardFeatured: React.FunctionComponent<ArticleCardFeaturedProps> = (
             href={`/article/${slug}`}
           >
             <Image
-              src={featuredImage?.url!}
+              src={featuredImage}
               sizes="(max-width: 768px) 100px, (max-width: 1200px) 200px, 300px"
               className="aspect-video object-cover"
               alt={title}

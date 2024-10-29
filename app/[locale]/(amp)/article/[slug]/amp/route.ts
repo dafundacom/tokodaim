@@ -199,11 +199,6 @@ darkButton.addEventListener('click', () => {
         ></script>
         <script
           async
-          custom-element="amp-ad"
-          src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"
-        ></script>
-        <script
-          async
           custom-element="amp-twitter"
           src="https://cdn.ampproject.org/v0/amp-twitter-0.1.js"
         ></script>
@@ -250,8 +245,8 @@ darkButton.addEventListener('click', () => {
           name="twitter:url"
           content="${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}"
         />
-        <meta property="og:image" content="${article.featuredImage.url}" />
-        <meta name="twitter:image" content="${article.featuredImage.url}" />
+        <meta property="og:image" content="${article.featuredImage}" />
+        <meta name="twitter:image" content="${article.featuredImage}" />
         <meta name="twitter:label1" content="Written by" />
         <meta name="twitter:data1" content="${article.authors[0].name!}" />
         ${article.topics
@@ -283,7 +278,7 @@ darkButton.addEventListener('click', () => {
           rel="preload"
           fetchpriority="high"
           as="image"
-          href="${article.featuredImage.url}"
+          href="${article.featuredImage}"
         />
         <link rel="dns-prefetch" href="${env.NEXT_PUBLIC_SITE_URL}" />
         <link rel="dns-prefetch" href="https://cdn.ampproject.org" />
@@ -346,7 +341,7 @@ darkButton.addEventListener('click', () => {
                 <amp-img
                   noloading
                   data-hero
-                  src="${article.featuredImage.url}"
+                  src="${article.featuredImage}"
                   width="600"
                   height="340"
                   layout="responsive"

@@ -7,7 +7,6 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { medias } from "@/lib/db/schema/media"
 import { promos, promoTranslations } from "@/lib/db/schema/promo"
 import { cuid, trimText } from "@/lib/utils"
 import { generateUniquePromoSlug } from "@/lib/utils/slug"
@@ -33,14 +32,7 @@ export const promoRouter = createTRPCRouter({
                   id: true,
                   title: true,
                   language: true,
-                },
-                with: {
-                  featuredImage: {
-                    columns: {
-                      id: true,
-                      url: true,
-                    },
-                  },
+                  featuredImage: true,
                 },
               },
             },
@@ -72,22 +64,11 @@ export const promoRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        const promoData = await ctx.db
-          .select()
-          .from(promos)
-          .leftJoin(medias, eq(medias.id, promos.featuredImageId))
-          .where(eq(promos.id, input))
-          .limit(1)
+        const data = await ctx.db.query.promos.findFirst({
+          where: (promos, { eq }) => eq(promos.id, input),
+        })
 
-        const data = promoData.map((item) => ({
-          ...item.promos,
-          featuredImage: {
-            id: item?.medias?.id!,
-            url: item?.medias?.url!,
-          },
-        }))
-
-        return data[0]
+        return data
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error
@@ -101,22 +82,11 @@ export const promoRouter = createTRPCRouter({
     }),
   bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
-      const promoData = await ctx.db
-        .select()
-        .from(promos)
-        .leftJoin(medias, eq(medias.id, promos.featuredImageId))
-        .where(eq(promos.slug, input))
-        .limit(1)
+      const data = await ctx.db.query.promos.findFirst({
+        where: (promos, { eq }) => eq(promos.slug, input),
+      })
 
-      const data = promoData.map((item) => ({
-        ...item.promos,
-        featuredImage: {
-          id: item?.medias?.id!,
-          url: item?.medias?.url!,
-        },
-      }))
-
-      return data[0]
+      return data
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error
@@ -147,9 +117,6 @@ export const promoRouter = createTRPCRouter({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         return data
@@ -188,9 +155,6 @@ export const promoRouter = createTRPCRouter({
             ),
           limit: limit + 1,
           orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         let nextCursor: Date | undefined = undefined
@@ -244,9 +208,6 @@ export const promoRouter = createTRPCRouter({
             ),
           limit: limit + 1,
           orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         const data = promos.filter((promo) => promo.brand === input.brand)
@@ -292,12 +253,6 @@ export const promoRouter = createTRPCRouter({
           offset: (input.page - 1) * input.perPage,
           orderBy: (promos, { desc }) => [desc(promos.updatedAt)],
           with: {
-            featuredImage: {
-              columns: {
-                id: true,
-                url: true,
-              },
-            },
             promoTranslation: {
               columns: {
                 id: true,
@@ -369,9 +324,6 @@ export const promoRouter = createTRPCRouter({
   featured: publicProcedure.query(async ({ ctx }) => {
     const data = await ctx.db.query.promos.findMany({
       where: (promos, { eq }) => eq(promos.featured, true),
-      with: {
-        featuredImage: true,
-      },
       limit: 10,
     })
 
@@ -452,9 +404,6 @@ export const promoRouter = createTRPCRouter({
                 ilike(promos.slug, `%${input.searchQuery}%`),
               ),
             ),
-          with: {
-            featuredImage: true,
-          },
           limit: 10,
         })
 
@@ -485,7 +434,6 @@ export const promoRouter = createTRPCRouter({
               ),
             ),
           with: {
-            featuredImage: true,
             promoTranslation: {
               with: {
                 promos: true,
@@ -542,13 +490,7 @@ export const promoRouter = createTRPCRouter({
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
             promoTranslationId: promoTranslation[0].id,
-            language: input.language,
-            title: input.title,
-            content: input.content,
-            status: input.status,
-            featuredImageId: input.featuredImageId,
-            brand: input.brand,
-            featured: input.featured,
+            ...input,
           })
           .returning()
 
@@ -639,14 +581,7 @@ export const promoRouter = createTRPCRouter({
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            language: input.language,
-            title: input.title,
-            content: input.content,
-            status: input.status,
-            featuredImageId: input.featuredImageId,
-            brand: input.brand,
-            featured: input.featured,
-            promoTranslationId: input.promoTranslationId,
+            ...input,
           })
           .returning()
 

@@ -35,5 +35,5 @@ export async function generateMetadata(props: {
 export default async function CreateArticlesDashboard() {
   const { user } = await getCurrentSession()
 
-  return <CreateArticleForm user={user} />
+  return <CreateArticleForm user={user!} />
 }

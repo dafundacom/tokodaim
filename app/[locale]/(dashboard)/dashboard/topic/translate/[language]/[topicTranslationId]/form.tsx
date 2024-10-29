@@ -23,7 +23,7 @@ import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
 import type { StatusType } from "@/lib/validation/status"
-import type { TopicType, TopicVisibility } from "@/lib/validation/topic"
+import type { TopicVisibility } from "@/lib/validation/topic"
 
 interface FormValues {
   id: string
@@ -33,7 +33,6 @@ interface FormValues {
   metaDescription?: string
   language: LanguageType
   visibility: TopicVisibility
-  type: TopicType
   status: StatusType
   topicTranslationId: string
 }
@@ -42,17 +41,14 @@ interface TranslateTopicFormProps {
   topicTranslationId: string
   language: LanguageType
   visibility?: TopicVisibility
-  type?: TopicType
 }
 
 export default function TranslateTopicForm(props: TranslateTopicFormProps) {
-  const { topicTranslationId, language, visibility, type } = props
+  const { topicTranslationId, language, visibility } = props
 
   const [loading, setLoading] = React.useState<boolean>(false)
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-  const [selectFeaturedImageId, setSelectFeaturedImageId] =
-    React.useState<string>("")
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
     React.useState<string>("")
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
 
@@ -82,6 +78,11 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
             })
           }
         }
+      } else if (error?.message) {
+        toast({
+          variant: "danger",
+          description: error.message,
+        })
       } else {
         toast({
           variant: "danger",
@@ -95,7 +96,6 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
     defaultValues: {
       language: language,
       visibility: visibility,
-      type: type,
       topicTranslationId: topicTranslationId,
     },
   })
@@ -103,28 +103,23 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
   const onSubmit = (values: FormValues) => {
     const mergedValues = {
       ...values,
-      featuredImageId: selectFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
     }
 
     setLoading(true)
-    translateTopic(selectFeaturedImageId ? mergedValues : values)
+    translateTopic(selectedFeaturedImage ? mergedValues : values)
     setLoading(false)
     router.push("/dashboard/topic")
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -139,7 +134,8 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
         }}
         className="mx-0 space-y-4 lg:mx-8 lg:p-5"
       >
-        <div className="flex flex-col lg:flex-row lg:space-x-4 lg:border lg:border-border">
+        <h1 className="pb-2 lg:pb-5">{ts("translate")}</h1>
+        <div className="flex flex-col lg:flex-row lg:space-x-4">
           <div className="w-full lg:w-6/12 lg:space-y-4">
             <FormField
               control={form.control}
@@ -176,7 +172,7 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
           </div>
           <div className="w-full lg:w-6/12 lg:space-y-4">
             <FormLabel>{t("featured_image")}</FormLabel>
-            {selectedFeaturedImageUrl ? (
+            {selectedFeaturedImage ? (
               <div className="relative overflow-hidden rounded-[18px]">
                 <DeleteMediaButton
                   description="Featured Image"
@@ -189,7 +185,7 @@ export default function TranslateTopicForm(props: TranslateTopicFormProps) {
                 >
                   <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                     <Image
-                      src={selectedFeaturedImageUrl}
+                      src={selectedFeaturedImage}
                       className="rounded-lg object-cover"
                       fill
                       alt={t("featured_image")}

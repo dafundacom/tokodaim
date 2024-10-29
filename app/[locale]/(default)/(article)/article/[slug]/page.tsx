@@ -65,7 +65,7 @@ export async function generateMetadata(props: {
       description: article?.metaDescription ?? article?.excerpt,
       images: [
         {
-          url: article?.featuredImage.url!,
+          url: article?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -78,7 +78,7 @@ export async function generateMetadata(props: {
       card: "summary_large_image",
       images: [
         {
-          url: article?.featuredImage.url!,
+          url: article?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -88,7 +88,7 @@ export async function generateMetadata(props: {
       other: [
         {
           rel: "amphtml",
-          url: `${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}/amp`,
+          url: `${env.NEXT_PUBLIC_SITE_URL}/article/${article?.slug}/amp`,
         },
       ],
     },
@@ -166,7 +166,7 @@ export default async function ArticleSlugPage(props: ArticleSlugPageProps) {
         useAppDir={true}
         url={`${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`}
         title={article.metaTitle ?? article.title}
-        images={[article.featuredImage.url]}
+        images={[article.featuredImage]}
         datePublished={JSON.stringify(article.createdAt)}
         dateModified={JSON.stringify(article.createdAt)}
         authorName={[
@@ -245,7 +245,7 @@ export default async function ArticleSlugPage(props: ArticleSlugPageProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw"
             priority
             placeholder="empty"
-            src={article.featuredImage.url}
+            src={article.featuredImage}
             alt={article.title}
             className="!relative !h-auto !w-auto max-w-full rounded-xl object-cover"
           />

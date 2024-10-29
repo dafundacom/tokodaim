@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
@@ -22,7 +21,6 @@ interface PromosProps extends SelectPromo {
   promoTranslation: {
     promos: Partial<SelectPromo>[]
   }
-  featuredImage: Partial<SelectMedia>
 }
 
 interface PromoTableProps {

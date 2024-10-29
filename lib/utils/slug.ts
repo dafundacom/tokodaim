@@ -1,9 +1,11 @@
 /* eslint-disable no-useless-escape */
 
+import { transliterate as tr } from "transliteration"
+
 import { db } from "@/lib/db"
 
 export function slugify(text: string) {
-  return text
+  return tr(text)
     .toString() // Cast to string (optional)
     .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
     .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
@@ -17,7 +19,7 @@ export function slugify(text: string) {
 }
 
 export function slugifyUsername(text: string) {
-  return text
+  return tr(text)
     .toString() // Cast to string (optional)
     .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
     .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
@@ -32,14 +34,14 @@ export function slugifyUsername(text: string) {
 }
 
 export function slugifyFile(text: string) {
-  return text
+  return tr(text)
     .toString() // Cast to string (optional)
     .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
     .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
     .toLowerCase() // Convert the string to lowercase letters
     .trim() // Remove whitespace from both sides of a string (optional)
     .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w\-.]+/g, "") // Remove all non-word chars execpt dots
+    .replace(/[^\w\-.]+/g, "") // Remove all non-word chars except dots
     .replace(/\_/g, "-") // Replace _ with -
     .replace(/\-\-+/g, "-") // Replace multiple - with single -
     .replace(/\-$/g, "") // Remove trailing -

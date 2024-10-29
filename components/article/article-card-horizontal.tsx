@@ -1,19 +1,16 @@
+// TODO: add falback image
+
 import * as React from "react"
 import NextLink from "next/link"
 
 import Image from "@/components/image"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
+import type { SelectArticle } from "@/lib/db/schema"
 
 export interface ArticleCardHorizontalProps {
-  article: Pick<SelectArticle, "title" | "slug" | "excerpt"> & {
-    featuredImage: Pick<SelectMedia, "url">
-  }
+  article: Pick<SelectArticle, "title" | "featuredImage" | "slug" | "excerpt">
 }
 
-const ArticleCardHorizontal: React.FunctionComponent<
-  ArticleCardHorizontalProps
-> = (props) => {
+const ArticleCardHorizontal: React.FC<ArticleCardHorizontalProps> = (props) => {
   const { article } = props
   const { featuredImage, slug, excerpt, title } = article
 
@@ -30,7 +27,7 @@ const ArticleCardHorizontal: React.FunctionComponent<
               className="rounded-lg object-cover"
               fill
               sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
-              src={featuredImage.url}
+              src={featuredImage}
               alt={title}
             />
           </div>

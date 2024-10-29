@@ -113,6 +113,7 @@
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
+    "transliteration": "^2.3.5",
     "tripay-sdk": "^0.1.4",
     "zod": "^3.23.8"
   },

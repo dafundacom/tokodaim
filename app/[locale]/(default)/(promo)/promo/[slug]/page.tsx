@@ -45,7 +45,7 @@ export async function generateMetadata(props: {
       description: promo?.metaDescription ?? promo?.excerpt,
       images: [
         {
-          url: promo?.featuredImage.url!,
+          url: promo?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -58,17 +58,9 @@ export async function generateMetadata(props: {
       card: "summary_large_image",
       images: [
         {
-          url: promo?.featuredImage.url!,
+          url: promo?.featuredImage!,
           width: 1280,
           height: 720,
-        },
-      ],
-    },
-    icons: {
-      other: [
-        {
-          rel: "amphtml",
-          url: `${env.NEXT_PUBLIC_SITE_URL}/promo/${promo.slug}/amp`,
         },
       ],
     },
@@ -125,7 +117,7 @@ export default async function PromoSlugPage(props: PromoSlugPageProps) {
         useAppDir={true}
         url={`${env.NEXT_PUBLIC_SITE_URL}/promo/${promo.slug}`}
         title={promo.metaTitle ?? promo.title}
-        images={[promo.featuredImage.url]}
+        images={[promo?.featuredImage!]}
         datePublished={JSON.stringify(promo.createdAt)}
         dateModified={JSON.stringify(promo.createdAt)}
         publisherName={env.NEXT_PUBLIC_SITE_TITLE}
@@ -184,7 +176,7 @@ export default async function PromoSlugPage(props: PromoSlugPageProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw"
             priority
             placeholder="empty"
-            src={promo.featuredImage.url}
+            src={promo?.featuredImage!}
             alt={promo.title}
             className="!relative !h-auto !w-auto max-w-full rounded-xl object-cover"
           />

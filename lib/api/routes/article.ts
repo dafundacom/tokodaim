@@ -14,10 +14,9 @@ import {
   articles,
   articleTopics,
   articleTranslations,
-} from "@/lib/db/schema/article"
-import { medias } from "@/lib/db/schema/media"
-import { topics } from "@/lib/db/schema/topic"
-import { users } from "@/lib/db/schema/user"
+  topics,
+  users,
+} from "@/lib/db/schema"
 import { cuid, trimText } from "@/lib/utils"
 import { generateUniqueArticleSlug } from "@/lib/utils/slug"
 import {
@@ -37,21 +36,7 @@ export const articleRouter = createTRPCRouter({
             where: (articleTranslations, { eq }) =>
               eq(articleTranslations.id, input),
             with: {
-              articles: {
-                columns: {
-                  id: true,
-                  title: true,
-                  language: true,
-                },
-                with: {
-                  featuredImage: {
-                    columns: {
-                      id: true,
-                      url: true,
-                    },
-                  },
-                },
-              },
+              articles: true,
             },
           })
 
@@ -101,50 +86,46 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byId: adminProtectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        const articleData = await ctx.db
-          .select()
-          .from(articles)
-          .leftJoin(medias, eq(medias.id, articles.featuredImageId))
-          .where(eq(articles.id, input))
-          .limit(1)
+        const articleData = await ctx.db.query.articles.findFirst({
+          where: (article, { eq }) => eq(article.id, input),
+        })
 
-        const articleTopicsData = await ctx.db
-          .select({ id: topics.id, title: topics.title })
-          .from(articleTopics)
-          .leftJoin(articles, eq(articleTopics.articleId, articles.id))
-          .leftJoin(topics, eq(articleTopics.topicId, topics.id))
-          .where(eq(articles.id, input))
+        if (articleData) {
+          const articleTopicsData = await ctx.db
+            .select({ id: topics.id, title: topics.title })
+            .from(articleTopics)
+            .leftJoin(articles, eq(articleTopics.articleId, articles.id))
+            .leftJoin(topics, eq(articleTopics.topicId, topics.id))
+            .where(eq(articles.id, input))
 
-        const articleAuthorsData = await ctx.db
-          .select({ id: users.id, name: users.name })
-          .from(articleAuthors)
-          .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
-          .leftJoin(users, eq(articleAuthors.userId, users.id))
-          .where(eq(articles.id, input))
+          const articleAuthorsData = await ctx.db
+            .select({ id: users.id, name: users.name })
+            .from(articleAuthors)
+            .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
+            .leftJoin(users, eq(articleAuthors.userId, users.id))
+            .where(eq(articles.id, input))
 
-        const articleEditorsData = await ctx.db
-          .select({ id: users.id, name: users.name })
-          .from(articleEditors)
-          .leftJoin(articles, eq(articleEditors.articleId, articles.id))
-          .leftJoin(users, eq(articleEditors.userId, users.id))
-          .where(eq(articles.id, input))
+          const articleEditorsData = await ctx.db
+            .select({ id: users.id, name: users.name })
+            .from(articleEditors)
+            .leftJoin(articles, eq(articleEditors.articleId, articles.id))
+            .leftJoin(users, eq(articleEditors.userId, users.id))
+            .where(eq(articles.id, input))
 
-        const data = articleData.map((item) => ({
-          ...item.articles,
-          featuredImage: {
-            id: item?.medias?.id!,
-            url: item?.medias?.url!,
-          },
-          topics: articleTopicsData,
-          authors: articleAuthorsData,
-          editors: articleEditorsData,
-        }))
+          const data = {
+            ...articleData,
+            topics: articleTopicsData,
+            authors: articleAuthorsData,
+            editors: articleEditorsData,
+          }
 
-        return data[0]
+          return data
+        }
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error
@@ -156,48 +137,44 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   bySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
-      const articleData = await ctx.db
-        .select()
-        .from(articles)
-        .leftJoin(medias, eq(medias.id, articles.featuredImageId))
-        .where(eq(articles.slug, input))
-        .limit(1)
+      const articleData = await ctx.db.query.articles.findFirst({
+        where: (articles, { eq }) => eq(articles.slug, input),
+      })
 
-      const articleTopicsData = await ctx.db
-        .select({ id: topics.id, title: topics.title, slug: topics.slug })
-        .from(articleTopics)
-        .leftJoin(articles, eq(articleTopics.articleId, articles.id))
-        .leftJoin(topics, eq(articleTopics.topicId, topics.id))
-        .where(eq(articles.id, articleData[0].articles.id))
+      if (articleData) {
+        const articleTopicsData = await ctx.db
+          .select({ id: topics.id, title: topics.title, slug: topics.slug })
+          .from(articleTopics)
+          .leftJoin(articles, eq(articleTopics.articleId, articles.id))
+          .leftJoin(topics, eq(articleTopics.topicId, topics.id))
+          .where(eq(articles.id, articleData.id))
 
-      const articleAuthorsData = await ctx.db
-        .select({ id: users.id, name: users.name, username: users.username })
-        .from(articleAuthors)
-        .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
-        .leftJoin(users, eq(articleAuthors.userId, users.id))
-        .where(eq(articles.id, articleData[0].articles.id))
+        const articleAuthorsData = await ctx.db
+          .select({ id: users.id, name: users.name, username: users.username })
+          .from(articleAuthors)
+          .leftJoin(articles, eq(articleAuthors.articleId, articles.id))
+          .leftJoin(users, eq(articleAuthors.userId, users.id))
+          .where(eq(articles.id, articleData.id))
 
-      const articleEditorsData = await ctx.db
-        .select({ id: users.id, name: users.name })
-        .from(articleEditors)
-        .leftJoin(articles, eq(articleEditors.articleId, articles.id))
-        .leftJoin(users, eq(articleEditors.userId, users.id))
-        .where(eq(articles.id, articleData[0].articles.id))
+        const articleEditorsData = await ctx.db
+          .select({ id: users.id, name: users.name })
+          .from(articleEditors)
+          .leftJoin(articles, eq(articleEditors.articleId, articles.id))
+          .leftJoin(users, eq(articleEditors.userId, users.id))
+          .where(eq(articles.id, articleData.id))
 
-      const data = articleData.map((item) => ({
-        ...item.articles,
-        featuredImage: {
-          id: item?.medias?.id!,
-          url: item?.medias?.url!,
-        },
-        topics: articleTopicsData,
-        authors: articleAuthorsData,
-        editors: articleEditorsData,
-      }))
+        const data = {
+          ...articleData,
+          topics: articleTopicsData,
+          authors: articleAuthorsData,
+          editors: articleEditorsData,
+        }
 
-      return data[0]
+        return data
+      }
     } catch (error) {
       if (error instanceof TRPCError) {
         throw error
@@ -209,6 +186,7 @@ export const articleRouter = createTRPCRouter({
       }
     }
   }),
+
   byLanguage: publicProcedure
     .input(
       z.object({
@@ -224,19 +202,10 @@ export const articleRouter = createTRPCRouter({
             and(
               eq(articles.language, input.language),
               eq(articles.status, "published"),
-              // not(
-              //   eq(
-              //     articleTopics.articleId,
-              //     "de749d11-2438-4521-99a1-847f5d37b103",
-              //   ),
-              // ),
             ),
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         return data
@@ -252,18 +221,17 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byLanguageInfinite: publicProcedure
     .input(
       z.object({
         language: languageType,
-        limit: z.number().min(1).max(100).nullable(),
+        limit: z.number().optional().default(50),
         cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
       try {
-        const limit = input.limit ?? 50
-
         const data = await ctx.db.query.articles.findMany({
           where: (articles, { eq, and, lt }) =>
             and(
@@ -273,16 +241,13 @@ export const articleRouter = createTRPCRouter({
                 ? lt(articles.updatedAt, new Date(input.cursor))
                 : undefined,
             ),
-          limit: limit + 1,
+          limit: input.limit + 1,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
-          with: {
-            featuredImage: true,
-          },
         })
 
         let nextCursor: Date | undefined = undefined
 
-        if (data.length > limit) {
+        if (data.length > input.limit) {
           const nextItem = data.pop()
           if (nextItem?.updatedAt) {
             nextCursor = nextItem.updatedAt
@@ -305,6 +270,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byTopicId: publicProcedure
     .input(
       z.object({
@@ -326,7 +292,6 @@ export const articleRouter = createTRPCRouter({
           offset: (input.page - 1) * input.perPage,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: true,
             topics: true,
           },
         })
@@ -348,19 +313,18 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byTopicIdInfinite: publicProcedure
     .input(
       z.object({
         topicId: z.string(),
         language: languageType,
-        limit: z.number().min(1).max(100).nullable(),
+        limit: z.number().optional().default(50),
         cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
       try {
-        const limit = input.limit ?? 50
-
         const articles = await ctx.db.query.articles.findMany({
           where: (articles, { eq, and, lt }) =>
             and(
@@ -370,10 +334,9 @@ export const articleRouter = createTRPCRouter({
                 ? lt(articles.updatedAt, new Date(input.cursor))
                 : undefined,
             ),
-          limit: limit + 1,
+          limit: input.limit + 1,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: true,
             topics: true,
           },
         })
@@ -384,7 +347,7 @@ export const articleRouter = createTRPCRouter({
 
         let nextCursor: Date | undefined = undefined
 
-        if (data.length > limit) {
+        if (data.length > input.limit) {
           const nextItem = data.pop()
           if (nextItem?.updatedAt) {
             nextCursor = nextItem.updatedAt
@@ -407,6 +370,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byAuthorId: publicProcedure
     .input(
       z.object({
@@ -428,7 +392,6 @@ export const articleRouter = createTRPCRouter({
           offset: (input.page - 1) * input.perPage,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: true,
             authors: true,
           },
         })
@@ -450,19 +413,18 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   byAuthorIdInfinite: publicProcedure
     .input(
       z.object({
         authorId: z.string(),
         language: languageType,
-        limit: z.number().min(1).max(100).nullable(),
+        limit: z.number().optional().default(50),
         cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
       try {
-        const limit = input.limit ?? 50
-
         const articles = await ctx.db.query.articles.findMany({
           where: (articles, { eq, and, lt }) =>
             and(
@@ -472,10 +434,9 @@ export const articleRouter = createTRPCRouter({
                 ? lt(articles.updatedAt, new Date(input.cursor))
                 : undefined,
             ),
-          limit: limit + 1,
+          limit: input.limit + 1,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: true,
             authors: true,
           },
         })
@@ -486,7 +447,7 @@ export const articleRouter = createTRPCRouter({
 
         let nextCursor: Date | undefined = undefined
 
-        if (data.length > limit) {
+        if (data.length > input.limit) {
           const nextItem = data.pop()
           if (nextItem?.updatedAt) {
             nextCursor = nextItem.updatedAt
@@ -509,20 +470,19 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   relatedInfinite: publicProcedure
     .input(
       z.object({
         topicId: z.string(),
         currentArticleId: z.string(),
         language: languageType,
-        limit: z.number().min(1).max(100).nullable(),
+        limit: z.number().optional().default(50),
         cursor: z.date().optional().nullable(),
       }),
     )
     .query(async ({ ctx, input }) => {
       try {
-        const limit = input.limit ?? 50
-
         const articles = await ctx.db.query.articles.findMany({
           where: (articles, { eq, and, not, lt }) =>
             and(
@@ -533,10 +493,9 @@ export const articleRouter = createTRPCRouter({
                 : undefined,
               not(eq(articles.id, input.currentArticleId)),
             ),
-          limit: limit + 1,
+          limit: input.limit + 1,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: true,
             topics: true,
           },
         })
@@ -547,7 +506,7 @@ export const articleRouter = createTRPCRouter({
 
         let nextCursor: Date | undefined = undefined
 
-        if (data.length > limit) {
+        if (data.length > input.limit) {
           const nextItem = data.pop()
           if (nextItem?.updatedAt) {
             nextCursor = nextItem.updatedAt
@@ -570,6 +529,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   dashboard: adminProtectedProcedure
     .input(
       z.object({
@@ -586,24 +546,9 @@ export const articleRouter = createTRPCRouter({
           offset: (input.page - 1) * input.perPage,
           orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
           with: {
-            featuredImage: {
-              columns: {
-                id: true,
-                url: true,
-              },
-            },
             articleTranslation: {
-              columns: {
-                id: true,
-              },
               with: {
-                articles: {
-                  columns: {
-                    id: true,
-                    title: true,
-                    language: true,
-                  },
-                },
+                articles: true,
               },
             },
           },
@@ -622,6 +567,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   sitemap: publicProcedure
     .input(
       z.object({
@@ -660,6 +606,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   count: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db
@@ -680,6 +627,7 @@ export const articleRouter = createTRPCRouter({
       }
     }
   }),
+
   countDashboard: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(articles)
@@ -697,6 +645,7 @@ export const articleRouter = createTRPCRouter({
       }
     }
   }),
+
   countByLanguage: publicProcedure
     .input(languageType)
     .query(async ({ ctx, input }) => {
@@ -721,8 +670,38 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
+  countByLanguageDashboard: publicProcedure
+    .input(languageType)
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db
+          .select({ values: count() })
+          .from(articles)
+          .where(eq(articles.language, input))
+
+        return data[0].values
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
   search: publicProcedure
-    .input(z.object({ language: languageType, searchQuery: z.string() }))
+    .input(
+      z.object({
+        language: languageType,
+        searchQuery: z.string(),
+        limit: z.number().optional().default(10),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.articles.findMany({
@@ -735,10 +714,7 @@ export const articleRouter = createTRPCRouter({
                 ilike(articles.slug, `%${input.searchQuery}%`),
               ),
             ),
-          with: {
-            featuredImage: true,
-          },
-          limit: 10,
+          limit: input.limit,
         })
 
         return data
@@ -754,28 +730,30 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   searchDashboard: publicProcedure
-    .input(z.object({ language: languageType, searchQuery: z.string() }))
+    .input(
+      z.object({
+        searchQuery: z.string(),
+        limit: z.number().optional().default(10),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.query.articles.findMany({
-          where: (articles, { eq, and, or, ilike }) =>
-            and(
-              eq(articles.language, input.language),
-              or(
-                ilike(articles.title, `%${input.searchQuery}%`),
-                ilike(articles.slug, `%${input.searchQuery}%`),
-              ),
+          where: (articles, { or, ilike }) =>
+            or(
+              ilike(articles.title, `%${input.searchQuery}%`),
+              ilike(articles.slug, `%${input.searchQuery}%`),
             ),
           with: {
-            featuredImage: true,
             articleTranslation: {
               with: {
                 articles: true,
               },
             },
           },
-          limit: 10,
+          limit: input.limit,
         })
 
         return data
@@ -791,11 +769,13 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   create: adminProtectedProcedure
     .input(createArticleSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = await generateUniqueArticleSlug(input.title)
+
         const generatedExcerpt = !input.excerpt
           ? trimText(input.content, 160)
           : input.excerpt
@@ -819,16 +799,12 @@ export const articleRouter = createTRPCRouter({
         const data = await ctx.db
           .insert(articles)
           .values({
+            ...input,
             id: articleId,
-            language: input.language,
-            title: input.title,
             slug: slug,
-            content: input.content,
-            status: input.status,
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            featuredImageId: input.featuredImageId,
             articleTranslationId: articleTranslation[0].id,
           })
           .returning()
@@ -867,6 +843,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   update: adminProtectedProcedure
     .input(updateArticleSchema)
     .mutation(async ({ ctx, input }) => {
@@ -926,6 +903,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   updateWithoutChangeUpdatedDate: adminProtectedProcedure
     .input(updateArticleSchema)
     .mutation(async ({ ctx, input }) => {
@@ -933,16 +911,7 @@ export const articleRouter = createTRPCRouter({
         const data = await ctx.db
           .update(articles)
           .set({
-            id: input.id,
-            language: input.language,
-            title: input.title,
-            slug: input.slug,
-            content: input.content,
-            status: input.status,
-            excerpt: input.excerpt,
-            metaTitle: input.metaTitle,
-            metaDescription: input.metaDescription,
-            featuredImageId: input.featuredImageId,
+            ...input,
           })
           .where(eq(articles.id, input.id))
           .returning()
@@ -993,6 +962,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   translate: adminProtectedProcedure
     .input(translateArticleSchema)
     .mutation(async ({ ctx, input }) => {
@@ -1012,16 +982,11 @@ export const articleRouter = createTRPCRouter({
           .insert(articles)
           .values({
             id: cuid(),
-            language: input.language,
-            title: input.title,
             slug: slug,
-            content: input.content,
-            status: input.status,
             excerpt: generatedExcerpt,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
-            featuredImageId: input.featuredImageId,
-            articleTranslationId: input.articleTranslationId,
+            ...input,
           })
           .returning()
 
@@ -1059,6 +1024,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
@@ -1138,6 +1104,7 @@ export const articleRouter = createTRPCRouter({
         }
       }
     }),
+
   deleteByAdmin: adminProtectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
