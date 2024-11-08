@@ -413,6 +413,7 @@ export default {
   share: "Share",
   show_less: "Show less",
   show_more: "Show more",
+  sku_placeholder: "Enter SKU",
   slug: "Slug",
   slug_placeholder: "Enter Slug",
   slug_required: "Slug is required",

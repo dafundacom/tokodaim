@@ -4,11 +4,21 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 
+import DashboardAddItems, {
+  type SelectedItemsProps,
+} from "@/components/dashboard/dashboard-add-items"
+import DashboardShowOptions from "@/components/dashboard/dashboard-show-options"
 import Image from "@/components/image"
 import DeleteMediaButton from "@/components/media/delete-media-button"
 import SelectMediaDialog from "@/components/media/select-media-dialog"
 import TextEditor from "@/components/text-editor/text-editor"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -27,13 +37,30 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { SelectMedia, SelectProduct } from "@/lib/db/schema"
+import type {
+  SelectDigiflazzPriceList,
+  SelectItem as SelectItemData,
+  SelectMedia,
+  SelectProduct,
+} from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 
 interface ProductProps extends SelectProduct {
+  items: Pick<
+    SelectItemData,
+    "id" | "title" | "sku" | "price" | "originalPrice"
+  >[]
   featuredImage: Pick<SelectMedia, "id" | "url">
   coverImage: Pick<SelectMedia, "id" | "url"> | null
   guideImage: Pick<SelectMedia, "id" | "url"> | null
@@ -41,6 +68,7 @@ interface ProductProps extends SelectProduct {
 
 interface EditProductFormProps {
   product: ProductProps
+  priceLists: SelectDigiflazzPriceList[]
 }
 
 interface FormValues {
@@ -58,10 +86,21 @@ interface FormValues {
 }
 
 export default function UpdateProductForm(props: EditProductFormProps) {
-  const { product } = props
+  const { product, priceLists } = props
 
   const [isPending, startTransition] = React.useTransition()
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
+  const [openDialogItem, setOpenDialogItem] = React.useState<boolean>(false)
+  const [selectedItem, setSelectedItem] = React.useState<SelectedItemsProps[]>(
+    product ? [...product.items] : [],
+  )
+  const [selectedItemId, setSelectedItemId] = React.useState<string[]>(
+    product
+      ? product.items.map((item) => {
+          return item.id
+        })
+      : [],
+  )
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [imageType, setImageType] = React.useState<
     "featuredImage" | "coverImage" | "guideImage"
@@ -69,18 +108,19 @@ export default function UpdateProductForm(props: EditProductFormProps) {
   const [selectedFeaturedImage, setSelectedFeaturedImage] = React.useState<{
     id: string
     url: string
-  } | null>(null)
+  } | null>(product.featuredImage ?? null)
   const [selectedCoverImage, setSelectedCoverImage] = React.useState<{
     id: string
     url: string
-  } | null>(null)
+  } | null>(product.coverImage ?? null)
   const [selectedGuideImage, setSelectedGuideImage] = React.useState<{
     id: string
     url: string
-  } | null>(null)
+  } | null>(product.guideImage ?? null)
 
   const t = useI18n()
   const ts = useScopedI18n("product")
+  const tsi = useScopedI18n("item")
 
   const router = useRouter()
 
@@ -130,23 +170,37 @@ export default function UpdateProductForm(props: EditProductFormProps) {
     },
   })
 
-  React.useEffect(() => {
-    setSelectedFeaturedImage(product?.featuredImage!)
-    setSelectedCoverImage(product?.coverImage!)
-    setSelectedGuideImage(product?.guideImage!)
-  }, [product?.featuredImage, product?.coverImage, product?.guideImage])
-
   const onSubmit = (values: FormValues) => {
     startTransition(() => {
       const mergedValues = {
         ...values,
         featuredImageId: selectedFeaturedImage?.id!,
+        items: selectedItemId,
         ...(selectedCoverImage && { coverImageId: selectedCoverImage.id }),
         ...(selectedGuideImage && { guideImageId: selectedGuideImage.id }),
       }
       updateProduct(mergedValues)
     })
   }
+
+  const handleUpdateItem = React.useCallback((values: SelectedItemsProps[]) => {
+    setSelectedItem((prev) => [...(prev as SelectedItemsProps[]), ...values])
+    const itemId = values.map((value) => {
+      return value.id
+    })
+    setSelectedItemId((prev) => [...prev, ...itemId])
+  }, [])
+
+  const handleDeleteItem = React.useCallback(
+    (value: SelectedItemsProps) => {
+      // TODO: remove from db too
+      const itemData = selectedItem?.filter((item) => item.id !== value.id)
+      const itemId = selectedItemId.filter((item) => item !== value.id)
+      setSelectedItem(itemData)
+      setSelectedItemId(itemId)
+    },
+    [selectedItem, selectedItemId],
+  )
 
   const handleUpdateImage = (data: { id: string; url: string }) => {
     switch (imageType) {
@@ -528,6 +582,68 @@ export default function UpdateProductForm(props: EditProductFormProps) {
           </Button>
         </form>
       </Form>
+      <div className="border-t p-4">
+        <div className="flex justify-between pb-2">
+          <h2>{t("items")}</h2>
+          <Dialog open={openDialogItem} onOpenChange={setOpenDialogItem}>
+            <DialogTrigger asChild aria-label={tsi("create")}>
+              <Button>{tsi("create")}</Button>
+            </DialogTrigger>
+            <DialogContent className="w-full max-w-xl">
+              <div className="overflow-y-auto">
+                <div className="space-y-5 px-4">
+                  <DialogTitle>{tsi("create")}</DialogTitle>
+                  <DashboardAddItems
+                    updateItems={(data) => {
+                      handleUpdateItem(data)
+                    }}
+                    priceLists={priceLists}
+                  />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div>
+          {selectedItem && selectedItem.length > 0 && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("title")}</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>{tsi("price")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {selectedItem.map((item: SelectedItemsProps) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex">
+                        <span className="font-medium">{item.title}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex">
+                        <span className="font-medium">{item.sku}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{item.price}</TableCell>
+                    <TableCell align="right">
+                      <DashboardShowOptions
+                        onDelete={() => {
+                          void handleDeleteItem(item)
+                        }}
+                        editUrlNewTab={`/dashboard/item/edit/${item.id}`}
+                        description={item.title}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

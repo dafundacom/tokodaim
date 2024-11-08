@@ -7,7 +7,8 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import { products } from "@/lib/db/schema/product"
+import { items } from "@/lib/db/schema"
+import { productItems, products } from "@/lib/db/schema/product"
 import { cuid } from "@/lib/utils"
 import { generateUniqueProductSlug } from "@/lib/utils/slug"
 import {
@@ -116,16 +117,35 @@ export const productRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.query.products.findFirst({
+        const productData = await ctx.db.query.products.findFirst({
           where: (product, { eq }) => eq(product.id, input),
           with: {
             featuredImage: true,
             coverImage: true,
             guideImage: true,
-            // items: true,
           },
         })
-        return data
+
+        if (productData) {
+          const productItemsData = await ctx.db
+            .select({
+              id: items.id,
+              title: items.title,
+              sku: items.sku,
+              price: items.price,
+            })
+            .from(productItems)
+            .leftJoin(products, eq(productItems.productId, products.id))
+            .leftJoin(items, eq(productItems.itemId, items.id))
+            .where(eq(products.id, input))
+
+          const data = {
+            ...productData,
+            items: productItemsData,
+          }
+
+          return data
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {
@@ -143,16 +163,30 @@ export const productRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.query.products.findFirst({
+        const productData = await ctx.db.query.products.findFirst({
           where: (product, { eq }) => eq(product.slug, input),
           with: {
             coverImage: true,
             featuredImage: true,
             guideImage: true,
-            items: true,
           },
         })
-        return data
+
+        if (productData) {
+          const productItemsData = await ctx.db
+            .select({ id: items.id, title: items.title })
+            .from(productItems)
+            .leftJoin(products, eq(productItems.productId, products.id))
+            .leftJoin(items, eq(productItems.itemId, items.id))
+            .where(eq(products.id, productData.id!))
+
+          const data = {
+            ...productData,
+            items: productItemsData,
+          }
+
+          return data
+        }
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {
@@ -233,6 +267,13 @@ export const productRouter = createTRPCRouter({
           })
           .returning()
 
+        const itemValues = input.items.map((item) => ({
+          productId: data[0].id,
+          itemId: item,
+        }))
+
+        await ctx.db.insert(productItems).values(itemValues)
+
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -259,6 +300,18 @@ export const productRouter = createTRPCRouter({
           })
           .where(eq(products.id, input.id))
           .returning()
+
+        await ctx.db
+          .delete(productItems)
+          .where(eq(productItems.productId, input.id))
+
+        const itemValues = input.items.map((item) => ({
+          productId: data[0].id,
+          itemId: item,
+        }))
+
+        await ctx.db.insert(productItems).values(itemValues)
+
         return data
       } catch (error) {
         console.error("Error:", error)
@@ -304,6 +357,11 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const data = await ctx.db.delete(products).where(eq(products.id, input))
+
+        await ctx.db
+          .delete(productItems)
+          .where(eq(productItems.productId, input))
+
         return data
       } catch (error) {
         console.error("Error:", error)

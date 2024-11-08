@@ -410,6 +410,7 @@ export default {
   share: "Bagikan",
   show_less: "Tampilkan Lebih Sedikit",
   show_more: "Tampilkan Lebih Banyak",
+  sku_placeholder: "Masukan SKU",
   slug: "Slug",
   slug_placeholder: "Masukan Slug",
   slug_required: "Slug dibutuhkan",

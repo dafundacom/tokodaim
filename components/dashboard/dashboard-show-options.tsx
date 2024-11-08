@@ -18,13 +18,21 @@ import { useI18n } from "@/lib/locales/client"
 interface DashboardShowOptionsProps {
   onDelete?: () => void
   editUrl?: string | UrlObject
+  editUrlNewTab?: string | UrlObject
   translateUrl?: string | UrlObject
   viewUrl?: string | UrlObject
   description?: string
 }
 
 const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
-  const { onDelete, editUrl, translateUrl, viewUrl, description } = props
+  const {
+    onDelete,
+    editUrl,
+    editUrlNewTab,
+    translateUrl,
+    viewUrl,
+    description,
+  } = props
 
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
 
@@ -48,6 +56,14 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
           {editUrl && (
             <DropdownMenuItem asChild>
               <NextLink href={editUrl}>
+                <Icon.Edit className="mr-2 size-4" />
+                {t("edit")}
+              </NextLink>
+            </DropdownMenuItem>
+          )}
+          {editUrlNewTab && (
+            <DropdownMenuItem asChild>
+              <NextLink href={editUrlNewTab} target="_blank">
                 <Icon.Edit className="mr-2 size-4" />
                 {t("edit")}
               </NextLink>

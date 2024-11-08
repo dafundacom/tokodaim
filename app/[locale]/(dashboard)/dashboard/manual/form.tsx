@@ -146,8 +146,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                         >
                           {field.value
                             ? priceLists.find(
-                                (priceList) =>
-                                  field.value === priceList.productName,
+                                (priceList) => field.value === priceList.sku,
                               )?.productName
                             : tsi("placeholder")}
                           <Icon.ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
@@ -162,7 +161,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                           <CommandList>
                             {priceLists.map((priceList) => (
                               <CommandItem
-                                value={priceList.sku}
+                                value={priceList.productName}
                                 key={priceList.sku}
                                 className="cursor-pointer px-2 py-1 hover:bg-muted"
                                 onSelect={() => {
