@@ -45,6 +45,10 @@ const config = {
         protocol: "https",
         hostname: "*.tokodaim.com",
       },
+      {
+        protocol: "https",
+        hostname: "assets.tripay.co.id",
+      },
     ],
   },
   async headers() {
