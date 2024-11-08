@@ -4,19 +4,14 @@ import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
 import { PageInfo } from "@/components/layout/page-info"
-import env from "@/env.mjs"
-import { getSession } from "@/lib/auth/utils"
+import env from "@/env"
+import { getCurrentSession } from "@/lib/auth/session"
 import { getI18n, getScopedI18n } from "@/lib/locales/server"
 
-const UserSettingForm = dynamicFn(
-  async () => {
-    const UserSettingForm = await import("./form")
-    return UserSettingForm
-  },
-  {
-    ssr: false,
-  },
-)
+const UserSettingForm = dynamicFn(async () => {
+  const UserSettingForm = await import("./form")
+  return UserSettingForm
+})
 
 export function generateMetadata(): Metadata {
   return {
@@ -34,19 +29,19 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function EditUserProfilePage() {
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
 
   const t = await getI18n()
   const ts = await getScopedI18n("user")
 
-  if (!session) {
+  if (!user) {
     return notFound()
   }
 
   return (
     <div className="fade-up-element">
       <PageInfo title={t("settings")} description={ts("setting_header")} />
-      <UserSettingForm user={session.user} />
+      <UserSettingForm user={user} />
     </div>
   )
 }

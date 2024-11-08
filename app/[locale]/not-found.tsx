@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import NextLink from "next/link"
 
+import "@/styles/globals.css"
+
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {

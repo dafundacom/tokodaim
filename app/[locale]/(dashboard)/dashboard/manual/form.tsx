@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useForm } from "react-hook-form"
+import { slugify } from "transliteration"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,7 +34,7 @@ import type { SelectDigiflazzPriceList } from "@/lib/db/schema/digiflazz-price-l
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import type { TransaksiReturnProps } from "@/lib/sdk/digiflazz"
 import { api } from "@/lib/trpc/react"
-import { cn, slugify, uniqueCharacter } from "@/lib/utils"
+import { cn, uniqueCharacter } from "@/lib/utils"
 import DashboardManualTopUpHeader from "./header"
 
 interface FormValues {
@@ -160,7 +161,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                           <CommandList>
                             {priceLists.map((priceList) => (
                               <CommandItem
-                                value={priceList.sku}
+                                value={priceList.productName}
                                 key={priceList.sku}
                                 className="cursor-pointer px-2 py-1 hover:bg-muted"
                                 onSelect={() => {

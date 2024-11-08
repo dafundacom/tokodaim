@@ -1,14 +1,9 @@
 import dynamicFn from "next/dynamic"
 
-const DashboardPaymentContent = dynamicFn(
-  async () => {
-    const DashboardPaymentContent = await import("./content")
-    return DashboardPaymentContent
-  },
-  {
-    ssr: false,
-  },
-)
+const DashboardPaymentContent = dynamicFn(async () => {
+  const DashboardPaymentContent = await import("./content")
+  return DashboardPaymentContent
+})
 
 export const metadata = {
   title: "Payment Dashboard",

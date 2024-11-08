@@ -3,31 +3,27 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { redirect } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const TranslatePromoForm = dynamicFn(
-  async () => {
-    const TranslatePromoForm = await import("./form")
-    return TranslatePromoForm
-  },
-  {
-    ssr: false,
-  },
-)
+const TranslatePromoForm = dynamicFn(async () => {
+  const TranslatePromoForm = await import("./form")
+  return TranslatePromoForm
+})
 
 interface TranslatePromoMetaDataProps {
-  params: {
+  params: Promise<{
     locale: LanguageType
     promoTranslationId: string
     language: LanguageType
-  }
+  }>
 }
 
-export async function generateMetadata({
-  params,
-}: TranslatePromoMetaDataProps): Promise<Metadata> {
+export async function generateMetadata(
+  props: TranslatePromoMetaDataProps,
+): Promise<Metadata> {
+  const params = await props.params
   const { locale, promoTranslationId, language } = params
 
   const promoTranslation =
@@ -49,15 +45,16 @@ export async function generateMetadata({
 }
 
 interface TranslatePromoDashboardProps {
-  params: {
+  params: Promise<{
     promoTranslationId: string
     language: LanguageType
-  }
+  }>
 }
 
-export default async function TranslatePromoDashboardPage({
-  params,
-}: TranslatePromoDashboardProps) {
+export default async function TranslatePromoDashboardPage(
+  props: TranslatePromoDashboardProps,
+) {
+  const params = await props.params
   const { promoTranslationId, language } = params
 
   const promoTranslation =

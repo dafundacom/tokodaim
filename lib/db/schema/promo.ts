@@ -2,7 +2,6 @@ import { relations } from "drizzle-orm"
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 import { languageEnum } from "./language"
-import { medias } from "./media"
 import { statusEnum } from "./status"
 
 export const promoTranslations = pgTable("promo_translations", {
@@ -25,9 +24,7 @@ export const promos = pgTable("promos", {
   promoTranslationId: text("promo_translation_id")
     .notNull()
     .references(() => promoTranslations.id),
-  featuredImageId: text("featured_image_id")
-    .notNull()
-    .references(() => medias.id),
+  featuredImage: text("featured_image"),
   featured: boolean("featured").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -37,10 +34,6 @@ export const promosRelations = relations(promos, ({ one }) => ({
   promoTranslation: one(promoTranslations, {
     fields: [promos.promoTranslationId],
     references: [promoTranslations.id],
-  }),
-  featuredImage: one(medias, {
-    fields: [promos.featuredImageId],
-    references: [medias.id],
   }),
 }))
 

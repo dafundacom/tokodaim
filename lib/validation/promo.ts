@@ -51,9 +51,11 @@ export const promoInput = {
       invalid_type_error: "Featured must be a boolean",
     })
     .optional(),
-  featuredImageId: z.string({
-    invalid_type_error: "Featured Image must be a string",
-  }),
+  featuredImage: z
+    .string({
+      invalid_type_error: "Featured Image must be a string",
+    })
+    .optional(),
 }
 
 const translatePromoInput = {

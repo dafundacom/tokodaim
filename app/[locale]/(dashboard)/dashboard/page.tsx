@@ -7,14 +7,14 @@ import {
   DashboardBoxIconWrapper,
 } from "@/components/dashboard/dashboard-box"
 import { Icon } from "@/components/ui/icon"
-import { getSession } from "@/lib/auth/utils"
+import { getCurrentSession } from "@/lib/auth/session"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 
 export default async function DashboardPage() {
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
 
-  if (!session?.user.role.includes("admin" || "author")) {
+  if (!user?.role.includes("admin")) {
     return notFound()
   }
 

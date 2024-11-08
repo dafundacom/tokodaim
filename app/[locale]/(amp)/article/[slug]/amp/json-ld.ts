@@ -1,11 +1,9 @@
-import env from "@/env.mjs"
+import env from "@/env"
 import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectTopic } from "@/lib/db/schema/topic"
 import type { SelectUser } from "@/lib/db/schema/user"
 
 interface ArticleProps extends SelectArticle {
-  featuredImage: Pick<SelectMedia, "url">
   topics: Pick<SelectTopic, "title" | "slug">[]
   authors: Pick<SelectUser, "name" | "username" | "image">[]
 }
@@ -45,7 +43,7 @@ export function generateAMPJsonLdSchema(article: ArticleProps) {
         image: {
           "@id": `${env.NEXT_PUBLIC_SITE_URL}/article/${article?.slug}#primaryimage/`,
         },
-        thumbnailUrl: article?.featuredImage?.url ?? "",
+        thumbnailUrl: article?.featuredImage ?? "",
         keywords: keywords,
         articleSection: articleSections,
         inLanguage: "id",
@@ -77,7 +75,7 @@ export function generateAMPJsonLdSchema(article: ArticleProps) {
         image: {
           "@id": `${env.NEXT_PUBLIC_SITE_URL}/article/${article?.slug}#primaryimage`,
         },
-        thumbnailUrl: article?.featuredImage?.url ?? "",
+        thumbnailUrl: article?.featuredImage ?? "",
         datePublished: article?.createdAt,
         dateModified: article?.updatedAt,
         description: article.metaDescription,
@@ -96,8 +94,8 @@ export function generateAMPJsonLdSchema(article: ArticleProps) {
         "@type": "ImageObject",
         inLanguage: "id",
         "@id": `${env.NEXT_PUBLIC_SITE_URL}/article/${article?.slug}#primaryimage`,
-        url: article?.featuredImage?.url ?? "",
-        contentUrl: article?.featuredImage?.url ?? "",
+        url: article?.featuredImage ?? "",
+        contentUrl: article?.featuredImage ?? "",
         width: 1280,
         height: 720,
         caption: article?.title ?? "",

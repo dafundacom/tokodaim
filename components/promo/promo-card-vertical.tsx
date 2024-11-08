@@ -2,14 +2,11 @@ import * as React from "react"
 import NextLink from "next/link"
 
 import Image from "@/components/image"
-import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 import { cn, formatDate } from "@/lib/utils"
 
 interface PromoCardVerticalProps extends React.HTMLAttributes<HTMLDivElement> {
-  promo: Pick<SelectPromo, "slug" | "title" | "createdAt"> & {
-    featuredImage?: Pick<SelectMedia, "url">
-  }
+  promo: Pick<SelectPromo, "slug" | "title" | "createdAt" | "featuredImage">
 }
 
 const PromoCardVertical: React.FunctionComponent<PromoCardVerticalProps> = (
@@ -25,7 +22,7 @@ const PromoCardVertical: React.FunctionComponent<PromoCardVerticalProps> = (
         <Image
           className="!relative !h-[200px] overflow-hidden rounded-t-lg object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 20vw, 33vw"
-          src={featuredImage?.url!}
+          src={featuredImage!}
           alt={title}
         />
       </NextLink>

@@ -22,50 +22,34 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
-import { getSession } from "@/lib/auth/utils"
+import env from "@/env"
+import { getCurrentSession } from "@/lib/auth/session"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 import { splitReactNodes } from "@/lib/utils"
 import type { LanguageType } from "@/lib/validation/language"
 
-const Ad = dynamicFn(
-  async () => {
-    const Ad = await import("@/components/ad")
-    return Ad
-  },
-  {
-    ssr: false,
-  },
-)
+const Ad = dynamicFn(async () => {
+  const Ad = await import("@/components/ad")
+  return Ad
+})
 
-const ArticleComment = dynamicFn(
-  async () => {
-    const Comment = await import("@/components/article/article-comment")
-    return Comment
-  },
-  {
-    ssr: false,
-  },
-)
+const ArticleComment = dynamicFn(async () => {
+  const Comment = await import("@/components/article/article-comment")
+  return Comment
+})
 
-const ArticleListRelated = dynamicFn(
-  async () => {
-    const ArticleListRelated = await import(
-      "@/components/article/article-list-related"
-    )
-    return ArticleListRelated
-  },
-  {
-    ssr: false,
-  },
-)
+const ArticleListRelated = dynamicFn(async () => {
+  const ArticleListRelated = await import(
+    "@/components/article/article-list-related"
+  )
+  return ArticleListRelated
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { slug } = params
 
   const article = await api.article.bySlug(slug)
@@ -81,7 +65,7 @@ export async function generateMetadata({
       description: article?.metaDescription ?? article?.excerpt,
       images: [
         {
-          url: article?.featuredImage.url!,
+          url: article?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -94,7 +78,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       images: [
         {
-          url: article?.featuredImage.url!,
+          url: article?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -104,7 +88,7 @@ export async function generateMetadata({
       other: [
         {
           rel: "amphtml",
-          url: `${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}/amp`,
+          url: `${env.NEXT_PUBLIC_SITE_URL}/article/${article?.slug}/amp`,
         },
       ],
     },
@@ -112,20 +96,19 @@ export async function generateMetadata({
 }
 
 interface ArticleSlugPageProps {
-  params: {
+  params: Promise<{
     slug: string
     locale: LanguageType
-  }
+  }>
 }
 
-export default async function ArticleSlugPage({
-  params,
-}: ArticleSlugPageProps) {
+export default async function ArticleSlugPage(props: ArticleSlugPageProps) {
+  const params = await props.params
   const { locale, slug } = params
 
   const t = await getI18n()
 
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
   const article = await api.article.bySlug(slug)
 
   if (!article) {
@@ -183,7 +166,7 @@ export default async function ArticleSlugPage({
         useAppDir={true}
         url={`${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`}
         title={article.metaTitle ?? article.title}
-        images={[article.featuredImage.url]}
+        images={[article.featuredImage]}
         datePublished={JSON.stringify(article.createdAt)}
         dateModified={JSON.stringify(article.createdAt)}
         authorName={[
@@ -262,7 +245,7 @@ export default async function ArticleSlugPage({
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw"
             priority
             placeholder="empty"
-            src={article.featuredImage.url}
+            src={article.featuredImage}
             alt={article.title}
             className="!relative !h-auto !w-auto max-w-full rounded-xl object-cover"
           />
@@ -309,7 +292,7 @@ export default async function ArticleSlugPage({
               url={`${env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`}
               text={article.title}
             />
-            <ArticleComment articleId={article.id} session={session} />
+            <ArticleComment articleId={article.id} user={user} />
             <ArticleListRelated
               locale={locale}
               currentArticleId={article.id}

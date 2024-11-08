@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await */
+
 import withBundleAnalyzer from "@next/bundle-analyzer"
 
 const plugins = [withBundleAnalyzer]
@@ -32,6 +34,7 @@ const securityHeaders = [
 
 const config = {
   reactStrictMode: true,
+  serverExternalPackages: ["@node-rs/argon2"],
   images: {
     remotePatterns: [
       {
@@ -40,15 +43,7 @@ const config = {
       },
       {
         protocol: "https",
-        hostname: "**.tokodaim.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.teknodaim.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.tripay.co.id",
+        hostname: "*.tokodaim.com",
       },
     ],
   },
@@ -79,6 +74,7 @@ const config = {
 }
 
 for (const plugin of plugins) {
+  // @ts-expect-error  FIX: later
   Object.assign(config, plugin(config))
 }
 

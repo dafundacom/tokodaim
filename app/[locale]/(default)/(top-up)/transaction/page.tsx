@@ -2,14 +2,13 @@ import type { Metadata } from "next"
 import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo"
 
 import CheckTransaction from "@/components/transaction/check-transaction"
-import env from "@/env.mjs"
+import env from "@/env"
 import type { LanguageType } from "@/lib/validation/language"
 
-export function generateMetadata({
-  params,
-}: {
-  params: { slug: string; locale: LanguageType }
-}): Metadata {
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string; locale: LanguageType }>
+}): Promise<Metadata> {
+  const params = await props.params
   const { locale } = params
 
   return {

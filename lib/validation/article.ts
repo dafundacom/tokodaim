@@ -50,7 +50,8 @@ export const articleInput = {
       invalid_type_error: "only public and member are accepted",
     })
     .optional(),
-  featuredImageId: z.string({
+  featuredImage: z.string({
+    required_error: "Featured Image is required",
     invalid_type_error: "Featured Image must be a string",
   }),
   topics: z

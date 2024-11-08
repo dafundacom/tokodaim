@@ -2,16 +2,15 @@ import * as React from "react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 import { EditUserForm } from "./form"
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { userId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ userId: string; locale: LanguageType }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { userId, locale } = params
 
   const user = await api.user.byId(userId)
@@ -32,14 +31,15 @@ export async function generateMetadata({
 }
 
 interface EditUserDashboardProps {
-  params: {
+  params: Promise<{
     userId: string
-  }
+  }>
 }
 
-export default async function EditUserDashboardPage({
-  params,
-}: EditUserDashboardProps) {
+export default async function EditUserDashboardPage(
+  props: EditUserDashboardProps,
+) {
+  const params = await props.params
   const { userId } = params
 
   const user = await api.user.byId(userId)

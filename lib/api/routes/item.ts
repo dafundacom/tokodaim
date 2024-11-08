@@ -45,9 +45,6 @@ export const itemRouter = createTRPCRouter({
           limit: input.perPage,
           offset: (input.page - 1) * input.perPage,
           orderBy: (items, { asc }) => [asc(items.title)],
-          with: {
-            product: true,
-          },
         })
         return data
       } catch (error) {
@@ -92,13 +89,15 @@ export const itemRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const data = await ctx.db.query.items.findMany({
-          where: (items, { eq }) => eq(items.productId, input),
+        const items = await ctx.db.query.items.findMany({
           with: {
-            icon: true,
-            product: true,
+            products: true,
           },
         })
+
+        const data = items.filter((item) =>
+          item.products.some((product) => product.productId === input),
+        )
 
         return data
       } catch (error) {
@@ -106,31 +105,31 @@ export const itemRouter = createTRPCRouter({
       }
     }),
 
-  byProductIdAndType: publicProcedure
-    .input(
-      z.object({
-        productId: z.string(),
-        type: z.string(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      try {
-        const data = await ctx.db.query.items.findMany({
-          where: (items, { and, eq }) =>
-            and(
-              eq(items.type, input.type),
-              eq(items.productId, input.productId),
-            ),
-          with: {
-            product: true,
-          },
-        })
-
-        return data
-      } catch (error) {
-        console.error("Error:", error)
-      }
-    }),
+  // byProductIdAndType: publicProcedure
+  //   .input(
+  //     z.object({
+  //       productId: z.string(),
+  //       type: z.string(),
+  //     }),
+  //   )
+  //   .query(async ({ input, ctx }) => {
+  //     try {
+  //       const data = await ctx.db.query.items.findMany({
+  //         where: (items, { and, eq }) =>
+  //           and(
+  //             eq(items.type, input.type),
+  //             eq(items.productId, input.productId),
+  //           ),
+  //         with: {
+  //           product: true,
+  //         },
+  //       })
+  //
+  //       return data
+  //     } catch (error) {
+  //       console.error("Error:", error)
+  //     }
+  //   }),
 
   search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     try {
@@ -173,10 +172,13 @@ export const itemRouter = createTRPCRouter({
     .input(createItemSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const data = await ctx.db.insert(items).values({
-          id: cuid(),
-          ...input,
-        })
+        const data = await ctx.db
+          .insert(items)
+          .values({
+            id: cuid(),
+            ...input,
+          })
+          .returning()
 
         return data
       } catch (error) {

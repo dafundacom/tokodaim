@@ -1,7 +1,6 @@
-// TODO: update original price from item db
-
 "use server"
 
+// TODO: update original price from item db
 import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"

@@ -10,14 +10,11 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import env from "@/env.mjs"
-import type { SelectMedia } from "@/lib/db/schema/media"
+import env from "@/env"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 
 interface PromoCarouselProps extends React.HTMLAttributes<HTMLDivElement> {
-  promos: (SelectPromo & {
-    featuredImage: Pick<SelectMedia, "url">
-  })[]
+  promos: SelectPromo[]
 }
 
 const PromoCarousel: React.FC<PromoCarouselProps> = (props) => {
@@ -42,7 +39,7 @@ const PromoCarousel: React.FC<PromoCarouselProps> = (props) => {
                 href={`${env.NEXT_PUBLIC_SITE_URL}/promo/${promo.slug}`}
               >
                 <Image
-                  src={promo.featuredImage.url}
+                  src={promo.featuredImage!}
                   alt={promo.title}
                   fill
                   className="!relative !h-[200px] w-full overflow-hidden rounded-2xl object-cover lg:!h-[400px]"

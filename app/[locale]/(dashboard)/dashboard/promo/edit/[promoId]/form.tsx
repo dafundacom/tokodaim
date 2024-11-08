@@ -31,7 +31,6 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import { useDisclosure } from "@/hooks/use-disclosure"
-import type { SelectMedia } from "@/lib/db/schema/media"
 import type { SelectPromo } from "@/lib/db/schema/promo"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
@@ -67,10 +66,9 @@ interface EditPromoFormProps {
     | "metaDescription"
     | "status"
     | "featured"
+    | "featuredImage"
     | "promoTranslationId"
-  > & {
-    featuredImage: Pick<SelectMedia, "id" | "url">
-  }
+  >
 }
 
 const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
@@ -80,10 +78,8 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [clearContent, setClearContent] = React.useState<boolean>(false)
-  const [selectedFeaturedImageId, setSelectedFeaturedImageId] =
-    React.useState<string>(promo ? promo.featuredImage.id : "")
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
-    React.useState<string>(promo ? promo.featuredImage.url : "")
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
+    React.useState<string>(promo.featuredImage ? promo?.featuredImage : "")
 
   const t = useI18n()
   const ts = useScopedI18n("promo")
@@ -94,7 +90,7 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
     onSuccess: () => {
       setClearContent((prev) => !prev)
       form.reset()
-      setSelectedFeaturedImageUrl("")
+      setSelectedFeaturedImage("")
       toast({ variant: "success", description: ts("update_success") })
       router.push("/dashboard/promo")
     },
@@ -143,25 +139,20 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
     setLoading(true)
     const mergedValues = {
       ...values,
-      featuredImageId: selectedFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
     }
     updatePromo(mergedValues)
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectedFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectedFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -373,7 +364,7 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
                           </FormItem>
                         )}
                       />
-                      {selectedFeaturedImageUrl ? (
+                      {selectedFeaturedImage ? (
                         <div className="relative overflow-hidden rounded-[18px]">
                           <DeleteMediaButton
                             description="Featured Image"
@@ -386,7 +377,7 @@ const EditPromoForm: React.FunctionComponent<EditPromoFormProps> = (props) => {
                           >
                             <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                               <Image
-                                src={selectedFeaturedImageUrl}
+                                src={selectedFeaturedImage}
                                 className="rounded-lg object-cover"
                                 fill
                                 alt={t("featured_image")}

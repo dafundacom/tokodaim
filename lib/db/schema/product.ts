@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm"
-import { boolean, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 
 import { items } from "./item"
 import { medias } from "./media"
@@ -37,7 +44,35 @@ export const productRelations = relations(products, ({ one, many }) => ({
     fields: [products.guideImageId],
     references: [medias.id],
   }),
-  items: many(items),
+  items: many(productItems),
+}))
+
+export const productItems = pgTable(
+  "_product_items",
+  {
+    productId: text("product_id")
+      .notNull()
+      .references(() => products.id),
+    itemId: text("item_id")
+      .notNull()
+      .references(() => items.id),
+  },
+  (t) => ({
+    compoundKey: primaryKey({
+      columns: [t.productId, t.itemId],
+    }),
+  }),
+)
+
+export const productItemsRelations = relations(productItems, ({ one }) => ({
+  product: one(products, {
+    fields: [productItems.productId],
+    references: [products.id],
+  }),
+  item: one(items, {
+    fields: [productItems.itemId],
+    references: [items.id],
+  }),
 }))
 
 export type InsertProduct = typeof products.$inferInsert

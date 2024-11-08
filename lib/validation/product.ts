@@ -53,6 +53,12 @@ const productInput = {
     })
     .optional()
     .nullish(),
+  items: z
+    .string({
+      required_error: "Item Id is required",
+      invalid_type_error: "Item Id must be a string",
+    })
+    .array(),
 }
 
 export const createProductSchema = z.object({

@@ -2,7 +2,7 @@ import crypto from "crypto"
 import { NextResponse, type NextRequest } from "next/server"
 import { eq, sql } from "drizzle-orm"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { db } from "@/lib/db"
 import { payments, vouchers } from "@/lib/db/schema"
 import { digiflazz } from "@/lib/digiflazz"

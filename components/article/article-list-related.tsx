@@ -3,8 +3,7 @@
 import * as React from "react"
 
 import LoadingProgress from "@/components/loading-progress"
-import type { SelectArticle } from "@/lib/db/schema/article"
-import type { SelectMedia } from "@/lib/db/schema/media"
+import type { SelectArticle } from "@/lib/db/schema"
 import { useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import type { LanguageType } from "@/lib/validation/language"
@@ -12,20 +11,15 @@ import ArticleCardHorizontal from "./article-card-horizontal"
 
 export type ArticleListRelatedDataProps = Pick<
   SelectArticle,
-  "title" | "slug" | "excerpt"
-> & {
-  featuredImage: Pick<SelectMedia, "url">
-}
-
+  "title" | "slug" | "excerpt" | "featuredImage"
+>
 interface ArticleListRelatedProps extends React.HTMLAttributes<HTMLDivElement> {
   locale: LanguageType
   currentArticleId: string
   topicId: string
 }
 
-const ArticleListRelated: React.FunctionComponent<ArticleListRelatedProps> = (
-  props,
-) => {
+const ArticleListRelated: React.FC<ArticleListRelatedProps> = (props) => {
   const { locale, currentArticleId, topicId } = props
 
   const ts = useScopedI18n("article")

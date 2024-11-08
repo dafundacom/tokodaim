@@ -2,25 +2,19 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const EditVoucherForm = dynamicFn(
-  async () => {
-    const EditVoucherForm = await import("./form")
-    return EditVoucherForm
-  },
-  {
-    ssr: false,
-  },
-)
+const EditVoucherForm = dynamicFn(async () => {
+  const EditVoucherForm = await import("./form")
+  return EditVoucherForm
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { voucherId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ voucherId: string; locale: LanguageType }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { voucherId, locale } = params
 
   const voucher = await api.voucher.byId(voucherId)
@@ -41,7 +35,7 @@ export async function generateMetadata({
 }
 
 interface EditVoucherDashboardProps {
-  params: { voucherId: string }
+  params: Promise<{ voucherId: string }>
 }
 
 export default async function EditVoucherDashboard(
@@ -49,7 +43,7 @@ export default async function EditVoucherDashboard(
 ) {
   const { params } = props
 
-  const { voucherId } = params
+  const { voucherId } = await params
 
   const voucher = await api.voucher.byId(voucherId)
 

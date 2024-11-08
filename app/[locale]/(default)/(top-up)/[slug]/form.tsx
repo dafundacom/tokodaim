@@ -31,9 +31,13 @@ import { Icon } from "@/components/ui/icon"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import AddVoucher from "@/components/voucher/add-voucher"
-import env from "@/env.mjs"
-import type { AuthSession } from "@/lib/auth/utils"
-import type { SelectItem, SelectMedia, SelectProduct } from "@/lib/db/schema"
+import env from "@/env"
+import type {
+  SelectItem,
+  SelectMedia,
+  SelectProduct,
+  SelectUser,
+} from "@/lib/db/schema"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
 import type {
   ClosedPaymentCode,
@@ -71,7 +75,7 @@ interface ProductFormProps {
     virtualAccount: TripayPaymentMethodsProps[] | undefined
     convenienceShop: TripayPaymentMethodsProps[] | undefined
   } | null
-  session: AuthSession["session"]
+  user: SelectUser | null
 }
 
 interface FormValues {
@@ -83,7 +87,7 @@ interface FormValues {
 }
 
 const TopUpForm = (props: ProductFormProps) => {
-  const { items, product, paymentChannel, session } = props
+  const { items, product, paymentChannel, user } = props
 
   const [selectedItemPrice, setSelectedItemPrice] = React.useState<string>("")
   const [fixedPrice, setFixedPrice] = React.useState<number>(0)
@@ -102,8 +106,6 @@ const TopUpForm = (props: ProductFormProps) => {
   const [paymentReference, setPaymentReference] = React.useState("")
 
   const router = useRouter()
-
-  const user = session?.user
 
   const { isTopUpServer } = React.useMemo(
     () => isTopInputTopUpAccountIdWithServer(product.title),
@@ -303,14 +305,14 @@ const TopUpForm = (props: ProductFormProps) => {
             sku: selectedItem?.sku ?? "",
             productName: selectedItem.title,
             price: data.amount_received!,
-            customerName: session?.user?.name ?? data.customer_name,
-            customerEmail: session?.user?.email ?? data.customer_email,
-            customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
+            customerName: user?.name ?? data.customer_name,
+            customerEmail: user?.email ?? data.customer_email,
+            customerPhone: user?.phoneNumber ?? data.customer_phone,
             quantity: 1,
             fee: data?.total_fee!,
             total: data.amount,
             provider: "digiflazz" as const,
-            ...(session?.user?.id && { userId: session.user.id }),
+            ...(user?.id && { userId: user.id }),
             voucherCode: voucher?.voucherCode ?? "",
             discountAmount:
               fixedPrice > 0 ? selectedItem.price! - fixedPrice : undefined,
@@ -323,9 +325,9 @@ const TopUpForm = (props: ProductFormProps) => {
             reference: data.reference,
             invoiceId: data.merchant_ref!,
             method: paymentMethod.code as ClosedPaymentCode,
-            customerName: session?.user?.name ?? data.customer_name,
-            customerEmail: session?.user?.email ?? data.customer_email,
-            customerPhone: session?.user?.phoneNumber ?? data.customer_phone,
+            customerName: user?.name ?? data.customer_name,
+            customerEmail: user?.email ?? data.customer_email,
+            customerPhone: user?.phoneNumber ?? data.customer_phone,
             amount: data.amount_received!,
             fee: data?.total_fee!,
             total: data.amount,
@@ -333,7 +335,7 @@ const TopUpForm = (props: ProductFormProps) => {
             provider: "tripay" as const,
             paidAt: new Date(),
             expiredAt: new Date(data.expired_time * 1000),
-            ...(session?.user?.id && { userId: session.user.id }),
+            ...(user?.id && { userId: user.id }),
           }
 
           createPayment(paymentInput)

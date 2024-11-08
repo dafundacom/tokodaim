@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import env from "@/env.mjs"
+import env from "@/env"
 import { useI18n } from "@/lib/locales/client"
 
 interface FooterDescriptionProps {

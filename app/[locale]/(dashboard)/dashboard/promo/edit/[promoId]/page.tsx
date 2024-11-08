@@ -3,25 +3,19 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const EditPromoForm = dynamicFn(
-  async () => {
-    const EditPromoForm = await import("./form")
-    return EditPromoForm
-  },
-  {
-    ssr: false,
-  },
-)
+const EditPromoForm = dynamicFn(async () => {
+  const EditPromoForm = await import("./form")
+  return EditPromoForm
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { promoId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ promoId: string; locale: LanguageType }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { promoId, locale } = params
 
   const promo = await api.promo.byId(promoId)
@@ -43,12 +37,13 @@ export async function generateMetadata({
 }
 
 interface EditPromosDashboardProps {
-  params: { promoId: string }
+  params: Promise<{ promoId: string }>
 }
 
-export default async function CreatePromosDashboard({
-  params,
-}: EditPromosDashboardProps) {
+export default async function CreatePromosDashboard(
+  props: EditPromosDashboardProps,
+) {
+  const params = await props.params
   const { promoId } = params
 
   const promo = await api.promo.byId(promoId)

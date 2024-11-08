@@ -8,20 +8,15 @@ import Logo from "@/components/logo"
 import ThemeSwitcher from "@/components/theme/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
+import env from "@/env"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 
-const FooterDescription = dynamicFn(
-  async () => {
-    const FooterDescription = await import("./footer-description")
-    return FooterDescription
-  },
-  {
-    ssr: false,
-  },
-)
+const FooterDescription = dynamicFn(async () => {
+  const FooterDescription = await import("./footer-description")
+  return FooterDescription
+})
 
 interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 

@@ -1,15 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server"
 
-import env from "@/env.mjs"
-import { getSession } from "@/lib/auth/utils"
+import env from "@/env"
+import { getCurrentSession } from "@/lib/auth/session"
 import { db } from "@/lib/db"
-import { medias } from "@/lib/db/schema/media"
+import { medias } from "@/lib/db/schema"
+import { resizeImage } from "@/lib/image"
 import { uploadImageToR2 } from "@/lib/r2"
-import { cuid, slugifyFile, uniqueCharacter } from "@/lib/utils"
+import { cuid } from "@/lib/utils"
+import { generateUniqueMediaName } from "@/lib/utils/slug"
 
 export async function POST(request: NextRequest) {
   try {
-    const { session } = await getSession()
+    const { session, user } = await getCurrentSession()
 
     if (!session) {
       return NextResponse.json("Unauthorized", { status: 403 })
@@ -30,17 +32,21 @@ export async function POST(request: NextRequest) {
 
     const uploadedFiles = []
 
-    for (const file of files) {
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
       const buffer = Buffer.from(await file.arrayBuffer())
+      const resizedImageBuffer = await resizeImage(buffer)
+
       //@ts-ignore
       const [fileName, _fileType] = file?.name.split(".") || []
-
-      const uniqueFileName = `${slugifyFile(
+      const uniqueFileName = await generateUniqueMediaName(
         fileName,
-      )}_${uniqueCharacter()}.${defaultFileExtension}`
+        defaultFileExtension,
+      )
 
       await uploadImageToR2({
-        file: buffer,
+        file: resizedImageBuffer,
         fileName: uniqueFileName,
         contentType: defaultFileType,
       })
@@ -48,16 +54,17 @@ export async function POST(request: NextRequest) {
       const data = await db.insert(medias).values({
         id: cuid(),
         name: uniqueFileName,
-        url: "https://" + env.R2_DOMAIN + "/" + uniqueFileName,
+        url: `https://${env.R2_DOMAIN}/${uniqueFileName}`,
         type: defaultFileType,
-        authorId: session.user.id,
+        authorId: user.id,
       })
+
       uploadedFiles.push(data)
     }
 
     return NextResponse.json(uploadedFiles, { status: 200 })
   } catch (error) {
-    console.log(error)
+    console.error("Upload error:", error)
     return NextResponse.json("Internal Server Error", { status: 500 })
   }
 }

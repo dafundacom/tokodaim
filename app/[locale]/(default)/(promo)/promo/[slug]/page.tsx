@@ -20,17 +20,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Icon } from "@/components/ui/icon"
-import env from "@/env.mjs"
+import env from "@/env"
 import { getI18n } from "@/lib/locales/server"
 import { api } from "@/lib/trpc/server"
 import { formatDate } from "@/lib/utils"
 import type { LanguageType } from "@/lib/validation/language"
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { slug } = params
 
   const promo = await api.promo.bySlug(slug)
@@ -46,7 +45,7 @@ export async function generateMetadata({
       description: promo?.metaDescription ?? promo?.excerpt,
       images: [
         {
-          url: promo?.featuredImage.url!,
+          url: promo?.featuredImage!,
           width: 1280,
           height: 720,
         },
@@ -59,17 +58,9 @@ export async function generateMetadata({
       card: "summary_large_image",
       images: [
         {
-          url: promo?.featuredImage.url!,
+          url: promo?.featuredImage!,
           width: 1280,
           height: 720,
-        },
-      ],
-    },
-    icons: {
-      other: [
-        {
-          rel: "amphtml",
-          url: `${env.NEXT_PUBLIC_SITE_URL}/promo/${promo.slug}/amp`,
         },
       ],
     },
@@ -77,13 +68,14 @@ export async function generateMetadata({
 }
 
 interface PromoSlugPageProps {
-  params: {
+  params: Promise<{
     slug: string
     locale: LanguageType
-  }
+  }>
 }
 
-export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
+export default async function PromoSlugPage(props: PromoSlugPageProps) {
+  const params = await props.params
   const { slug } = params
 
   const t = await getI18n()
@@ -125,7 +117,7 @@ export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
         useAppDir={true}
         url={`${env.NEXT_PUBLIC_SITE_URL}/promo/${promo.slug}`}
         title={promo.metaTitle ?? promo.title}
-        images={[promo.featuredImage.url]}
+        images={[promo?.featuredImage!]}
         datePublished={JSON.stringify(promo.createdAt)}
         dateModified={JSON.stringify(promo.createdAt)}
         publisherName={env.NEXT_PUBLIC_SITE_TITLE}
@@ -184,7 +176,7 @@ export default async function PromoSlugPage({ params }: PromoSlugPageProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw"
             priority
             placeholder="empty"
-            src={promo.featuredImage.url}
+            src={promo?.featuredImage!}
             alt={promo.title}
             className="!relative !h-auto !w-auto max-w-full rounded-xl object-cover"
           />

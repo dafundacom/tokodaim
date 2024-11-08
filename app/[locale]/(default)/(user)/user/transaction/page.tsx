@@ -4,17 +4,17 @@ import { notFound } from "next/navigation"
 import CheckTransaction from "@/components/transaction/check-transaction"
 import TransactionCard from "@/components/transaction/transaction-card"
 import { Button } from "@/components/ui/button"
-import { getSession } from "@/lib/auth/utils"
+import { getCurrentSession } from "@/lib/auth/session"
 import { api } from "@/lib/trpc/server"
 
 export default async function UserTransactionPage() {
-  const { session } = await getSession()
+  const { user } = await getCurrentSession()
 
-  if (!session) {
+  if (!user) {
     return notFound()
   }
 
-  const transactions = await api.payment.byUserId(session?.user?.id ?? "")
+  const transactions = await api.payment.byUserId(user?.id ?? "")
 
   return (
     <div className="fade-up-element mt-4 md:mt-10">

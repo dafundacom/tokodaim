@@ -1,4 +1,4 @@
-import env from "@/env.mjs"
+import env from "@/env"
 import createTripayConfig from "@/lib/sdk/tripay"
 
 export const tripay = createTripayConfig({

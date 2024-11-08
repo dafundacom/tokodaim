@@ -2,7 +2,7 @@
 
 import type { NextRequest } from "next/server"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 
 function generateSiteMap(
@@ -35,8 +35,9 @@ function generateSiteMap(
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { page: string } },
+  props: { params: Promise<{ page: string }> },
 ) {
+  const params = await props.params
   const page = parseInt(params.page)
 
   const promos = await api.promo.sitemap({

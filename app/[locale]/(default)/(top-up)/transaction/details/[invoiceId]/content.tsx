@@ -234,7 +234,7 @@ export function DetailTransactionContent(props: DetailTransactionContentProps) {
                     <Button
                       aria-label="Copy Total Payment"
                       onClick={() =>
-                        copyToClipboard(`${paymentDetails?.total}` ?? "")
+                        copyToClipboard(`${paymentDetails?.total!}`)
                       }
                       type="button"
                       className="!flex items-center space-x-2 rounded-md border px-2.5 py-1 text-xl md:text-2xl print:hidden"

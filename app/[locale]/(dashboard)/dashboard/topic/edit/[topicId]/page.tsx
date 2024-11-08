@@ -2,25 +2,19 @@ import type { Metadata } from "next"
 import dynamicFn from "next/dynamic"
 import { notFound } from "next/navigation"
 
-import env from "@/env.mjs"
+import env from "@/env"
 import { api } from "@/lib/trpc/server"
 import type { LanguageType } from "@/lib/validation/language"
 
-const EditTopicForm = dynamicFn(
-  async () => {
-    const EditTopicForm = await import("./form")
-    return EditTopicForm
-  },
-  {
-    ssr: false,
-  },
-)
+const EditTopicForm = dynamicFn(async () => {
+  const EditTopicForm = await import("./form")
+  return EditTopicForm
+})
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { topicId: string; locale: LanguageType }
+export async function generateMetadata(props: {
+  params: Promise<{ topicId: string; locale: LanguageType }>
 }): Promise<Metadata> {
+  const params = await props.params
   const { topicId, locale } = params
 
   const topic = await api.topic.byId(topicId)
@@ -41,7 +35,7 @@ export async function generateMetadata({
 }
 
 interface EditTopicDashboardProps {
-  params: { topicId: string }
+  params: Promise<{ topicId: string }>
 }
 
 export default async function EditTopicDashboard(
@@ -49,7 +43,7 @@ export default async function EditTopicDashboard(
 ) {
   const { params } = props
 
-  const { topicId } = params
+  const { topicId } = await params
 
   const topic = await api.topic.byId(topicId)
 

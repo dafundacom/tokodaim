@@ -3,19 +3,7 @@ import { z } from "zod"
 import { LANGUAGE_TYPE } from "./language"
 import { STATUS_TYPE } from "./status"
 
-export const TOPIC_TYPE = [
-  "all",
-  "article",
-  "review",
-  "tutorial",
-  "movie",
-  "tv",
-  "game",
-] as const
-
 export const TOPIC_VISIBILITY = ["public", "internal"] as const
-
-export const topicType = z.enum(TOPIC_TYPE)
 
 export const topicVisibility = z.enum(TOPIC_VISIBILITY)
 
@@ -42,12 +30,6 @@ const topicInput = {
       invalid_type_error: "Meta Description must be a string",
     })
     .optional(),
-  type: z
-    .enum(TOPIC_TYPE, {
-      invalid_type_error:
-        "only all, article, review ,tutorial, download, movie, tv, game are accepted",
-    })
-    .optional(),
   visibility: z
     .enum(TOPIC_VISIBILITY, {
       invalid_type_error: "only public and internal are accepted",
@@ -59,7 +41,7 @@ const topicInput = {
         "only published, draft, rejected and in_review are accepted",
     })
     .optional(),
-  featuredImageId: z
+  featuredImage: z
     .string({
       invalid_type_error: "Featured Image ID must be a string",
     })
@@ -79,7 +61,10 @@ const translateTopicInput = {
 
 const updateTopicInput = {
   ...topicInput,
-  id: z.string(),
+  id: z.string({
+    required_error: "Id is required",
+    invalid_type_error: "Id must be a number",
+  }),
   slug: z
     .string({
       required_error: "Slug is required",
@@ -104,5 +89,4 @@ export const updateTopicSchema = z.object({
 
 export type CreateTopicSchema = z.infer<typeof createTopicSchema>
 export type UpdateTopicSchema = z.infer<typeof updateTopicSchema>
-export type TopicType = z.infer<typeof topicType>
 export type TopicVisibility = z.infer<typeof topicVisibility>

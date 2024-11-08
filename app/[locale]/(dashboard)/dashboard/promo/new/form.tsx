@@ -53,9 +53,7 @@ export default function CreatePromoForm() {
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [clearContent, setClearContent] = React.useState<boolean>(false)
-  const [selectedFeaturedImageId, setSelectedFeaturedImageId] =
-    React.useState<string>("")
-  const [selectedFeaturedImageUrl, setSelectedFeaturedImageUrl] =
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
     React.useState<string>("")
 
   const { isOpen: isOpenSidebar, onToggle: onToggleSidebar } = useDisclosure()
@@ -74,7 +72,7 @@ export default function CreatePromoForm() {
     onSuccess: () => {
       form.reset()
       setClearContent((prev) => !prev)
-      setSelectedFeaturedImageUrl("")
+      setSelectedFeaturedImage("")
       toast({
         variant: "success",
         description: ts("create_success"),
@@ -108,25 +106,20 @@ export default function CreatePromoForm() {
     setLoading(true)
     const mergedValues = {
       ...values,
-      featuredImageId: selectedFeaturedImageId,
+      featuredImage: selectedFeaturedImage,
     }
     createPromo(mergedValues)
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
-    setSelectedFeaturedImageId(data.id)
-    setSelectedFeaturedImageUrl(data.url)
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })
   }
 
   const handleDeleteFeaturedImage = () => {
-    setSelectedFeaturedImageId("")
-    setSelectedFeaturedImageUrl("")
+    setSelectedFeaturedImage("")
     toast({
       variant: "success",
       description: t("featured_image_deleted"),
@@ -338,7 +331,7 @@ export default function CreatePromoForm() {
                           </FormItem>
                         )}
                       />
-                      {selectedFeaturedImageUrl ? (
+                      {selectedFeaturedImage ? (
                         <div className="relative overflow-hidden rounded-[18px]">
                           <DeleteMediaButton
                             description="Featured Image"
@@ -351,7 +344,7 @@ export default function CreatePromoForm() {
                           >
                             <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                               <Image
-                                src={selectedFeaturedImageUrl}
+                                src={selectedFeaturedImage}
                                 className="rounded-lg object-cover"
                                 fill
                                 alt={t("featured_image")}

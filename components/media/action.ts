@@ -1,12 +1,13 @@
-import { resizeImage } from "@/lib/utils"
+interface MediaData {
+  file: Blob
+}
 
-export async function uploadMultipleMediaAction(datas: Blob[]) {
+export async function uploadMultipleMediaAction(datas: MediaData[]) {
   const formData = new FormData()
-  for (const file of datas) {
-    const resizedImage = await resizeImage(file)
-    formData.append("file", resizedImage)
-  }
 
+  for (const data of datas) {
+    formData.append("file", data.file)
+  }
   try {
     const response = await fetch("/api/media/images", {
       method: "POST",
