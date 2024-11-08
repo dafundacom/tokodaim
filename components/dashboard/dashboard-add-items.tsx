@@ -26,7 +26,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { SelectDigiflazzPriceList } from "@/lib/db/schema"
+import type {
+  SelectItem as SelectDataItem,
+  SelectDigiflazzPriceList,
+} from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import { cn } from "@/lib/utils"
@@ -40,7 +43,10 @@ interface FormValues {
   price: number
 }
 
-export type SelectedItemsProps = FormValues & { id: string }
+export type SelectedItemsProps = Pick<
+  SelectDataItem,
+  "id" | "sku" | "price" | "title" | "originalPrice"
+>
 
 interface DashboardAddItemsProps extends React.HTMLAttributes<HTMLDivElement> {
   priceLists: SelectDigiflazzPriceList[]
@@ -98,6 +104,7 @@ const DashboardAddItems: React.FunctionComponent<DashboardAddItemsProps> = (
   const onSubmit = (values: FormValues) => {
     const mergedValues = {
       ...values,
+      // ...(values.subtitle && { subtitle: values.subtitle }),
       originalPrice: Number(values.originalPrice),
       price: Number(values.price),
     }

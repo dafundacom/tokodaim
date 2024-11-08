@@ -141,17 +141,6 @@ export default function CreateProductForm(props: CreateProductFormProps) {
     setSelectedItemId((prev) => [...prev, ...itemId])
   }, [])
 
-  const handleDeleteItem = React.useCallback(
-    (value: SelectedItemsProps) => {
-      // TODO: remove from db too
-      const itemData = selectedItem?.filter((item) => item.id !== value.id)
-      const itemId = selectedItemId.filter((item) => item !== value.id)
-      setSelectedItem(itemData)
-      setSelectedItemId(itemId)
-    },
-    [selectedItem, selectedItemId],
-  )
-
   const form = useForm<FormValues>({
     mode: "onChange",
   })
@@ -168,6 +157,17 @@ export default function CreateProductForm(props: CreateProductFormProps) {
       createProduct(mergedValues)
     })
   }
+
+  const handleDeleteItem = React.useCallback(
+    (value: SelectedItemsProps) => {
+      // TODO: remove from db too
+      const itemData = selectedItem?.filter((item) => item.id !== value.id)
+      const itemId = selectedItemId.filter((item) => item !== value.id)
+      setSelectedItem(itemData)
+      setSelectedItemId(itemId)
+    },
+    [selectedItem, selectedItemId],
+  )
 
   const handleUpdateImage = (data: { id: string; url: string }) => {
     switch (imageType) {
