@@ -43,6 +43,7 @@ export default async function EditProductDashboard(
   const { productId } = await params
 
   const product = await api.product.byId(productId)
+  const priceLists = await api.digiflazz.priceList()
 
   if (!productId) {
     notFound()
@@ -51,7 +52,8 @@ export default async function EditProductDashboard(
   return (
     <div className="mb-[100px] mt-4 flex items-end justify-end">
       <div className="flex-1 space-y-4">
-        <EditProductForm product={product!} />
+        {/* @ts-expect-error FIX: drizzle join return string | null */}
+        <EditProductForm product={product!} priceLists={priceLists!} />
       </div>
     </div>
   )

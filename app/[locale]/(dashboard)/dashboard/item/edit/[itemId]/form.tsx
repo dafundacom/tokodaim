@@ -44,7 +44,7 @@ import { api } from "@/lib/trpc/react"
 import { cn } from "@/lib/utils"
 
 interface ItemProps extends SelectItem {
-  icon: Pick<SelectMedia, "id" | "url"> | null
+  icon?: Pick<SelectMedia, "id" | "url"> | null
 }
 
 interface EditItemFormProps {
@@ -124,7 +124,6 @@ export default function UpdateItemForm(props: EditItemFormProps) {
       price: item.price,
       description: item.description! ?? "",
       iconId: item.iconId! ?? "",
-      productId: item.productId,
     },
   })
 
