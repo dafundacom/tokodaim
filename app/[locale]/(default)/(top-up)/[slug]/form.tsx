@@ -32,12 +32,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import AddVoucher from "@/components/voucher/add-voucher"
 import env from "@/env"
-import type {
-  SelectItem,
-  SelectMedia,
-  SelectProduct,
-  SelectUser,
-} from "@/lib/db/schema"
+import type { SelectItem, SelectProduct, SelectUser } from "@/lib/db/schema"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
 import type {
   ClosedPaymentCode,
@@ -57,19 +52,9 @@ import { handleCheckIgn } from "./action"
 
 type TripayPaymentMethodsProps = PaymentChannelReturnProps["data"][number]
 
-interface ProductProps extends SelectProduct {
-  featuredImage: Pick<SelectMedia, "url">
-  coverImage?: Pick<SelectMedia, "url"> | null
-  guideImage?: Pick<SelectMedia, "url"> | null
-}
-
-interface ItemProps extends SelectItem {
-  icon: Pick<SelectMedia, "url"> | null
-}
-
 interface ProductFormProps {
-  items: ItemProps[]
-  product: ProductProps
+  items: SelectItem[]
+  product: SelectProduct
   paymentChannel?: {
     eWallet: TripayPaymentMethodsProps[] | undefined
     virtualAccount: TripayPaymentMethodsProps[] | undefined
@@ -391,8 +376,8 @@ const TopUpForm = (props: ProductFormProps) => {
               price: itemPrice!,
               quantity: 1,
               subtotal: itemPrice!,
-              product_url: product.featuredImage.url ?? "",
-              image_url: product.featuredImage.url ?? "",
+              product_url: product.featuredImage ?? "",
+              image_url: product.featuredImage ?? "",
             },
           ]
 
@@ -495,7 +480,7 @@ const TopUpForm = (props: ProductFormProps) => {
                       handleSelectItem(item, item.price)
                       setSelectedItemPrice(name!)
                     }}
-                    icon={item?.icon?.url!}
+                    icon={item?.icon! ?? product?.icon!}
                   />
                 )
               })}
@@ -553,7 +538,7 @@ const TopUpForm = (props: ProductFormProps) => {
                     {product.guideImage && (
                       <div className="relative h-[250px] w-full max-w-[600px]">
                         <Image
-                          src={product.guideImage.url!}
+                          src={product.guideImage}
                           className="object-contain"
                           alt={product.title}
                         />

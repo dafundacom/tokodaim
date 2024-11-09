@@ -21,11 +21,7 @@ const ProductCardSearch: React.FunctionComponent<ProductCardSearchProps> = (
       <div className="flex flex-row hover:bg-accent">
         <div className="relative aspect-[1/1] h-[50px] w-auto max-w-[unset] overflow-hidden rounded-md">
           {featuredImage ? (
-            <Image
-              src={featuredImage.url}
-              className="object-cover"
-              alt={title}
-            />
+            <Image src={featuredImage} className="object-cover" alt={title} />
           ) : (
             <Icon.BrokenImage className="h-[50px] w-auto" />
           )}

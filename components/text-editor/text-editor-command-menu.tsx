@@ -421,11 +421,7 @@ const TextEditorCommandList = ({
       <SelectMediaDialog
         open={open}
         setOpen={setOpen}
-        handleSelectUpdateMedia={function (_media: {
-          name: string
-          id: string
-          url: string
-        }): void {
+        handleSelectUpdateMedia={function (_media: { url: string }): void {
           if (editor) {
             editor.chain().focus().deleteRange(range).run()
             editor.commands.setImage({ src: _media.url! })

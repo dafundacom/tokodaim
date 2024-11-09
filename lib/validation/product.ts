@@ -37,22 +37,26 @@ const productInput = {
       invalid_type_error: "Meta Description must be a string",
     })
     .optional(),
-  featuredImageId: z.string({
-    required_error: "Featured Image Id is required",
-    invalid_type_error: "Featured Image Id must be a string",
-  }),
-  coverImageId: z
+  featuredImage: z
     .string({
-      invalid_type_error: "Cover Image Id must be a string",
+      invalid_type_error: "Featured Image must be a string",
     })
-    .optional()
-    .nullish(),
-  guideImageId: z
+    .optional(),
+  coverImage: z
+    .string({
+      invalid_type_error: "Cover Image must be a string",
+    })
+    .optional(),
+  guideImage: z
     .string({
       invalid_type_error: "Guide Image must be a string",
     })
-    .optional()
-    .nullish(),
+    .optional(),
+  icon: z
+    .string({
+      invalid_type_error: "Icon must be a string",
+    })
+    .optional(),
   items: z
     .string({
       required_error: "Item Id is required",

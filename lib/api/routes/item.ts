@@ -67,7 +67,6 @@ export const itemRouter = createTRPCRouter({
         const data = await ctx.db.query.items.findFirst({
           where: (item, { eq }) => eq(item.id, input),
           with: {
-            icon: true,
             products: true,
           },
         })
@@ -92,7 +91,6 @@ export const itemRouter = createTRPCRouter({
       try {
         const items = await ctx.db.query.items.findMany({
           with: {
-            icon: true,
             products: true,
           },
         })

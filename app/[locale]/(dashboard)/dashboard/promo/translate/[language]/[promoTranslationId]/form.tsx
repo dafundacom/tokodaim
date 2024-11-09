@@ -119,10 +119,7 @@ const TranslatePromoForm = (props: TranslatePromoFormProps) => {
     setLoading(false)
   }
 
-  const handleUpdateMedia = (data: {
-    id: React.SetStateAction<string>
-    url: React.SetStateAction<string>
-  }) => {
+  const handleUpdateMedia = (data: { url: React.SetStateAction<string> }) => {
     setSelectedFeaturedImage(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: t("featured_image_selected") })

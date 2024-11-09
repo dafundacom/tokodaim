@@ -50,7 +50,6 @@ import { toast } from "@/components/ui/toast/use-toast"
 import type {
   SelectDigiflazzPriceList,
   SelectItem as SelectItemData,
-  SelectMedia,
   SelectProduct,
 } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
@@ -61,9 +60,6 @@ interface ProductProps extends SelectProduct {
     SelectItemData,
     "id" | "title" | "sku" | "price" | "originalPrice"
   >[]
-  featuredImage: Pick<SelectMedia, "id" | "url">
-  coverImage: Pick<SelectMedia, "id" | "url"> | null
-  guideImage: Pick<SelectMedia, "id" | "url"> | null
 }
 
 interface EditProductFormProps {
@@ -103,20 +99,19 @@ export default function UpdateProductForm(props: EditProductFormProps) {
   )
   const [showMetaData, setShowMetaData] = React.useState<boolean>(false)
   const [imageType, setImageType] = React.useState<
-    "featuredImage" | "coverImage" | "guideImage"
+    "featuredImage" | "coverImage" | "guideImage" | "icon"
   >("featuredImage")
-  const [selectedFeaturedImage, setSelectedFeaturedImage] = React.useState<{
-    id: string
-    url: string
-  } | null>(product.featuredImage ?? null)
-  const [selectedCoverImage, setSelectedCoverImage] = React.useState<{
-    id: string
-    url: string
-  } | null>(product.coverImage ?? null)
-  const [selectedGuideImage, setSelectedGuideImage] = React.useState<{
-    id: string
-    url: string
-  } | null>(product.guideImage ?? null)
+  const [selectedFeaturedImage, setSelectedFeaturedImage] =
+    React.useState<string>(product.featuredImage ?? "")
+  const [selectedCoverImage, setSelectedCoverImage] = React.useState<string>(
+    product.coverImage ?? "",
+  )
+  const [selectedGuideImage, setSelectedGuideImage] = React.useState<string>(
+    product.guideImage! ?? "",
+  )
+  const [selectedIcon, setSelectedIcon] = React.useState<string>(
+    product.icon! ?? "",
+  )
 
   const t = useI18n()
   const ts = useScopedI18n("product")
@@ -174,10 +169,11 @@ export default function UpdateProductForm(props: EditProductFormProps) {
     startTransition(() => {
       const mergedValues = {
         ...values,
-        featuredImageId: selectedFeaturedImage?.id!,
+        ...(selectedFeaturedImage && { featuredImage: selectedFeaturedImage }),
+        ...(selectedCoverImage && { coverImage: selectedCoverImage }),
+        ...(selectedGuideImage && { guideImage: selectedGuideImage }),
+        ...(selectedIcon && { icon: selectedIcon }),
         items: selectedItemId,
-        ...(selectedCoverImage && { coverImageId: selectedCoverImage.id }),
-        ...(selectedGuideImage && { guideImageId: selectedGuideImage.id }),
       }
       updateProduct(mergedValues)
     })
@@ -202,24 +198,31 @@ export default function UpdateProductForm(props: EditProductFormProps) {
     [selectedItem, selectedItemId],
   )
 
-  const handleUpdateImage = (data: { id: string; url: string }) => {
+  const handleUpdateImage = (data: { url: React.SetStateAction<string> }) => {
     switch (imageType) {
       case "featuredImage":
-        setSelectedFeaturedImage(data)
+        setSelectedFeaturedImage(data.url)
         toast({ variant: "success", description: t("featured_image_selected") })
         break
       case "coverImage":
-        setSelectedCoverImage(data)
+        setSelectedCoverImage(data.url)
         toast({
           variant: "success",
           description: ts("cover_image_selected"),
         })
         break
       case "guideImage":
-        setSelectedGuideImage(data)
+        setSelectedGuideImage(data.url)
         toast({
           variant: "success",
           description: ts("guide_image_selected"),
+        })
+        break
+      case "icon":
+        setSelectedIcon(data.url)
+        toast({
+          variant: "success",
+          description: ts("icon_selected"),
         })
         break
       default:
@@ -229,29 +232,33 @@ export default function UpdateProductForm(props: EditProductFormProps) {
   }
 
   const handleDeleteImage = (
-    type: "featuredImage" | "coverImage" | "guideImage",
+    type: "featuredImage" | "coverImage" | "guideImage" | "icon",
   ) => {
     switch (type) {
       case "featuredImage":
-        setSelectedFeaturedImage(null)
+        setSelectedFeaturedImage("")
         toast({
           variant: "success",
           description: t("featured_image_deleted"),
         })
         break
       case "coverImage":
-        setSelectedCoverImage(null)
+        setSelectedCoverImage("")
         toast({
           variant: "success",
           description: ts("cover_image_deleted"),
         })
         break
       case "guideImage":
-        setSelectedGuideImage(null)
+        setSelectedGuideImage("")
         toast({
           variant: "success",
           description: ts("guide_image_deleted"),
         })
+        break
+      case "icon":
+        setSelectedIcon("")
+        toast({ variant: "success", description: ts("icon_deleted") })
         break
       default:
         break
@@ -433,7 +440,7 @@ export default function UpdateProductForm(props: EditProductFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedFeaturedImage.url}
+                          src={selectedFeaturedImage}
                           className="rounded-lg object-cover"
                           fill
                           alt={t("featured_image")}
@@ -485,7 +492,7 @@ export default function UpdateProductForm(props: EditProductFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedCoverImage.url}
+                          src={selectedCoverImage}
                           className="rounded-lg object-cover"
                           fill
                           alt="Cover Image"
@@ -537,7 +544,7 @@ export default function UpdateProductForm(props: EditProductFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedGuideImage.url}
+                          src={selectedGuideImage}
                           className="rounded-lg object-cover"
                           fill
                           alt="Guide Image"
@@ -567,6 +574,58 @@ export default function UpdateProductForm(props: EditProductFormProps) {
                       className="relative mr-auto flex aspect-video h-[150px] w-full cursor-pointer items-center justify-center rounded-lg border-border bg-muted text-foreground lg:h-full lg:max-h-[250px]"
                     >
                       <p>{ts("guide_image_placeholder")}</p>
+                    </div>
+                  </SelectMediaDialog>
+                )}
+              </div>
+              <div>
+                <FormLabel>{ts("icon")}</FormLabel>
+                {selectedIcon ? (
+                  <div className="relative overflow-hidden rounded-[18px]">
+                    <DeleteMediaButton
+                      description={ts("icon")}
+                      onDelete={() => handleDeleteImage("icon")}
+                    />
+                    <SelectMediaDialog
+                      handleSelectUpdateMedia={handleUpdateImage}
+                      open={openDialog && imageType === "icon"}
+                      setOpen={(isOpen) => {
+                        setOpenDialog(isOpen)
+                        if (isOpen) setImageType("icon")
+                      }}
+                    >
+                      <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
+                        <Image
+                          src={selectedIcon}
+                          className="rounded-lg object-cover"
+                          fill
+                          alt="Icon"
+                          onClick={() => {
+                            setOpenDialog(true)
+                            setImageType("icon")
+                          }}
+                          sizes="(max-width: 768px) 30vw, (max-width: 1200px) 20vw, 33vw"
+                        />
+                      </div>
+                    </SelectMediaDialog>
+                  </div>
+                ) : (
+                  <SelectMediaDialog
+                    handleSelectUpdateMedia={handleUpdateImage}
+                    open={openDialog && imageType === "icon"}
+                    setOpen={(isOpen) => {
+                      setOpenDialog(isOpen)
+                      if (isOpen) setImageType("icon")
+                    }}
+                  >
+                    <div
+                      onClick={() => {
+                        setOpenDialog(true)
+                        setImageType("icon")
+                      }}
+                      className="relative mr-auto flex aspect-video h-[150px] w-full cursor-pointer items-center justify-center rounded-lg border-border bg-muted text-foreground lg:h-full lg:max-h-[250px]"
+                    >
+                      <p>{ts("icon_placeholder")}</p>
                     </div>
                   </SelectMediaDialog>
                 )}

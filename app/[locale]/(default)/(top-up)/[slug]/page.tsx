@@ -87,9 +87,10 @@ export default async function TopUpPage(props: {
         useAppDir={true}
         productName={product?.title!}
         images={[
-          product?.featuredImage.url!,
-          product?.coverImage?.url!,
-          product?.guideImage?.url!,
+          product?.featuredImage!,
+          product?.coverImage!,
+          product?.guideImage!,
+          product?.icon!,
           env.NEXT_PUBLIC_LOGO_OG_URL,
         ]}
         description={product?.description ?? `Top Up ${product?.title}`}
@@ -132,13 +133,15 @@ export default async function TopUpPage(props: {
                 {product !== undefined && (
                   <div className="sticky w-full rounded-md border bg-background p-4 dark:bg-muted lg:top-[205px]">
                     <div className="flex flex-col items-center justify-center space-y-4">
-                      <div className="absolute my-20 size-[120px] overflow-hidden rounded-2xl lg:size-[150px]">
-                        <Image
-                          src={product.featuredImage.url}
-                          alt={product.title}
-                          className="object-cover"
-                        />
-                      </div>
+                      {product.featuredImage && (
+                        <div className="absolute my-20 size-[120px] overflow-hidden rounded-2xl lg:size-[150px]">
+                          <Image
+                            src={product.featuredImage}
+                            alt={product.title}
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="mt-20 space-y-2 lg:mt-24">
                       <h1 className="text-center text-xl">{product.title}</h1>
@@ -261,7 +264,7 @@ export default async function TopUpPage(props: {
                     {product?.guideImage && (
                       <div className="relative size-full">
                         <Image
-                          src={product?.guideImage.url!}
+                          src={product?.guideImage}
                           alt={product.title}
                           className="object-contain"
                         />

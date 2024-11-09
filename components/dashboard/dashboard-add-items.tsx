@@ -70,12 +70,12 @@ const DashboardAddItems: React.FunctionComponent<DashboardAddItemsProps> = (
   const { mutate: createItemAction } = api.item.create.useMutation({
     onSuccess: (data) => {
       if (data) {
+        form.reset()
         updateItems(data)
         toast({
           variant: "success",
           description: ts("create_success"),
         })
-        form.reset()
       }
     },
     onError: (error) => {
