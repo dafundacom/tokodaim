@@ -13,18 +13,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/toast/use-toast"
-import type { SelectMedia, SelectProduct } from "@/lib/db/schema"
+import type { SelectProduct } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 
-interface ProductProps extends SelectProduct {
-  featuredImage: Pick<SelectMedia, "url"> | null
-  coverImage: Pick<SelectMedia, "url"> | null
-  guideImage: Pick<SelectMedia, "url"> | null
-}
-
 interface ProductTableProps {
-  products: ProductProps[]
+  products: SelectProduct[]
   paramsName: string
   page: number
   lastPage: number
@@ -89,6 +83,9 @@ export default function ProductTable(props: ProductTableProps) {
             <TableHead className="hidden whitespace-nowrap lg:table-cell">
               {ts("guide_image")}
             </TableHead>
+            <TableHead className="hidden whitespace-nowrap lg:table-cell">
+              {ts("icon")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -107,7 +104,7 @@ export default function ProductTable(props: ProductTableProps) {
                     {product.featuredImage ? (
                       <Image
                         className="object-cover"
-                        src={product.featuredImage.url}
+                        src={product.featuredImage}
                         alt={product.title}
                       />
                     ) : (
@@ -123,7 +120,7 @@ export default function ProductTable(props: ProductTableProps) {
                     {product.coverImage ? (
                       <Image
                         className="object-cover"
-                        src={product.coverImage.url}
+                        src={product.coverImage}
                         alt={product.title}
                       />
                     ) : (
@@ -139,7 +136,23 @@ export default function ProductTable(props: ProductTableProps) {
                     {product.guideImage ? (
                       <Image
                         className="object-cover"
-                        src={product.guideImage.url}
+                        src={product.guideImage}
+                        alt={product.title}
+                      />
+                    ) : (
+                      <Icon.BrokenImage
+                        aria-label="Broken Image"
+                        className="size-full"
+                      />
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                  <div className="relative size-[100px] overflow-hidden rounded">
+                    {product.icon ? (
+                      <Image
+                        className="object-cover"
+                        src={product.icon}
                         alt={product.title}
                       />
                     ) : (

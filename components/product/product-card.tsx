@@ -3,11 +3,12 @@ import NextLink from "next/link"
 
 import Image from "@/components/image"
 import { Icon } from "@/components/ui/icon"
-import type { SelectMedia, SelectProduct } from "@/lib/db/schema"
+import type { SelectProduct } from "@/lib/db/schema"
 
-export type ProductDataProps = Pick<SelectProduct, "title" | "slug"> & {
-  featuredImage: Pick<SelectMedia, "url">
-}
+export type ProductDataProps = Pick<
+  SelectProduct,
+  "title" | "slug" | "featuredImage"
+>
 
 interface ProductCardProps {
   product: ProductDataProps
@@ -29,7 +30,7 @@ const ProductCard: React.FunctionComponent<ProductCardProps> = (props) => {
             className="object-cover object-center transition-transform duration-300 ease-in-out group-hover:scale-105"
             alt={title}
             sizes="100vw"
-            src={featuredImage.url}
+            src={featuredImage}
           />
         ) : (
           <Icon.BrokenImage className="size-full" />

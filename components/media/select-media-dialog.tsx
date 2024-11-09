@@ -19,11 +19,7 @@ import MediaList from "./media-list"
 import UploadMedia from "./upload-media"
 
 interface SelectMediaDialogProps {
-  handleSelectUpdateMedia: (_media: {
-    name: string
-    id: string
-    url: string
-  }) => void
+  handleSelectUpdateMedia: (_media: { url: string }) => void
   open: boolean
   setOpen: (_open: boolean) => void
   children?: React.ReactNode

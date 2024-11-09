@@ -36,9 +36,9 @@ const itemInput = {
     })
     .optional()
     .nullish(),
-  iconId: z
+  icon: z
     .string({
-      invalid_type_error: "Icon Id must be a string",
+      invalid_type_error: "Icon must be a string",
     })
     .optional()
     .nullish(),

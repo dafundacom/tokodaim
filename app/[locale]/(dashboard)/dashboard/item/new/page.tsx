@@ -34,7 +34,6 @@ export async function generateMetadata(props: {
 
 export default async function CreateItemDashboard() {
   const priceLists = await api.digiflazz.priceList()
-  const products = await api.product.all()
 
-  return <CreateItemForm priceLists={priceLists} products={products!} />
+  return <CreateItemForm priceLists={priceLists} />
 }

@@ -42,7 +42,6 @@ export default async function EditItemDashboard(props: EditItemDashboardProps) {
 
   const item = await api.item.byId(itemId)
   const priceLists = await api.digiflazz.priceList()
-  const products = await api.product.all()
 
   if (!itemId) {
     notFound()
@@ -51,11 +50,7 @@ export default async function EditItemDashboard(props: EditItemDashboardProps) {
   return (
     <div className="mb-[100px] mt-4 flex items-end justify-end">
       <div className="flex-1 space-y-4">
-        <EditItemForm
-          item={item!}
-          priceLists={priceLists}
-          products={products!}
-        />
+        <EditItemForm item={item!} priceLists={priceLists} />
       </div>
     </div>
   )

@@ -33,24 +33,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/toast/use-toast"
-import type {
-  SelectDigiflazzPriceList,
-  SelectItem,
-  SelectMedia,
-  SelectProduct,
-} from "@/lib/db/schema"
+import type { SelectDigiflazzPriceList, SelectItem } from "@/lib/db/schema"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
 import { api } from "@/lib/trpc/react"
 import { cn } from "@/lib/utils"
 
-interface ItemProps extends SelectItem {
-  icon?: Pick<SelectMedia, "id" | "url"> | null
-}
-
 interface EditItemFormProps {
-  item: ItemProps
+  item: SelectItem
   priceLists: SelectDigiflazzPriceList[]
-  products: SelectProduct[]
 }
 
 interface FormValues {
@@ -62,23 +52,19 @@ interface FormValues {
   originalPrice: number
   price: number
   description?: string
-  iconId?: string
-  productId: string
 }
 
 export default function UpdateItemForm(props: EditItemFormProps) {
-  const { item, priceLists, products } = props
+  const { item, priceLists } = props
 
   const [isPending, startTransition] = React.useTransition()
   const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-  const [selectedIcon, setSelectedIcon] = React.useState<{
-    id: string
-    url: string
-  } | null>(null)
+  const [selectedIcon, setSelectedIcon] = React.useState<string>(
+    item.icon ?? "",
+  )
 
   const t = useI18n()
   const ts = useScopedI18n("item")
-  const tsp = useScopedI18n("product")
 
   const router = useRouter()
 
@@ -123,40 +109,30 @@ export default function UpdateItemForm(props: EditItemFormProps) {
       originalPrice: item.originalPrice,
       price: item.price,
       description: item.description! ?? "",
-      iconId: item.iconId! ?? "",
     },
   })
 
   const originalPrice = form.watch("originalPrice")
-
-  React.useEffect(() => {
-    if (item.icon) {
-      setSelectedIcon({
-        id: item?.icon?.id!,
-        url: item?.icon?.url!,
-      })
-    }
-  }, [item])
 
   const onSubmit = (values: FormValues) => {
     startTransition(() => {
       const mergedValues = {
         ...values,
         price: Number(values.price),
-        ...(selectedIcon && { iconId: selectedIcon.id }),
+        ...(selectedIcon && { icon: selectedIcon }),
       }
       updateItem(mergedValues)
     })
   }
 
-  const handleUpdateImage = (data: { id: string; url: string }) => {
-    setSelectedIcon(data)
+  const handleUpdateImage = (data: { url: React.SetStateAction<string> }) => {
+    setSelectedIcon(data.url)
     setOpenDialog(false)
     toast({ variant: "success", description: ts("icon_selected") })
   }
 
   const handleDeleteImage = () => {
-    setSelectedIcon(null)
+    setSelectedIcon("")
     toast({
       variant: "success",
       description: ts("icon_deleted"),
@@ -301,74 +277,6 @@ export default function UpdateItemForm(props: EditItemFormProps) {
                     <p className="line-clamp-1">{originalPrice}</p>
                   </div>
                 </div>
-                <div>
-                  <FormLabel>{tsp("name")}</FormLabel>
-                  <FormField
-                    control={form.control}
-                    name="productId"
-                    rules={{
-                      required: tsp("required"),
-                    }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-72 justify-between",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value
-                                  ? products.find(
-                                      (product) => field.value === product.id,
-                                    )?.title
-                                  : tsp("placeholder")}
-                                <Icon.ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-72 p-0" align="start">
-                            <Command>
-                              <CommandInput
-                                placeholder={tsp("search_placeholder")}
-                              />
-                              <CommandEmpty>{tsp("not_found")}</CommandEmpty>
-                              <CommandGroup>
-                                <CommandList>
-                                  {products.map((product) => (
-                                    <CommandItem
-                                      value={product.id}
-                                      key={product.id}
-                                      className="cursor-pointer px-2 py-1 hover:bg-muted"
-                                      onSelect={() => {
-                                        form.setValue("productId", product.id)
-                                      }}
-                                    >
-                                      <Icon.Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          product.id === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                        )}
-                                      />
-                                      {product.title}
-                                    </CommandItem>
-                                  ))}
-                                </CommandList>
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
                 <FormField
                   control={form.control}
                   name="price"
@@ -408,7 +316,7 @@ export default function UpdateItemForm(props: EditItemFormProps) {
                     >
                       <div className="relative aspect-video h-[150px] w-full cursor-pointer rounded-sm border-2 border-muted/30 lg:h-full lg:max-h-[400px]">
                         <Image
-                          src={selectedIcon.url}
+                          src={selectedIcon}
                           className="rounded-lg object-cover"
                           fill
                           alt={ts("icon")}
