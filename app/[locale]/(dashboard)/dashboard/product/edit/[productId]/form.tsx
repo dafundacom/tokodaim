@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import DashboardAddItems, {
   type SelectedItemsProps,
 } from "@/components/dashboard/dashboard-add-items"
-import DashboardShowOptions from "@/components/dashboard/dashboard-show-options"
+import DashboardProductShowOptions from "@/components/dashboard/dashboard-product-show-options"
 import Image from "@/components/image"
 import DeleteMediaButton from "@/components/media/delete-media-button"
 import SelectMediaDialog from "@/components/media/select-media-dialog"
@@ -180,11 +180,18 @@ export default function UpdateProductForm(props: EditProductFormProps) {
   }
 
   const handleUpdateItem = React.useCallback((values: SelectedItemsProps[]) => {
-    setSelectedItem((prev) => [...(prev as SelectedItemsProps[]), ...values])
-    const itemId = values.map((value) => {
-      return value.id
+    setSelectedItem((prev) => {
+      const filteredPrev = prev.filter(
+        (item) => !values.some((value) => value.id === item.id),
+      )
+      return [...filteredPrev, ...values]
     })
-    setSelectedItemId((prev) => [...prev, ...itemId])
+
+    const itemId = values.map((value) => value.id)
+    setSelectedItemId((prev) => {
+      const filteredPrev = prev.filter((id) => !itemId.includes(id))
+      return [...filteredPrev, ...itemId]
+    })
   }, [])
 
   const handleDeleteItem = React.useCallback(
@@ -712,11 +719,16 @@ export default function UpdateProductForm(props: EditProductFormProps) {
                       </div>
                     </TableCell>
                     <TableCell className="p-4 align-middle">
-                      <DashboardShowOptions
+                      <DashboardProductShowOptions
                         onDelete={() => {
                           void handleDeleteItem(item)
                         }}
-                        editUrlNewTab={`/dashboard/item/edit/${item.id}`}
+                        onEditItem={true}
+                        onEditItemData={item}
+                        onEditItemPriceLists={priceLists}
+                        updateItems={(data) => {
+                          handleUpdateItem(data)
+                        }}
                         description={item.title}
                       />
                     </TableCell>

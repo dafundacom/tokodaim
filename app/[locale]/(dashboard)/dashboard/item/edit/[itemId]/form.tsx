@@ -206,7 +206,7 @@ export default function UpdateItemForm(props: EditItemFormProps) {
                                 {field.value
                                   ? priceLists.find(
                                       (priceList) =>
-                                        field.value === priceList.productName,
+                                        field.value === priceList.sku,
                                     )?.productName
                                   : ts("placeholder")}
                                 <Icon.ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
