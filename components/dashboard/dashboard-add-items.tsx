@@ -71,6 +71,7 @@ const DashboardAddItems: React.FunctionComponent<DashboardAddItemsProps> = (
     onSuccess: (data) => {
       if (data) {
         updateItems(data)
+        form.rest()
         toast({
           variant: "success",
           description: ts("create_success"),
