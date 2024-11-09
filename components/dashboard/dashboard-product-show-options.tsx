@@ -6,6 +6,7 @@ import NextLink from "next/link"
 
 import { AlertDelete } from "@/components/alert-delete"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +14,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icon } from "@/components/ui/icon"
+import type { SelectDigiflazzPriceList } from "@/lib/db/schema"
 import { useI18n } from "@/lib/locales/client"
+import DashboardEditItem, {
+  type SelectedItemsProps,
+} from "./dashboard-edit-item"
 
-interface DashboardShowOptionsProps {
+interface DashboardProductShowOptionsProps {
   onDelete?: () => void
+  onEditItem?: boolean
+  onEditItemData?: SelectedItemsProps
+  onEditItemPriceLists: SelectDigiflazzPriceList[]
+  updateItems?: (_data: SelectedItemsProps[]) => void
   editUrl?: string | UrlObject
   editUrlNewTab?: string | UrlObject
   translateUrl?: string | UrlObject
@@ -24,9 +33,15 @@ interface DashboardShowOptionsProps {
   description?: string
 }
 
-const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
+const DashboardProductShowOptions: React.FC<
+  DashboardProductShowOptionsProps
+> = (props) => {
   const {
     onDelete,
+    onEditItem,
+    onEditItemData,
+    onEditItemPriceLists,
+    updateItems,
     editUrl,
     editUrlNewTab,
     translateUrl,
@@ -35,6 +50,7 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
   } = props
 
   const [openDialogDelete, setOpenDialogDelete] = React.useState<boolean>(false)
+  const [openDialogEdit, setOpenDialogEdit] = React.useState<boolean>(false)
 
   const t = useI18n()
 
@@ -51,6 +67,12 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
             <DropdownMenuItem onClick={() => setOpenDialogDelete(true)}>
               <Icon.Delete className="mr-2 size-4" />
               {t("delete")}
+            </DropdownMenuItem>
+          )}
+          {onEditItem && (
+            <DropdownMenuItem onClick={() => setOpenDialogEdit(true)}>
+              <Icon.Edit className="mr-2 size-4" />
+              {t("edit")}
             </DropdownMenuItem>
           )}
           {editUrl && (
@@ -96,8 +118,24 @@ const DashboardShowOptions: React.FC<DashboardShowOptionsProps> = (props) => {
           onClose={() => setOpenDialogDelete(false)}
         />
       )}
+      {onEditItem && (
+        <Dialog open={openDialogEdit} onOpenChange={setOpenDialogEdit}>
+          <DialogContent className="w-full max-w-xl">
+            <div className="overflow-y-auto">
+              <div className="space-y-5 px-4">
+                <DialogTitle>{t("update")}</DialogTitle>
+                <DashboardEditItem
+                  updateItems={updateItems!}
+                  item={onEditItemData!}
+                  priceLists={onEditItemPriceLists}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   )
 }
 
-export default DashboardShowOptions
+export default DashboardProductShowOptions

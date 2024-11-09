@@ -205,6 +205,7 @@ export const itemRouter = createTRPCRouter({
             updatedAt: sql`CURRENT_TIMESTAMP`,
           })
           .where(eq(items.id, input.id))
+          .returning()
 
         return data
       } catch (error) {
