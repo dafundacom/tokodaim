@@ -228,7 +228,7 @@ export default function CreateItemForm(props: CreateItemFormProps) {
                                             : "opacity-0",
                                         )}
                                       />
-                                      {priceList.productName}
+                                      {priceList.productName} ({priceList.sku})
                                     </CommandItem>
                                   ))}
                                 </CommandList>

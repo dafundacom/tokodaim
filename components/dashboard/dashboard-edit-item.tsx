@@ -218,7 +218,7 @@ const DashboardEditItem: React.FunctionComponent<DashboardEditItemProps> = (
                                         : "opacity-0",
                                     )}
                                   />
-                                  {priceList.productName}
+                                  {priceList.productName} ({priceList.sku})
                                 </CommandItem>
                               ))}
                             </CommandList>
