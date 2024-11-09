@@ -132,6 +132,7 @@ export const productRouter = createTRPCRouter({
               id: items.id,
               title: items.title,
               sku: items.sku,
+              originalPrice: items.originalPrice,
               price: items.price,
             })
             .from(productItems)

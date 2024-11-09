@@ -610,25 +610,49 @@ export default function UpdateProductForm(props: EditProductFormProps) {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("title")}</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead>{tsi("price")}</TableHead>
+                  <TableHead className="hidden whitespace-nowrap lg:table-cell">
+                    SKU
+                  </TableHead>
+                  <TableHead className="hidden whitespace-nowrap lg:table-cell">
+                    {tsi("original_price")}
+                  </TableHead>
+                  <TableHead className="hidden whitespace-nowrap lg:table-cell">
+                    {tsi("price")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {selectedItem.map((item: SelectedItemsProps) => (
                   <TableRow key={item.id}>
-                    <TableCell className="whitespace-nowrap">
-                      <div className="flex">
-                        <span className="font-medium">{item.title}</span>
+                    <TableCell className="max-w-[120px] align-middle">
+                      <div className="flex flex-col">
+                        <span className="line-clamp-3 font-medium">
+                          {item.title}
+                        </span>
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
                       <div className="flex">
-                        <span className="font-medium">{item.sku}</span>
+                        <span className="overflow-hidden text-ellipsis font-medium">
+                          {item.sku}
+                        </span>
                       </div>
                     </TableCell>
-                    <TableCell>{item.price}</TableCell>
-                    <TableCell align="right">
+                    <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                      <div className="flex">
+                        <span className="overflow-hidden text-ellipsis font-medium">
+                          {item.originalPrice}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden whitespace-nowrap align-middle lg:table-cell">
+                      <div className="flex">
+                        <span className="overflow-hidden text-ellipsis font-medium">
+                          {item.price}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4 align-middle">
                       <DashboardShowOptions
                         onDelete={() => {
                           void handleDeleteItem(item)
