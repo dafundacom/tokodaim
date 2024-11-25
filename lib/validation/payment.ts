@@ -1,7 +1,5 @@
 import { z } from "zod"
 
-import { TRIPAY_CLOSED_PAYMENT_CODE_TYPE } from "./tripay"
-
 export const PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
 
 export const PAYMENT_STATUS = [
@@ -21,10 +19,9 @@ const paymentInput = {
     required_error: "Invoice Id is required",
     invalid_type_error: "Invoice Id must be a string",
   }),
-  method: z.enum(TRIPAY_CLOSED_PAYMENT_CODE_TYPE, {
-    required_error: "Payment Method is required",
-    invalid_type_error:
-      "your payment method type doesnt exist on available option.",
+  method: z.string({
+    required_error: "Mehotd is required",
+    invalid_type_error: "Method must be a string",
   }),
   reference: z
     .string({
