@@ -206,7 +206,7 @@ const DashboardAddItems: React.FunctionComponent<DashboardAddItemsProps> = (
                                         : "opacity-0",
                                     )}
                                   />
-                                  {priceList.productName}
+                                  {priceList.productName} ({priceList.sku})
                                 </CommandItem>
                               ))}
                             </CommandList>

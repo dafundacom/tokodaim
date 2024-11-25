@@ -1,5 +1,6 @@
+import createTripayConfig from "tripay-sdk"
+
 import env from "@/env"
-import createTripayConfig from "@/lib/sdk/tripay"
 
 export const tripay = createTripayConfig({
   apiKey:

@@ -1,8 +1,8 @@
 import * as React from "react"
+import type { PaymentChannelReturnProps } from "tripay-sdk"
 
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/locales/client"
-import type { PaymentChannelReturnProps } from "@/lib/sdk/tripay"
 import {
   paymentMethodsEWallet,
   paymentMethodsMart,

@@ -242,7 +242,7 @@ export default function UpdateItemForm(props: EditItemFormProps) {
                                             : "opacity-0",
                                         )}
                                       />
-                                      {priceList.productName}
+                                      {priceList.productName} ({priceList.sku})
                                     </CommandItem>
                                   ))}
                                 </CommandList>

@@ -5,19 +5,19 @@
 import * as React from "react"
 import NextLink from "next/link"
 import { useParams } from "next/navigation"
+import type { ClosedTransactionDetailReturnProps } from "tripay-sdk"
 
 import Image from "@/components/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import type { SelectPayment } from "@/lib/db/schema"
-import type { CreateClosedTransactionReturnProps } from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
 import { copyToClipboard } from "@/lib/utils"
 import { changePriceToIDR } from "@/lib/utils/top-up"
 
 interface DetailTransactionContentProps {
-  tripayPaymentDetails?: CreateClosedTransactionReturnProps["data"]
+  tripayPaymentDetails?: ClosedTransactionDetailReturnProps["data"]
   paymentDetails?: SelectPayment
 }
 

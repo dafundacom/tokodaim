@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { TransaksiReturnProps } from "digiflazz-sdk"
 import { useForm } from "react-hook-form"
 import { slugify } from "transliteration"
 
@@ -32,7 +33,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast/use-toast"
 import type { SelectDigiflazzPriceList } from "@/lib/db/schema/digiflazz-price-list"
 import { useI18n, useScopedI18n } from "@/lib/locales/client"
-import type { TransaksiReturnProps } from "@/lib/sdk/digiflazz"
 import { api } from "@/lib/trpc/react"
 import { cn, uniqueCharacter } from "@/lib/utils"
 import DashboardManualTopUpHeader from "./header"
@@ -176,7 +176,7 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
                                       : "opacity-0",
                                   )}
                                 />
-                                {priceList.productName}
+                                {priceList.productName} ({priceList.sku})
                               </CommandItem>
                             ))}
                           </CommandList>
