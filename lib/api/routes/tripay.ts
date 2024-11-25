@@ -1,17 +1,19 @@
 import { sql } from "drizzle-orm"
-import { z } from "zod"
-
-import { createTRPCRouter, publicProcedure } from "@/lib/api/trpc"
-import { settings } from "@/lib/db/schema/setting"
 import type {
+  ClosedTransactionDetailReturnProps,
   CreateClosedTransactionReturnProps,
   CreateOpenTransactionReturnProps,
   FeeCalculatorReturnProps,
   InstructionReturnProps,
+  OpenTransactionDetailReturnProps,
   OpenTransactionsReturnProps,
   PaymentChannelReturnProps,
   TransactionsReturnProps,
-} from "@/lib/sdk/tripay"
+} from "tripay-sdk"
+import { z } from "zod"
+
+import { createTRPCRouter, publicProcedure } from "@/lib/api/trpc"
+import { settings } from "@/lib/db/schema/setting"
 import { cuid } from "@/lib/utils"
 import {
   tripayCreateClosedTransactionSchema,
@@ -132,9 +134,9 @@ export const tripayRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.openTransactions({
-          uuid: input,
-        })) as OpenTransactionsReturnProps
+        const res = (await ctx.tripay.openTransactions(
+          input,
+        )) as OpenTransactionsReturnProps
 
         const { data } = res
         return data ?? undefined
@@ -192,9 +194,9 @@ export const tripayRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.closedTransactionDetail({
-          reference: input,
-        })) as CreateClosedTransactionReturnProps
+        const res = (await ctx.tripay.closedTransactionDetail(
+          input,
+        )) as ClosedTransactionDetailReturnProps
 
         const { data } = res
 
@@ -207,9 +209,9 @@ export const tripayRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       try {
-        const res = (await ctx.tripay.openTransactionDetail({
-          uuid: input,
-        })) as CreateOpenTransactionReturnProps
+        const res = (await ctx.tripay.openTransactionDetail(
+          input,
+        )) as OpenTransactionDetailReturnProps
 
         const { data } = res
 

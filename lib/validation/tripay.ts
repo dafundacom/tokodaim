@@ -1,28 +1,26 @@
 import { z } from "zod"
 
-const TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
-  "MYBVA",
-  "PERMATAVA",
+export const TRIPAY_CLOSED_PAYMENT_CODE_TYPE = [
+  "ALFAMART",
+  "ALFAMIDI",
   "BNIVA",
   "BRIVA",
-  "MANDIRIVA",
-  "BCAVA",
-  "SMSVA",
-  "MUAMALATVA",
-  "CIMBVA",
-  "SAMPOERNAVA",
   "BSIVA",
-  "DANAMONVA",
+  "CIMBVA",
   "DANA",
-  "ALFAMART",
+  "DANAMONVA",
   "INDOMARET",
-  "ALFAMIDI",
+  "MANDIRIVA",
+  "MUAMALATVA",
+  "OCBCVA",
+  "OTHERBANKVA",
   "OVO",
+  "PERMATAVA",
   "QRIS",
   "QRIS2",
   "QRISC",
+  "QRIS_SHOPPEEPAY",
   "SHOPEEPAY",
-  "DANA",
 ] as const
 
 export const tripayClosedPaymentCodeType = z.enum(

@@ -5,6 +5,11 @@ import * as React from "react"
 import NextImage from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import type {
+  ClosedPaymentCode,
+  PaymentChannelReturnProps,
+  ClosedPaymentCode as PaymentMethodProps,
+} from "tripay-sdk"
 
 import Image from "@/components/image"
 import ItemList from "@/components/item/item-list"
@@ -34,11 +39,6 @@ import AddVoucher from "@/components/voucher/add-voucher"
 import env from "@/env"
 import type { SelectItem, SelectProduct, SelectUser } from "@/lib/db/schema"
 import type { SelectVoucher } from "@/lib/db/schema/voucher"
-import type {
-  ClosedPaymentCode,
-  PaymentChannelReturnProps,
-  ClosedPaymentCode as PaymentMethodProps,
-} from "@/lib/sdk/tripay"
 import { api } from "@/lib/trpc/react"
 import { uniqueCharacter } from "@/lib/utils"
 import {

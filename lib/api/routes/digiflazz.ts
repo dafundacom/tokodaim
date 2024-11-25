@@ -1,15 +1,15 @@
 import { TRPCError } from "@trpc/server"
+import type {
+  CekSaldoReturnProps,
+  DepositReturnProps,
+  TransaksiReturnProps,
+} from "digiflazz-sdk"
 
 import {
   adminProtectedProcedure,
   createTRPCRouter,
   publicProcedure,
 } from "@/lib/api/trpc"
-import type {
-  CekSaldoReturnProps,
-  DepositReturnProps,
-  TransaksiReturnProps,
-} from "@/lib/sdk/digiflazz"
 import {
   digiflazzCreateDepositSchema,
   digiflazzCreateTransactionSchema,

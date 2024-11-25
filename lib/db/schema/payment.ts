@@ -1,14 +1,14 @@
 import { relations } from "drizzle-orm"
 import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import {
-  PAYMENT_METHOD,
-  PAYMENT_PROVIDER,
-  PAYMENT_STATUS,
-} from "@/lib/validation/payment"
+import { PAYMENT_PROVIDER, PAYMENT_STATUS } from "@/lib/validation/payment"
+import { TRIPAY_CLOSED_PAYMENT_CODE_TYPE } from "@/lib/validation/tripay"
 import { users } from "./user"
 
-export const paymentMethodEnum = pgEnum("payment_method", PAYMENT_METHOD)
+export const paymentMethodEnum = pgEnum(
+  "payment_method",
+  TRIPAY_CLOSED_PAYMENT_CODE_TYPE,
+)
 
 export const paymentStatusEnum = pgEnum("payment_status", PAYMENT_STATUS)
 

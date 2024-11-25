@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
+import { checkIgn } from "check-ign"
 import { z } from "zod"
-
-import { checkIgn } from "@/lib/check-ign"
 
 const checkIgnSchema = z.object({
   game: z.enum([

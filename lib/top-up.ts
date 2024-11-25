@@ -1,11 +1,11 @@
 "use server"
 
 // TODO: update original price from item db
+import type { DaftarHargaPrePaidReturnProps } from "digiflazz-sdk"
 import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { digiflazz } from "@/lib/digiflazz"
-import type { DaftarHargaPrePaidReturnProps } from "@/lib/sdk/digiflazz"
 import { cuid } from "@/lib/utils"
 import { digiflazzPriceList } from "./db/schema/digiflazz-price-list"
 import { getScopedI18n } from "./locales/server"
