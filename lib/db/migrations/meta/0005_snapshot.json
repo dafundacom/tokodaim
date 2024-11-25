@@ -1,5 +1,5 @@
 {
-  "id": "b3a25500-6ca7-43fa-aece-2ce8ecaee153",
+  "id": "da6dcc94-73fd-4051-b09a-d4eb6801dfd8",
   "prevId": "94c25496-2b1d-461b-8b1a-9027923d471e",
   "version": "7",
   "dialect": "postgresql",
@@ -887,11 +887,9 @@
         },
         "method": {
           "name": "method",
-          "type": "payment_method",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'MANDIRIVA'"
+          "notNull": false
         },
         "customer_name": {
           "name": "customer_name",
@@ -2095,32 +2093,6 @@
       "values": [
         "id",
         "en"
-      ]
-    },
-    "public.payment_method": {
-      "name": "payment_method",
-      "schema": "public",
-      "values": [
-        "ALFAMART",
-        "ALFAMIDI",
-        "BNIVA",
-        "BRIVA",
-        "BSIVA",
-        "CIMBVA",
-        "DANA",
-        "DANAMONVA",
-        "INDOMARET",
-        "MANDIRIVA",
-        "MUAMALATVA",
-        "OCBCVA",
-        "OTHERBANKVA",
-        "OVO",
-        "PERMATAVA",
-        "QRIS",
-        "QRIS2",
-        "QRISC",
-        "QRIS_SHOPPEEPAY",
-        "SHOPEEPAY"
       ]
     },
     "public.payment_provider": {
