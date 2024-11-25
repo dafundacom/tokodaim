@@ -50,6 +50,13 @@
       "when": 1732556191400,
       "tag": "0006_mature_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1732557545771,
+      "tag": "0007_glossy_tyrannus",
+      "breakpoints": true
     }
   ]
 }

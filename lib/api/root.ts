@@ -6,6 +6,7 @@ import { itemRouter } from "./routes/item"
 import { mediaRouter } from "./routes/media"
 import { pageRouter } from "./routes/page"
 import { paymentRouter } from "./routes/payment"
+import { paymentMethodRouter } from "./routes/payment-method"
 import { productRouter } from "./routes/product"
 import { promoRouter } from "./routes/promo"
 import { settingRouter } from "./routes/setting"
@@ -22,15 +23,16 @@ export const appRouter = createTRPCRouter({
   article: articleRouter,
   articleComment: articleCommentRouter,
   digiflazz: digiflazzRouter,
+  item: itemRouter,
   media: mediaRouter,
   page: pageRouter,
+  payment: paymentRouter,
+  paymentMethod: paymentMethodRouter,
+  product: productRouter,
   promo: promoRouter,
   setting: settingRouter,
   topic: topicRouter,
-  product: productRouter,
   transaction: transactionRouter,
-  payment: paymentRouter,
-  item: itemRouter,
   tripay: tripayRouter,
   user: userRouter,
   userLink: userLinkRouter,
