@@ -1,6 +1,11 @@
 import { z } from "zod"
 
-export const PAYMENT_PROVIDER = ["tripay", "midtrans", "duitku"] as const
+export const PAYMENT_PROVIDER = [
+  "tripay",
+  "midtrans",
+  "duitku",
+  "xendit",
+] as const
 
 export const PAYMENT_STATUS = [
   "unpaid",
