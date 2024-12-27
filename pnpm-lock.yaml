@@ -142,8 +142,8 @@ importers:
         specifier: 2.9.1
         version: 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))(@tiptap/pm@2.9.1)
       '@tiptap/extension-strike':
-        specifier: 2.9.1
-        version: 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))
+        specifier: 2.10.4
+        version: 2.10.4(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))
       '@tiptap/extension-table':
         specifier: ^2.9.1
         version: 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))(@tiptap/pm@2.9.1)
@@ -2352,8 +2352,8 @@ packages:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
 
-  '@tiptap/extension-strike@2.9.1':
-    resolution: {integrity: sha512-V5aEXdML+YojlPhastcu7w4biDPwmzy/fWq0T2qjfu5Te/THcqDmGYVBKESBm5x6nBy5OLkanw2O+KHu2quDdg==}
+  '@tiptap/extension-strike@2.10.4':
+    resolution: {integrity: sha512-OibipsomFpOJWTPVX/z4Z53HgwDA93lE/loHGa+ONJfML1dO6Zd6UTwzaVO1/g8WOwRgwkYu/6JnhxLKRlP8Lg==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
 
@@ -7097,7 +7097,7 @@ snapshots:
       '@tiptap/core': 2.9.1(@tiptap/pm@2.9.1)
       '@tiptap/pm': 2.9.1
 
-  '@tiptap/extension-strike@2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))':
+  '@tiptap/extension-strike@2.10.4(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))':
     dependencies:
       '@tiptap/core': 2.9.1(@tiptap/pm@2.9.1)
 
