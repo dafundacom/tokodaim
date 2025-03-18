@@ -1,0 +1,76 @@
+{
+  "name": "@tokodaim/db",
+  "version": "0.0.2",
+  "private": true,
+  "description": "",
+  "keywords": [
+    "tokodaim",
+    "db"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Karyana Yandi <karyana@yandi.me>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dafundacom/tokodaim",
+    "directory": "packages/db"
+  },
+  "bugs": {
+    "url": "https://github.com/dafundacom/tokodaim/issues"
+  },
+  "scripts": {
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "generate": "pnpm with-env drizzle-kit generate",
+    "push": "pnpm with-env drizzle-kit push",
+    "studio": "pnpm with-env drizzle-kit studio",
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@yopem/eslint-config": "catalog:tooling",
+    "@yopem/prettier-config": "catalog:tooling",
+    "@yopem/typescript-config": "catalog:tooling",
+    "dotenv-cli": "catalog:",
+    "drizzle-kit": "^0.30.5",
+    "eslint": "catalog:tooling",
+    "prettier": "catalog:tooling",
+    "typescript": "catalog:tooling"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "catalog:",
+    "@tokodaim/utils": "workspace:*",
+    "drizzle-orm": "^0.40.1",
+    "drizzle-zod": "^0.7.0",
+    "next": "catalog:",
+    "postgres": "^3.4.5",
+    "zod": "catalog:"
+  }
+}

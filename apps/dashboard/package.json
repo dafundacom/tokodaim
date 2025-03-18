@@ -1,0 +1,49 @@
+{
+  "name": "@tokodaim/dashboard",
+  "version": "0.0.2",
+  "private": true,
+  "description": "",
+  "keywords": [
+    "tokodaim",
+    "dashboard"
+  ],
+  "author": "Karyana Yandi <karyana@yandi.me>",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dafundacom/tokodaim",
+    "directory": "apps/web"
+  },
+  "bugs": {
+    "url": "https://github.com/dafundacom/tokodaim/issues"
+  },
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --turbopack",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "next": "15.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.9",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss": "^4.0.9",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@yopem/eslint-config": "catalog:tooling",
+    "@yopem/prettier-config": "catalog:tooling",
+    "@yopem/typescript-config": "catalog:tooling",
+    "prettier": "catalog:tooling",
+    "typescript": "catalog:tooling"
+  },
+  "prettier": "@yopem/prettier-config/react"
+}

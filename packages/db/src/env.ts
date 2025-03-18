@@ -1,0 +1,11 @@
+import { createEnv } from "@t3-oss/env-nextjs"
+import { z } from "zod"
+
+export const env = createEnv({
+  server: {
+    APP_ENV: z.enum(["development", "production"]).optional(),
+    DATABASE_URL: z.string().min(1),
+  },
+  client: {},
+  experimental__runtimeEnv: {},
+})

@@ -1,0 +1,73 @@
+{
+  "name": "@tokodaim/api",
+  "version": "0.0.2",
+  "private": true,
+  "description": "",
+  "keywords": [
+    "tokodaim",
+    "api"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Karyana Yandi <karyana@yandi.me>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dafundacom/tokodaim",
+    "directory": "packages/api"
+  },
+  "bugs": {
+    "url": "https://github.com/dafundacom/tokodaim/issues"
+  },
+  "scripts": {
+    "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@yopem/eslint-config": "catalog:tooling",
+    "@yopem/prettier-config": "catalog:tooling",
+    "@yopem/typescript-config": "catalog:tooling",
+    "dotenv-cli": "catalog:",
+    "eslint": "catalog:tooling",
+    "prettier": "catalog:tooling",
+    "typescript": "catalog:tooling"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@t3-oss/env-nextjs": "catalog:",
+    "@tokodaim/auth": "workspace:*",
+    "@tokodaim/db": "workspace:*",
+    "@trpc/server": "^10.45.2",
+    "digiflazz-sdk": "^0.1.12",
+    "superjson": "^2.2.2",
+    "tripay-sdk": "^0.1.6",
+    "zod": "catalog:"
+  }
+}
