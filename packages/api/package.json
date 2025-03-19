@@ -64,9 +64,9 @@
     "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/auth": "workspace:*",
     "@tokodaim/db": "workspace:*",
-    "@trpc/server": "^10.45.2",
+    "@trpc/server": "catalog:trpc",
     "digiflazz-sdk": "^0.1.12",
-    "superjson": "^2.2.2",
+    "superjson": "catalog:",
     "tripay-sdk": "^0.1.6",
     "zod": "catalog:"
   },
