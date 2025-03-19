@@ -29,20 +29,21 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "next": "catalog:",
     "react": "catalog:react",
-    "react-dom": "catalog:react",
-    "next": "15.2.3"
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
-    "@types/node": "22.13.9",
-    "tailwindcss-animate": "^1.0.7",
-    "tailwindcss": "^4.0.9",
+    "@tailwindcss/postcss": "catalog:tailwindcss",
+    "@types/node": "catalog:",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@yopem/eslint-config": "catalog:tooling",
     "@yopem/prettier-config": "catalog:tooling",
     "@yopem/typescript-config": "catalog:tooling",
     "prettier": "catalog:tooling",
+    "tailwindcss": "catalog:tailwindcss",
+    "tailwindcss-animate": "catalog:tailwindcss",
     "typescript": "catalog:tooling"
   },
   "prettier": "@yopem/prettier-config/react"
