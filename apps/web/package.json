@@ -31,7 +31,8 @@
   "dependencies": {
     "next": "catalog:",
     "react": "catalog:react",
-    "react-dom": "catalog:react"
+    "react-dom": "catalog:react",
+    "tw-animate-css": "^1.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss",
