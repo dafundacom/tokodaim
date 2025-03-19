@@ -72,5 +72,6 @@
     "next": "catalog:",
     "postgres": "^3.4.5",
     "zod": "catalog:"
-  }
+  },
+  "prettier": "@yopem/prettier-config/base"
 }

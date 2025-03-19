@@ -69,5 +69,6 @@
     "superjson": "^2.2.2",
     "tripay-sdk": "^0.1.6",
     "zod": "catalog:"
-  }
+  },
+  "prettier": "@yopem/prettier-config/base"
 }

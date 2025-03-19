@@ -69,5 +69,6 @@
     "next": "catalog:",
     "react": "catalog:react",
     "zod": "catalog:"
-  }
+  },
+  "prettier": "@yopem/prettier-config/react"
 }
