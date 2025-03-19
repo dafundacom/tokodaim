@@ -8,7 +8,7 @@
     "web"
   ],
   "author": "Karyana Yandi <karyana@yandi.me>",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "repository": {
     "type": "git",

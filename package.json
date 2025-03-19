@@ -7,7 +7,7 @@
     "url": "git+https://github.com/dafundacom/tokodaim.git"
   },
   "author": "Karyana Yandi <karyana@yandi.me>",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "build": "turbo run build",
     "clean": "pnpm -r --parallel exec git clean -xdf dist .cache .turbo .next *.log",
