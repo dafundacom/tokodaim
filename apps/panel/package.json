@@ -1,11 +1,11 @@
 {
-  "name": "@tokodaim/dashboard",
+  "name": "@tokodaim/panel",
   "version": "0.0.2",
   "private": true,
   "description": "",
   "keywords": [
     "tokodaim",
-    "dashboard"
+    "panel"
   ],
   "author": "Karyana Yandi <karyana@yandi.me>",
   "license": "AGPL-3.0-or-later",

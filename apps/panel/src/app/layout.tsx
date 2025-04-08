@@ -24,11 +24,11 @@ export const metadata: Metadata = {
       ? env.NEXT_PUBLIC_SITE_URL
       : "http://localhost:3000",
   ),
-  title: "Dashboard",
-  description: "Tokodaim Dashboard",
+  title: "Panel",
+  description: "Tokodaim Panel",
   openGraph: {
-    title: "Dashboard",
-    description: "Tokodaim Dashboard",
+    title: "Panel",
+    description: "Tokodaim Panel",
     url: env.NEXT_PUBLIC_SITE_URL,
     siteName: env.NEXT_PUBLIC_SITE_TITLE,
   },

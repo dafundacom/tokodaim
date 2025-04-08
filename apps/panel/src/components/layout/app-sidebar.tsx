@@ -33,7 +33,7 @@ const data = {
   navMain: [
     {
       name: "Ringkasan",
-      url: "/dashboard",
+      url: "/",
       icon: Gauge,
     },
     {

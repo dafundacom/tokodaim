@@ -97,7 +97,7 @@ importers:
         specifier: catalog:tooling
         version: 5.8.2
 
-  apps/dashboard:
+  apps/panel:
     dependencies:
       '@t3-oss/env-nextjs':
         specifier: 'catalog:'
