@@ -67,7 +67,7 @@
   "dependencies": {
     "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/utils": "workspace:*",
-    "drizzle-orm": "^0.40.1",
+    "drizzle-orm": "^0.41.0",
     "drizzle-zod": "^0.7.0",
     "next": "catalog:",
     "postgres": "^3.4.5",
