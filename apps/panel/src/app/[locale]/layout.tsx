@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import "@/styles/globals.css"
 
+import type { LanguageType } from "@tokodaim/db"
 import { I18nProviderClient } from "@tokodaim/locales/client"
 import { ThemeProvider } from "@tokodaim/ui"
 
@@ -48,7 +49,7 @@ export const viewport: Viewport = {
 export default async function RootLayout(
   props: Readonly<{
     children: React.ReactNode
-    params: Promise<{ locale: "id" | "en" }>
+    params: Promise<{ locale: LanguageType }>
   }>,
 ) {
   const { children, params } = props
