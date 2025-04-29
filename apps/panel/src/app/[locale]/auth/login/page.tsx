@@ -1,10 +1,13 @@
 import NextLink from "next/link"
 import { redirect } from "next/navigation"
 import { getCurrentSession } from "@tokodaim/auth"
+import { getScopedI18n } from "@tokodaim/locales/server"
 import { Button, Icon as InternalIcon } from "@tokodaim/ui"
 import { Icon } from "@yopem-ui/react-icons"
 
 export default async function Page() {
+  const ts = await getScopedI18n("user")
+
   const { session } = await getCurrentSession()
 
   if (session) {
@@ -21,23 +24,19 @@ export default async function Page() {
       >
         <NextLink href="/">
           <Icon name="ChevronLeft" className="mr-2 size-4" />
-          {/* {ts("back_to_home")} */}
-          Back to Home
+          {ts("back_to_home")}
         </NextLink>
       </Button>
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
-          {/* <h1 className="text-3xl font-bold">{ts("welcome_back")}</h1> */}
-          <h1 className="text-3xl font-bold">Welcome Back</h1>
+          <h1 className="text-3xl font-bold">{ts("welcome_back")}</h1>
         </div>
-        {/* <p className="p-5 text-center">{ts("header")}</p> */}
-        <p className="p-5 text-center">Halo</p>
+        <p className="p-5 text-center">{ts("header")}</p>
         <div className="flex items-center justify-center">
           <Button asChild variant="outline">
             <NextLink href="/auth/login/google">
               <InternalIcon.GoogleColored className="mr-2" />
-              {/* {ts("login_with_google")} */}
-              Login
+              {ts("login_with_google")}
             </NextLink>
           </Button>
         </div>
