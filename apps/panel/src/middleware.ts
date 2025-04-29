@@ -14,6 +14,15 @@ const I18nMiddleware = createI18nMiddleware({
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (request.method === "GET") {
     const token = request.cookies.get("session")?.value ?? null
+
+    const url = request.nextUrl.clone()
+    const isAuthPage = url.pathname.startsWith("/auth/")
+
+    if (token === null && !isAuthPage) {
+      url.pathname = "/auth/login"
+      return NextResponse.redirect(url)
+    }
+
     const response = I18nMiddleware(request)
 
     if (token !== null) {
