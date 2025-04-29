@@ -1,8 +1,8 @@
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
-import { databaseUrl } from "./env"
 import * as schema from "./schema"
+import { databaseUrl } from "./utils/env"
 
 const queryClient = postgres(databaseUrl)
 

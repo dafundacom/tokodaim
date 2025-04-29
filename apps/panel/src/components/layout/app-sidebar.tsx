@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useI18n } from "@tokodaim/locales/client"
 import {
   Sidebar,
   SidebarContent,
@@ -11,12 +12,13 @@ import {
   SidebarMenuItem,
 } from "@tokodaim/ui"
 import {
-  BadgeDollarSign,
+  ArrowRightLeft,
   CreditCard,
   Gauge,
   Images,
   Package,
   Package2,
+  TicketPercent,
   Users,
   Wallet,
 } from "lucide-react"
@@ -24,57 +26,65 @@ import {
 import { NavMain } from "@/components/layout/nav-main"
 import { NavUser } from "@/components/layout/nav-user"
 
-const data = {
-  user: {
-    name: "admin",
-    email: "adminmtokodaim.com",
-    avatar: "/avatars/admin.jpg",
-  },
-  navMain: [
-    {
-      name: "Ringkasan",
-      url: "/",
-      icon: Gauge,
-    },
-    {
-      name: "Produk",
-      url: "/product",
-      icon: Package,
-    },
-    {
-      name: "Item",
-      url: "/item",
-      icon: Package2,
-    },
-    {
-      name: "Transaksi",
-      url: "/transaction",
-      icon: BadgeDollarSign,
-    },
-    {
-      name: "Pembayaran",
-      url: "/payment",
-      icon: CreditCard,
-    },
-    {
-      name: "Manual",
-      url: "/manual",
-      icon: Wallet,
-    },
-    {
-      name: "Media",
-      url: "/media",
-      icon: Images,
-    },
-    {
-      name: "Pengguna",
-      url: "/user",
-      icon: Users,
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const t = useI18n()
+
+  const data = {
+    user: {
+      name: "admin",
+      email: "adminmtokodaim.com",
+      avatar: "/avatars/admin.jpg",
+    },
+    navMain: [
+      {
+        name: t("overview"),
+        url: "/",
+        icon: Gauge,
+      },
+      {
+        name: t("products"),
+        url: "/product",
+        icon: Package,
+      },
+      {
+        name: t("items"),
+        url: "/item",
+        icon: Package2,
+      },
+      {
+        name: t("transactions"),
+        url: "/transaction",
+        icon: ArrowRightLeft,
+      },
+      {
+        name: t("payments"),
+        url: "/payment",
+        icon: CreditCard,
+      },
+      {
+        name: t("vouchers"),
+        url: "/voucher",
+        icon: TicketPercent,
+      },
+
+      {
+        name: "Manual",
+        url: "/manual",
+        icon: Wallet,
+      },
+      {
+        name: t("medias"),
+        url: "/media",
+        icon: Images,
+      },
+      {
+        name: t("users"),
+        url: "/user",
+        icon: Users,
+      },
+    ],
+  }
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>

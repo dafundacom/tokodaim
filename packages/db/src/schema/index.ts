@@ -1,5 +1,6 @@
 export * from "./digiflazz-price-list"
 export * from "./item"
+export * from "./language"
 export * from "./media"
 export * from "./payment"
 export * from "./payment-method"

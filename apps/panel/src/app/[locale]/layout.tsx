@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import "@/styles/globals.css"
 
+import { I18nProviderClient } from "@tokodaim/locales/client"
 import { ThemeProvider } from "@tokodaim/ui"
 
 import TRPCReactProvider from "@/lib/trpc/react"
@@ -44,19 +45,26 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode
+    params: Promise<{ locale: "id" | "en" }>
+  }>,
+) {
+  const { children, params } = props
+
+  const { locale } = await params
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </ThemeProvider>
+        <I18nProviderClient locale={locale}>
+          <ThemeProvider>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </ThemeProvider>
+        </I18nProviderClient>
       </body>
     </html>
   )

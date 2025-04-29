@@ -32,6 +32,7 @@
   "dependencies": {
     "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/api": "workspace:*",
+    "@tokodaim/db": "workspace:*",
     "@tokodaim/auth": "workspace:*",
     "@tokodaim/locales": "workspace:*",
     "@tokodaim/ui": "workspace:*",

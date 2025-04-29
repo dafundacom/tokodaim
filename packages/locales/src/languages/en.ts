@@ -391,6 +391,7 @@ export default {
   overview: "Overview",
   page: "Page",
   payment: "Payment",
+  payments: "Payments",
   position: "Position",
   privacy_policy: "Privacy Policy",
   product: "Product",

@@ -388,6 +388,7 @@ export default {
   overview: "Ringkasan",
   page: "Halaman",
   payment: "Pembayaran",
+  payments: "Pembayaran",
   position: "Posisi",
   privacy_policy: "Kebijakan Privasi",
   product: "Produk",
