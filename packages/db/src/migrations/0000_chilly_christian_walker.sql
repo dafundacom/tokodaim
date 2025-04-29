@@ -1,3 +1,4 @@
+CREATE TYPE "public"."language" AS ENUM('id', 'en');--> statement-breakpoint
 CREATE TYPE "public"."media_type" AS ENUM('image', 'audio', 'video', 'document', 'other');--> statement-breakpoint
 CREATE TYPE "public"."payment_provider" AS ENUM('tripay', 'midtrans', 'duitku', 'xendit');--> statement-breakpoint
 CREATE TYPE "public"."payment_status" AS ENUM('unpaid', 'paid', 'failed', 'expired', 'error', 'refunded');--> statement-breakpoint

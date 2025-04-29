@@ -1,5 +1,5 @@
 {
-  "id": "eb36fcac-df39-44c4-883a-5fb71ac27acc",
+  "id": "9d963749-5ad3-4368-8bee-e63890fba239",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -66,7 +66,9 @@
         "digiflazz_price_list_sku_unique": {
           "name": "digiflazz_price_list_sku_unique",
           "nullsNotDistinct": false,
-          "columns": ["sku"]
+          "columns": [
+            "sku"
+          ]
         }
       },
       "policies": {},
@@ -153,7 +155,9 @@
         "items_sku_unique": {
           "name": "items_sku_unique",
           "nullsNotDistinct": false,
-          "columns": ["sku"]
+          "columns": [
+            "sku"
+          ]
         }
       },
       "policies": {},
@@ -229,8 +233,12 @@
           "name": "medias_author_id_users_id_fk",
           "tableFrom": "medias",
           "tableTo": "users",
-          "columnsFrom": ["author_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -240,7 +248,9 @@
         "medias_name_unique": {
           "name": "medias_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         }
       },
       "policies": {},
@@ -374,8 +384,12 @@
           "name": "payments_userId_users_id_fk",
           "tableFrom": "payments",
           "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -385,7 +399,9 @@
         "payments_invoice_id_unique": {
           "name": "payments_invoice_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["invoice_id"]
+          "columns": [
+            "invoice_id"
+          ]
         }
       },
       "policies": {},
@@ -481,8 +497,12 @@
           "name": "_product_items_product_id_products_id_fk",
           "tableFrom": "_product_items",
           "tableTo": "products",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -490,8 +510,12 @@
           "name": "_product_items_item_id_items_id_fk",
           "tableFrom": "_product_items",
           "tableTo": "items",
-          "columnsFrom": ["item_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "item_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -499,7 +523,10 @@
       "compositePrimaryKeys": {
         "_product_items_product_id_item_id_pk": {
           "name": "_product_items_product_id_item_id_pk",
-          "columns": ["product_id", "item_id"]
+          "columns": [
+            "product_id",
+            "item_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -619,7 +646,9 @@
         "products_slug_unique": {
           "name": "products_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       },
       "policies": {},
@@ -764,8 +793,12 @@
           "name": "transactions_userId_users_id_fk",
           "tableFrom": "transactions",
           "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -775,7 +808,9 @@
         "transactions_invoice_id_unique": {
           "name": "transactions_invoice_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["invoice_id"]
+          "columns": [
+            "invoice_id"
+          ]
         }
       },
       "policies": {},
@@ -825,8 +860,12 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -836,7 +875,9 @@
         "accounts_provider_account_id_unique": {
           "name": "accounts_provider_account_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["provider_account_id"]
+          "columns": [
+            "provider_account_id"
+          ]
         }
       },
       "policies": {},
@@ -872,8 +913,12 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -960,7 +1005,9 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         }
       },
       "policies": {},
@@ -1048,12 +1095,16 @@
         "vouchers_name_unique": {
           "name": "vouchers_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         },
         "vouchers_voucher_code_unique": {
           "name": "vouchers_voucher_code_unique",
           "nullsNotDistinct": false,
-          "columns": ["voucher_code"]
+          "columns": [
+            "voucher_code"
+          ]
         }
       },
       "policies": {},
@@ -1062,35 +1113,74 @@
     }
   },
   "enums": {
+    "public.language": {
+      "name": "language",
+      "schema": "public",
+      "values": [
+        "id",
+        "en"
+      ]
+    },
     "public.media_type": {
       "name": "media_type",
       "schema": "public",
-      "values": ["image", "audio", "video", "document", "other"]
+      "values": [
+        "image",
+        "audio",
+        "video",
+        "document",
+        "other"
+      ]
     },
     "public.payment_provider": {
       "name": "payment_provider",
       "schema": "public",
-      "values": ["tripay", "midtrans", "duitku", "xendit"]
+      "values": [
+        "tripay",
+        "midtrans",
+        "duitku",
+        "xendit"
+      ]
     },
     "public.payment_status": {
       "name": "payment_status",
       "schema": "public",
-      "values": ["unpaid", "paid", "failed", "expired", "error", "refunded"]
+      "values": [
+        "unpaid",
+        "paid",
+        "failed",
+        "expired",
+        "error",
+        "refunded"
+      ]
     },
     "public.transaction_provider": {
       "name": "transaction_provider",
       "schema": "public",
-      "values": ["digiflazz", "apigames"]
+      "values": [
+        "digiflazz",
+        "apigames"
+      ]
     },
     "public.transaction_status": {
       "name": "transaction_status",
       "schema": "public",
-      "values": ["processing", "success", "failed", "error"]
+      "values": [
+        "processing",
+        "success",
+        "failed",
+        "error"
+      ]
     },
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": ["user", "member", "author", "admin"]
+      "values": [
+        "user",
+        "member",
+        "author",
+        "admin"
+      ]
     }
   },
   "schemas": {},

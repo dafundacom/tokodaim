@@ -22,4 +22,5 @@ const main = async () => {
   console.log("Database migrated successfully!")
 }
 
-void main()
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+main()
