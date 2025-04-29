@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server"
 import { appRouter, createTRPCContext } from "@tokodaim/api"
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
 
-import { env } from "@/env"
+import { appEnv } from "@/lib/utils/env"
 
 const createContext = (req: NextRequest) => {
   return createTRPCContext({
@@ -17,7 +17,7 @@ const handler = (req: NextRequest) =>
     router: appRouter,
     createContext: () => createContext(req),
     onError:
-      env.APP_ENV === "development"
+      appEnv === "development"
         ? ({ path, error }) => {
             console.error(
               `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,

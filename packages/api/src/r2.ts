@@ -1,13 +1,19 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 
-import { env } from "./env"
+import {
+  cfAccountId,
+  r2AccessKey,
+  r2Bucket,
+  r2Region,
+  r2SecretKey,
+} from "./utils/env"
 
 export const r2Config = {
-  region: env.R2_REGION,
-  endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  region: r2Region,
+  endpoint: `https://${cfAccountId}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: env.R2_ACCESS_KEY,
-    secretAccessKey: env.R2_SECRET_KEY,
+    accessKeyId: r2AccessKey,
+    secretAccessKey: r2SecretKey,
   },
 }
 
@@ -27,7 +33,7 @@ export async function uploadImageToR2({
   contentType = "image/webp",
 }: UploadImageToS3Props): Promise<string> {
   const params = {
-    Bucket: env.R2_BUCKET,
+    Bucket: r2Bucket,
     Key: fileName,
     Body: file,
     ContentType: contentType,

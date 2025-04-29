@@ -1,19 +1,20 @@
 import createTripayConfig from "tripay-sdk"
 
-import { env } from "./env"
+import {
+  appEnv,
+  tripayApiKeyDev,
+  tripayApiKeyProd,
+  tripayMerchantCodeDev,
+  tripayMerchantCodeProd,
+  tripayPrivateKeyDev,
+  tripayPrivateKeyProd,
+} from "./utils/env"
 
 export const tripay = createTripayConfig({
-  apiKey:
-    env.APP_ENV === "development"
-      ? env.TRIPAY_API_KEY_DEV
-      : env.TRIPAY_API_KEY_PROD,
+  apiKey: appEnv === "development" ? tripayApiKeyDev : tripayApiKeyProd,
   privateKey:
-    env.APP_ENV === "development"
-      ? env.TRIPAY_PRIVATE_KEY_DEV
-      : env.TRIPAY_PRIVATE_KEY_PROD,
+    appEnv === "development" ? tripayPrivateKeyDev : tripayPrivateKeyProd,
   merchant_code:
-    env.APP_ENV === "development"
-      ? env.TRIPAY_MERCHANT_CODE_DEV
-      : env.TRIPAY_MERCHANT_CODE_PROD,
-  isProduction: env.APP_ENV === "development" ? false : true,
+    appEnv === "development" ? tripayMerchantCodeDev : tripayMerchantCodeProd,
+  isProduction: appEnv === "development" ? false : true,
 })

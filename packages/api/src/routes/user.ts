@@ -1,6 +1,10 @@
 import {
+  accountTable,
   count,
+  db,
   eq,
+  generateUniqueUsername,
+  insertUserSchema,
   sql,
   updateUserSchema,
   userRole,
@@ -136,6 +140,31 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  existingUser: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      try {
+        const data = await ctx.db.query.accountTable.findFirst({
+          where: (accounts, { and, eq }) =>
+            and(
+              eq(accounts.providerAccountId, input),
+              eq(accounts.provider, "google"),
+            ),
+        })
+        return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
   count: adminProtectedProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(userTable)
@@ -175,6 +204,55 @@ export const userRouter = createTRPCRouter({
         })
 
         return data
+      } catch (error) {
+        console.error("Error:", error)
+        if (error instanceof TRPCError) {
+          throw error
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "An internal error occurred",
+          })
+        }
+      }
+    }),
+
+  create: publicProcedure
+    .input(
+      insertUserSchema
+        .omit({
+          username: true,
+        })
+        .extend({
+          providerAccountId: z.string(),
+        }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        if (!input.name) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "User Username is required",
+          })
+        }
+
+        const user = await db
+          .insert(userTable)
+          .values({
+            email: input.email,
+            name: input.name,
+            username: await generateUniqueUsername(input.name),
+            image: input.image,
+          })
+          .returning()
+
+        await db.insert(accountTable).values({
+          provider: "google",
+          providerAccountId: input.providerAccountId,
+          userId: user[0].id,
+        })
+
+        return user[0]
       } catch (error) {
         console.error("Error:", error)
         if (error instanceof TRPCError) {

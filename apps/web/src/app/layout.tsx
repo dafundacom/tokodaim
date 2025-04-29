@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
-import "./globals.css"
+import "@/styles/globals.css"
 
 import { ThemeProvider } from "@tokodaim/ui"
 
-import { env } from "@/env"
 import TRPCReactProvider from "@/lib/trpc/react"
+import { appEnv, siteTitle, siteUrl, xUsername } from "@/lib/utils/env"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,22 +20,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    env.APP_ENV === "production"
-      ? env.NEXT_PUBLIC_SITE_URL
-      : "http://localhost:3000",
+    appEnv === "production" ? siteUrl : "http://localhost:3000",
   ),
-  title: "Web",
-  description: "Tokodaim Web",
+  title: "Panel",
+  description: "Tokodaim Panel",
   openGraph: {
-    title: "Web",
-    description: "Tokodaim Web",
-    url: env.NEXT_PUBLIC_SITE_URL,
-    siteName: env.NEXT_PUBLIC_SITE_TITLE,
+    title: "Panel",
+    description: "Tokodaim Panel",
+    url: siteUrl,
+    siteName: siteTitle,
   },
   twitter: {
     card: "summary_large_image",
-    site: env.NEXT_PUBLIC_X_USERNAME,
-    creator: env.NEXT_PUBLIC_X_USERNAME,
+    site: xUsername,
+    creator: xUsername,
   },
 }
 

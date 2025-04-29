@@ -1,11 +1,13 @@
 import createDigiflazzConfig from "digiflazz-sdk"
 
-import { env } from "./env"
+import {
+  appEnv,
+  digiflazzApiKeyDev,
+  digiflazzApiKeyProd,
+  digiflazzUsername,
+} from "./utils/env"
 
 export const digiflazz = createDigiflazzConfig({
-  username: env.DIGIFLAZZ_USERNAME,
-  key:
-    env.APP_ENV === "development"
-      ? env.DIGIFLAZZ_API_KEY_DEV
-      : env.DIGIFLAZZ_API_KEY_PROD,
+  username: digiflazzUsername,
+  key: appEnv === "development" ? digiflazzApiKeyDev : digiflazzApiKeyProd,
 })

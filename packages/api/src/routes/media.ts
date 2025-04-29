@@ -10,7 +10,6 @@ import {
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
-import { env } from "../env"
 import { r2Client } from "../r2"
 import {
   adminProtectedProcedure,
@@ -18,6 +17,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "../trpc"
+import { r2Bucket } from "../utils/env"
 
 export const mediaRouter = createTRPCRouter({
   dashboard: adminProtectedProcedure
@@ -287,7 +287,7 @@ export const mediaRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const fileProperties = {
-          Bucket: env.R2_BUCKET,
+          Bucket: r2Bucket,
           Key: input,
         }
 

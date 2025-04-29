@@ -32,7 +32,9 @@
   "dependencies": {
     "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/api": "workspace:*",
+    "@tokodaim/auth": "workspace:*",
     "@tokodaim/ui": "workspace:*",
+    "@tokodaim/utils": "workspace:*",
     "@trpc/client": "catalog:trpc",
     "@trpc/react-query": "catalog:trpc",
     "@trpc/server": "catalog:trpc",
