@@ -14,7 +14,7 @@ import { api } from "@/lib/trpc/server"
 export async function GET(request: Request): Promise<Response> {
   const rateLimit = await globalGETRateLimit()
 
-  if (rateLimit) {
+  if (!rateLimit) {
     return new Response("Too many requests", {
       status: 429,
     })
