@@ -11,6 +11,7 @@ export default [
   {
     rules: {
       "no-restricted-imports": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
 ]
