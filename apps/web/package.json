@@ -30,7 +30,6 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/api": "workspace:*",
     "@tokodaim/auth": "workspace:*",
     "@tokodaim/locales": "workspace:*",

@@ -67,7 +67,6 @@
     "typescript": "catalog:tooling"
   },
   "dependencies": {
-    "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/utils": "workspace:*",
     "drizzle-orm": "^0.41.0",
     "drizzle-zod": "^0.7.0",

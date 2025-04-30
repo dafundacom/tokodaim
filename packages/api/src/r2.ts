@@ -10,10 +10,10 @@ import {
 
 export const r2Config = {
   region: r2Region,
-  endpoint: `https://${cfAccountId}.r2.cloudflarestorage.com`,
+  endpoint: `https://${cfAccountId!}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: r2AccessKey,
-    secretAccessKey: r2SecretKey,
+    accessKeyId: r2AccessKey!,
+    secretAccessKey: r2SecretKey!,
   },
 }
 

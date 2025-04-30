@@ -1,13 +1,6 @@
-import { createEnv } from "@t3-oss/env-nextjs"
-import { z } from "zod"
+/* eslint-disable turbo/no-undeclared-env-vars */
 
-export const env = createEnv({
-  server: {
-    APP_ENV: z.enum(["development", "production"]).optional(),
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
-    GOOGLE_REDIRECT_URL: z.string().min(1),
-  },
-  client: {},
-  experimental__runtimeEnv: {},
-})
+export const appEnv = process.env["APP_ENV"]
+export const googleClientId = process.env["GOOGLE_CLIENT_ID"]
+export const googleClientSecret = process.env["GOOGLE_CLIENT_SECRET"]
+export const googleRedirectUrl = process.env["GOOGLE_REDIRECT_URL"]

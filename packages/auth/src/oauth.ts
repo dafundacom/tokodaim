@@ -1,9 +1,9 @@
 import { Google } from "arctic"
 
-import { env } from "./env"
+import { googleClientId, googleClientSecret, googleRedirectUrl } from "./env"
 
 export const googleOAuth = new Google(
-  env.GOOGLE_CLIENT_ID || "",
-  env.GOOGLE_CLIENT_SECRET || "",
-  env.GOOGLE_REDIRECT_URL || "http://localhost:3000/login/google/callback",
+  googleClientId ?? "",
+  googleClientSecret ?? "",
+  googleRedirectUrl ?? "http://localhost:3000/login/google/callback",
 )

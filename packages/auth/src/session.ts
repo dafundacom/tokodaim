@@ -14,7 +14,7 @@ import {
   type SelectUser,
 } from "@tokodaim/db"
 
-import { env } from "./env"
+import { appEnv } from "./env"
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20)
@@ -85,7 +85,7 @@ export async function setSessionTokenCookie(token: string, expiresAt: Date) {
   nextCookies.set("session", token, {
     httpOnly: true,
     path: "/",
-    secure: env.APP_ENV === "production",
+    secure: appEnv === "production",
     sameSite: "lax",
     expires: expiresAt,
   })
@@ -97,7 +97,7 @@ export async function deleteSessionTokenCookie() {
   nextCookies.set("session", "", {
     httpOnly: true,
     path: "/",
-    secure: env.APP_ENV === "production",
+    secure: appEnv === "production",
     sameSite: "lax",
     maxAge: 0,
   })

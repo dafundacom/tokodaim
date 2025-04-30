@@ -63,7 +63,6 @@
   "dependencies": {
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "@t3-oss/env-nextjs": "catalog:",
     "@tokodaim/db": "workspace:*",
     "arctic": "^3.5.0",
     "next": "catalog:",

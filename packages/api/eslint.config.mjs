@@ -9,6 +9,7 @@ export default [
   {
     rules: {
       "no-restricted-imports": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
     },
   },
 ]

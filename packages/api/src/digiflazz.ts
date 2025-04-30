@@ -8,6 +8,6 @@ import {
 } from "./utils/env"
 
 export const digiflazz = createDigiflazzConfig({
-  username: digiflazzUsername,
-  key: appEnv === "development" ? digiflazzApiKeyDev : digiflazzApiKeyProd,
+  username: digiflazzUsername!,
+  key: appEnv === "development" ? digiflazzApiKeyDev! : digiflazzApiKeyProd!,
 })

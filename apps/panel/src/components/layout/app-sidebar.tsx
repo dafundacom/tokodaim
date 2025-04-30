@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import NextLink from "next/link"
 import type { SelectUser } from "@tokodaim/db"
 import { useI18n } from "@tokodaim/locales/client"
 import {
@@ -26,6 +27,7 @@ import {
 
 import { NavMain } from "@/components/layout/nav-main"
 import { NavUser } from "@/components/layout/nav-user"
+import { siteTitle } from "@/lib/utils/env"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: SelectUser
@@ -91,11 +93,11 @@ export function AppSidebar(props: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <NextLink href="/">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Tokodaim</span>
+                  <span className="truncate font-semibold">{siteTitle}</span>
                 </div>
-              </a>
+              </NextLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

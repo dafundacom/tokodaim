@@ -11,10 +11,10 @@ import {
 } from "./utils/env"
 
 export const tripay = createTripayConfig({
-  apiKey: appEnv === "development" ? tripayApiKeyDev : tripayApiKeyProd,
+  apiKey: appEnv === "development" ? tripayApiKeyDev! : tripayApiKeyProd!,
   privateKey:
-    appEnv === "development" ? tripayPrivateKeyDev : tripayPrivateKeyProd,
+    appEnv === "development" ? tripayPrivateKeyDev! : tripayPrivateKeyProd!,
   merchant_code:
-    appEnv === "development" ? tripayMerchantCodeDev : tripayMerchantCodeProd,
+    appEnv === "development" ? tripayMerchantCodeDev! : tripayMerchantCodeProd!,
   isProduction: appEnv === "development" ? false : true,
 })
