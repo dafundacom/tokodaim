@@ -17,7 +17,7 @@ import {
 } from "../trpc"
 
 export const paymentMethodRouter = createTRPCRouter({
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(
       z.object({
         page: z.number(),

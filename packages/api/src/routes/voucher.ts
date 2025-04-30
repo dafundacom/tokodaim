@@ -16,7 +16,7 @@ import {
 } from "../trpc"
 
 export const voucherRouter = createTRPCRouter({
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(
       z.object({
         page: z.number(),

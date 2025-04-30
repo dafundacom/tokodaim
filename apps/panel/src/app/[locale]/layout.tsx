@@ -5,7 +5,7 @@ import "@/styles/globals.css"
 
 import type { LanguageType } from "@tokodaim/db"
 import { I18nProviderClient } from "@tokodaim/locales/client"
-import { ThemeProvider } from "@tokodaim/ui"
+import { ThemeProvider, Toaster } from "@tokodaim/ui"
 
 import TRPCReactProvider from "@/lib/trpc/react"
 import { appEnv, siteTitle, siteUrl, xUsername } from "@/lib/utils/env"
@@ -63,6 +63,7 @@ export default async function RootLayout(
       >
         <I18nProviderClient locale={locale}>
           <ThemeProvider>
+            <Toaster />
             <TRPCReactProvider>{children}</TRPCReactProvider>
           </ThemeProvider>
         </I18nProviderClient>

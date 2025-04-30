@@ -21,7 +21,7 @@ import {
 } from "../trpc"
 
 export const userRouter = createTRPCRouter({
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(z.object({ page: z.number(), perPage: z.number() }))
     .query(async ({ ctx, input }) => {
       try {

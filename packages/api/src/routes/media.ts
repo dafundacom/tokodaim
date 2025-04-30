@@ -20,7 +20,7 @@ import {
 import { r2Bucket } from "../utils/env"
 
 export const mediaRouter = createTRPCRouter({
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(z.object({ page: z.number(), perPage: z.number() }))
     .query(async ({ ctx, input }) => {
       try {
@@ -44,7 +44,7 @@ export const mediaRouter = createTRPCRouter({
       }
     }),
 
-  dashboardInfinite: adminProtectedProcedure
+  panelInfinite: adminProtectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100),

@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "@tokodaim/api": "workspace:*",
-    "@tokodaim/db": "workspace:*",
     "@tokodaim/auth": "workspace:*",
+    "@tokodaim/db": "workspace:*",
     "@tokodaim/locales": "workspace:*",
     "@tokodaim/ui": "workspace:*",
     "@tokodaim/utils": "workspace:*",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss",
+    "@tanstack/react-query-devtools": "^5.74.11",
     "@types/node": "catalog:",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",

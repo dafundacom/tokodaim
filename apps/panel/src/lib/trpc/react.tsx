@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import type { AppRouter } from "@tokodaim/api"
-import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client"
+import { httpBatchStreamLink, loggerLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
 import SuperJSON from "superjson"
 
@@ -33,7 +34,7 @@ export default function TRPCReactProvider(props: {
             process.env["APP_ENV"] === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
-        unstable_httpBatchStreamLink({
+        httpBatchStreamLink({
           transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
           headers() {
@@ -53,6 +54,7 @@ export default function TRPCReactProvider(props: {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <api.Provider client={trpcClient} queryClient={queryClient}>
         {props.children}
       </api.Provider>

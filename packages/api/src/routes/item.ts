@@ -36,7 +36,7 @@ export const itemRouter = createTRPCRouter({
     }
   }),
 
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(
       z.object({
         page: z.number(),
