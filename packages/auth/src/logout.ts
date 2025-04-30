@@ -10,7 +10,9 @@ import {
 } from "./session"
 
 export async function logout(): Promise<ActionResult> {
-  if (!(await globalPOSTRateLimit())) {
+  const rateLimit = await globalPOSTRateLimit()
+
+  if (!rateLimit) {
     return {
       message: "Too many requests",
     }
@@ -25,7 +27,7 @@ export async function logout(): Promise<ActionResult> {
   }
 
   await invalidateSession(session.id)
-  await deleteSessionTokenCookie()
+  void deleteSessionTokenCookie()
 
   return redirect("/auth/login")
 }

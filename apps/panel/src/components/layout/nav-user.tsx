@@ -18,6 +18,8 @@ import {
 } from "@tokodaim/ui"
 import { Icon } from "@yopem-ui/react-icons"
 
+import LogOutButton from "@/components/auth/logout-button"
+
 export function NavUser(props: { user: SelectUser }) {
   const { user } = props
 
@@ -67,8 +69,7 @@ export function NavUser(props: { user: SelectUser }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Icon name="LogOut" />
-              Log out
+              <LogOutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
