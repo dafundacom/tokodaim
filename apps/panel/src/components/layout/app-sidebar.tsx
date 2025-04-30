@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { SelectUser } from "@tokodaim/db"
 import { useI18n } from "@tokodaim/locales/client"
 import {
   Sidebar,
@@ -26,15 +27,14 @@ import {
 import { NavMain } from "@/components/layout/nav-main"
 import { NavUser } from "@/components/layout/nav-user"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user: SelectUser
+}
+
+export function AppSidebar(props: AppSidebarProps) {
   const t = useI18n()
 
   const data = {
-    user: {
-      name: "admin",
-      email: "adminmtokodaim.com",
-      avatar: "/avatars/admin.jpg",
-    },
     navMain: [
       {
         name: t("overview"),
@@ -104,7 +104,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={props.user} />
       </SidebarFooter>
     </Sidebar>
   )
