@@ -14,7 +14,11 @@ export const ThemeSwitcher: React.FunctionComponent = () => {
   }
 
   return (
-    <Button variant="ghost" className="size-10 px-0" onClick={toggleTheme}>
+    <Button
+      variant="ghost"
+      className="size-10 px-0 cursor-pointer"
+      onClick={toggleTheme}
+    >
       {theme === "dark" ? (
         <Icon name="Sun" className="transition-all" />
       ) : (
