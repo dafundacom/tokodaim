@@ -58,6 +58,7 @@
     "typescript": "catalog:tooling"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "nanoid": "^5.1.4",
     "transliteration": "^2.3.5"
   },

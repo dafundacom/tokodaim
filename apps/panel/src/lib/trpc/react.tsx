@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-properties */
+/* eslint-disable turbo/no-undeclared-env-vars */
+
 "use client"
 
 import * as React from "react"
@@ -30,21 +33,16 @@ export default function TRPCReactProvider(props: {
       links: [
         loggerLink({
           enabled: (op) =>
-            // eslint-disable-next-line no-restricted-properties
             process.env["APP_ENV"] === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
         httpBatchStreamLink({
           transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
-          headers() {
-            const h = new Headers()
-            h.set("x-trpc-source", "nextjs-react")
-
-            const headers: Record<string, string> = {}
-            h.forEach((value, key) => {
-              headers[key] = value
-            })
+          // @ts-expect-error FIX LATER
+          headers: () => {
+            const headers = new Headers()
+            headers.set("x-trpc-source", "nextjs-react")
             return headers
           },
         }),
@@ -54,8 +52,8 @@ export default function TRPCReactProvider(props: {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
       <api.Provider client={trpcClient} queryClient={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
         {props.children}
       </api.Provider>
     </QueryClientProvider>
@@ -64,5 +62,5 @@ export default function TRPCReactProvider(props: {
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin
-  return "http://localhost:3000"
+  return `http://localhost:${process.env["PORT"] ?? 3000}`
 }
