@@ -5,7 +5,7 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-  ThemeSwitcher,
+  // ThemeSwitcher,
 } from "@tokodaim/ui"
 
 import { AppSidebar } from "@/components/layout/app-sidebar"
@@ -35,7 +35,7 @@ export default async function ProtectedLayout({
           <div className="flex items-center justify-center gap-2 px-4">
             <SidebarTrigger className="-ml-1 cursor-pointer" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <ThemeSwitcher />
+            {/* <ThemeSwitcher /> */}
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

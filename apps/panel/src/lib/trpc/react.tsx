@@ -3,32 +3,48 @@
 
 "use client"
 
-import * as React from "react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { useState } from "react"
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query"
 import type { AppRouter } from "@tokodaim/api"
 import { httpBatchStreamLink, loggerLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
+import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server"
 import SuperJSON from "superjson"
 
-const createQueryClient = () => new QueryClient()
+import { createQueryClient } from "./query-client"
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {
   if (typeof window === "undefined") {
+    // Server: always make a new query client
     return createQueryClient()
   }
-  return (clientQueryClientSingleton ??= createQueryClient())
+  // Browser: use singleton pattern to keep the same query client
+  clientQueryClientSingleton ??= createQueryClient()
+
+  return clientQueryClientSingleton
 }
 
 export const api = createTRPCReact<AppRouter>()
 
-export default function TRPCReactProvider(props: {
-  children: React.ReactNode
-}) {
+/**
+ * Inference helper for inputs.
+ *
+ * @example type HelloInput = RouterInputs['example']['hello']
+ */
+export type RouterInputs = inferRouterInputs<AppRouter>
+
+/**
+ * Inference helper for outputs.
+ *
+ * @example type HelloOutput = RouterOutputs['example']['hello']
+ */
+export type RouterOutputs = inferRouterOutputs<AppRouter>
+
+export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
 
-  const [trpcClient] = React.useState(() =>
+  const [trpcClient] = useState(() =>
     api.createClient({
       links: [
         loggerLink({
@@ -53,7 +69,6 @@ export default function TRPCReactProvider(props: {
   return (
     <QueryClientProvider client={queryClient}>
       <api.Provider client={trpcClient} queryClient={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
         {props.children}
       </api.Provider>
     </QueryClientProvider>
