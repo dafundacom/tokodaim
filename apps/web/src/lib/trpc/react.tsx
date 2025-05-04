@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import type { AppRouter } from "@tokodaim/api"
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
@@ -54,6 +55,7 @@ export default function TRPCReactProvider(props: {
   return (
     <QueryClientProvider client={queryClient}>
       <api.Provider client={trpcClient} queryClient={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
         {props.children}
       </api.Provider>
     </QueryClientProvider>
