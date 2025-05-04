@@ -44,7 +44,7 @@ export default function ItemTable(props: ItemTableProps) {
 
       if (errorData) {
         for (const field in errorData) {
-          if (errorData.hasOwnProperty(field)) {
+          if (Object.prototype.hasOwnProperty.call(errorData, field)) {
             errorData[field]?.forEach((errorMessage) => {
               toast({
                 variant: "danger",

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@tokodaim/text-editor/text-editor.css";
 @config "../../tailwind.config.ts";
 
 @custom-variant dark (&:is(.dark *));

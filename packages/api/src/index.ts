@@ -30,3 +30,5 @@ type RouterOutputs = inferRouterOutputs<AppRouter>
 
 export { createTRPCContext, appRouter, createCaller }
 export type { AppRouter, RouterInputs, RouterOutputs }
+
+export { uploadImageToR2 } from "./r2"

@@ -43,7 +43,7 @@ export default function UserTable(props: UserTableProps) {
 
       if (errorData) {
         for (const field in errorData) {
-          if (errorData.hasOwnProperty(field)) {
+          if (Object.prototype.hasOwnProperty.call(errorData, field)) {
             errorData[field]?.forEach((errorMessage) => {
               toast({
                 variant: "danger",

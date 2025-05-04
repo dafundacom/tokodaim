@@ -33,6 +33,7 @@
     "@tokodaim/api": "workspace:*",
     "@tokodaim/auth": "workspace:*",
     "@tokodaim/locales": "workspace:*",
+    "@tokodaim/text-editor": "workspace:*",
     "@tokodaim/ui": "workspace:*",
     "@tokodaim/utils": "workspace:*",
     "@trpc/client": "catalog:trpc",
@@ -43,11 +44,13 @@
     "next": "catalog:",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "react-hook-form": "catalog:",
     "superjson": "catalog:",
     "tw-animate-css": "catalog:tailwindcss",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "catalog:",
     "@tailwindcss/postcss": "catalog:tailwindcss",
     "@tanstack/react-query-devtools": "^5.74.11",
     "@types/node": "catalog:",

@@ -1,0 +1,102 @@
+{
+  "name": "@tokodaim/text-editor",
+  "version": "0.0.2",
+  "private": true,
+  "description": "",
+  "keywords": [
+    "tokodaim",
+    "text-editor"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      },
+      "require": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    },
+    "./text-editor.css": "./src/text-editor.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Karyana Yandi <karyana@yandi.me>",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dafundacom/tokodaim",
+    "directory": "packages/text-editor"
+  },
+  "bugs": {
+    "url": "https://github.com/dafundacom/tokodaim/issues"
+  },
+  "scripts": {
+    "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@yopem/eslint-config": "catalog:tooling",
+    "@yopem/prettier-config": "catalog:tooling",
+    "@yopem/typescript-config": "catalog:tooling",
+    "eslint": "catalog:tooling",
+    "prettier": "catalog:tooling",
+    "typescript": "catalog:tooling"
+  },
+  "dependencies": {
+    "@tiptap/core": "2.9.1",
+    "@tiptap/extension-blockquote": "2.9.1",
+    "@tiptap/extension-bold": "2.9.1",
+    "@tiptap/extension-bullet-list": "2.9.1",
+    "@tiptap/extension-character-count": "2.9.1",
+    "@tiptap/extension-code-block": "^2.9.1",
+    "@tiptap/extension-code-block-lowlight": "2.9.1",
+    "@tiptap/extension-color": "2.9.1",
+    "@tiptap/extension-document": "2.9.1",
+    "@tiptap/extension-dropcursor": "2.9.1",
+    "@tiptap/extension-focus": "^2.9.1",
+    "@tiptap/extension-gapcursor": "2.9.1",
+    "@tiptap/extension-hard-break": "2.9.1",
+    "@tiptap/extension-heading": "2.9.1",
+    "@tiptap/extension-highlight": "^2.9.1",
+    "@tiptap/extension-history": "2.9.1",
+    "@tiptap/extension-horizontal-rule": "2.9.1",
+    "@tiptap/extension-image": "2.9.1",
+    "@tiptap/extension-italic": "2.9.1",
+    "@tiptap/extension-link": "2.9.1",
+    "@tiptap/extension-list-item": "2.9.1",
+    "@tiptap/extension-ordered-list": "2.9.1",
+    "@tiptap/extension-paragraph": "2.9.1",
+    "@tiptap/extension-placeholder": "2.9.1",
+    "@tiptap/extension-strike": "2.9.1",
+    "@tiptap/extension-table": "^2.9.1",
+    "@tiptap/extension-table-cell": "^2.9.1",
+    "@tiptap/extension-table-header": "^2.9.1",
+    "@tiptap/extension-table-row": "^2.9.1",
+    "@tiptap/extension-text": "2.9.1",
+    "@tiptap/extension-text-align": "2.9.1",
+    "@tiptap/extension-text-style": "2.9.1",
+    "@tiptap/extension-underline": "2.9.1",
+    "@tiptap/extension-youtube": "2.9.1",
+    "@tiptap/react": "^2.9.1",
+    "@tiptap/suggestion": "^2.9.1",
+    "@tokodaim/ui": "workspace:*",
+    "@yopem-ui/react-icons": "catalog:"
+  },
+  "prettier": "@yopem/prettier-config/base"
+}

@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
+import { Icon } from "@yopem-ui/react-icons"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "../utils"
@@ -36,18 +37,46 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  loading?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      children,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
+    if (loading) {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled
+          ref={ref}
+          {...props}
+        >
+          <Icon name="Loader" className="mr-2 size-4" />
+          {children}
+        </Comp>
+      )
+    } else {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </Comp>
+      )
+    }
   },
 )
 Button.displayName = "Button"
