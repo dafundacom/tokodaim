@@ -5,7 +5,7 @@ import "@/styles/globals.css"
 
 import { ThemeProvider } from "@tokodaim/ui"
 
-import TRPCReactProvider from "@/lib/trpc/react"
+import { TRPCReactProvider } from "@/lib/trpc/react"
 import { appEnv, siteTitle, siteUrl, xUsername } from "@/lib/utils/env"
 
 const geistSans = Geist({
