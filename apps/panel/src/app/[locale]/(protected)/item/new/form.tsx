@@ -65,7 +65,7 @@ export default function CreateItemForm(props: CreateItemFormProps) {
         variant: "success",
         description: ts("create_success"),
       })
-      router.push("/dashboard/item")
+      router.push("/item")
     },
     onError: (error) => {
       const errorData = error.data?.zodError?.fieldErrors

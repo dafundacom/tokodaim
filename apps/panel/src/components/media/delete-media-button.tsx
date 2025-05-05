@@ -24,7 +24,7 @@ const DeleteMediaButton: React.FC<DeleteMediaButtonProps> = (props) => {
         variant="danger"
         onClick={() => setOpenDialog(true)}
       >
-        <Icon name="Delete" aria-label="Delete Media" />
+        <Icon name="Trash" aria-label="Delete Media" />
       </Button>
       <AlertDelete
         description={description}

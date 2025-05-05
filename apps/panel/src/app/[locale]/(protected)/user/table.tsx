@@ -126,7 +126,7 @@ export default function UserTable(props: UserTableProps) {
                     onDelete={() => {
                       void deleteUser(user.id)
                     }}
-                    editUrl={`/dashboard/user/edit/${user.id}`}
+                    editUrl={`/user/edit/${user.id}`}
                     viewUrl={`/user/${user.username}`}
                     description={user.name!}
                   />

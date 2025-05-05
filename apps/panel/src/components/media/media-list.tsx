@@ -115,7 +115,7 @@ const MediaList: React.FunctionComponent<MediaListProps> = (props) => {
                     <CopyMediaLinkButton url={media.url} />
                     <NextLink
                       aria-label={media.name}
-                      href={`/dashboard/media/edit/${media.id}`}
+                      href={`/media/edit/${media.id}`}
                     >
                       <NextImage
                         key={media.id}

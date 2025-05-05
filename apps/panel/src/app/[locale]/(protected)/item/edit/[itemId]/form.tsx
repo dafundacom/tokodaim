@@ -70,7 +70,7 @@ export default function UpdateItemForm(props: EditItemFormProps) {
         variant: "success",
         description: ts("update_success"),
       })
-      router.push("/dashboard/item")
+      router.push("/item")
     },
     onError: (error) => {
       const errorData = error.data?.zodError?.fieldErrors
