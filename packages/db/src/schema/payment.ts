@@ -63,3 +63,4 @@ export const insertPaymentSchema = createInsertSchema(paymentTable)
 export const updatePaymentSchema = createUpdateSchema(paymentTable)
 
 export type SelectPayment = typeof paymentTable.$inferSelect
+export type PaymentStatus = z.infer<typeof paymentStatus>
