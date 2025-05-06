@@ -46,7 +46,7 @@ export default function ItemContent() {
           items={items}
           paramsName="page"
           page={page ? parseInt(page) : 1}
-          lastPage={lastPage ?? 3}
+          lastPage={lastPage ?? 1}
           updateItems={updateItems}
           updateItemsCount={updateItemsCount}
         />

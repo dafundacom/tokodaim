@@ -5,30 +5,30 @@ import { useSearchParams } from "next/navigation"
 import { useScopedI18n } from "@tokodaim/locales/client"
 
 import { api } from "@/lib/trpc/react"
-import UserTable from "./table"
+import TransactionTable from "./table"
 
-export default function UserContent() {
+export default function TransactionContent() {
   const searchParams = useSearchParams()
 
   const page = searchParams.get("page")
 
-  const ts = useScopedI18n("user")
+  const ts = useScopedI18n("transaction")
 
   const perPage = 10
 
-  const { data: usersCount, refetch: updateUsersCount } =
-    api.user.count.useQuery()
-
-  const lastPage = usersCount && Math.ceil(usersCount / perPage)
-
   const {
-    data: users,
+    data: transactions,
     isLoading,
-    refetch: updateUsers,
-  } = api.user.panel.useQuery({
+    refetch: updateTransactions,
+  } = api.transaction.panel.useQuery({
     page: page ? parseInt(page) : 1,
     perPage: perPage,
   })
+
+  const { data: transactionsCount, refetch: updateTransactionsCount } =
+    api.transaction.count.useQuery()
+
+  const lastPage = transactionsCount && Math.ceil(transactionsCount / perPage)
 
   React.useEffect(() => {
     if (lastPage && page && parseInt(page) !== 1 && parseInt(page) > lastPage) {
@@ -38,14 +38,14 @@ export default function UserContent() {
 
   return (
     <>
-      {!isLoading && users !== undefined && users.length > 0 ? (
-        <UserTable
-          users={users}
+      {!isLoading && transactions !== undefined && transactions.length > 0 ? (
+        <TransactionTable
+          transactions={transactions}
           paramsName="page"
           page={page ? parseInt(page) : 1}
-          lastPage={lastPage ?? 3}
-          updateUsers={updateUsers}
-          updateUsersCount={updateUsersCount}
+          lastPage={lastPage ?? 1}
+          updateTransactions={updateTransactions}
+          updateTransactionsCount={updateTransactionsCount}
         />
       ) : (
         <div className="my-64 flex items-center justify-center">
