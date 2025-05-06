@@ -4,6 +4,7 @@ packages:
 
 catalog:
   "@next/bundle-analyzer": ^15.2.3
+  "@tanstack/react-query-devtools": "^5.74.11"
   "@types/node": ^22.13.10
   "@yopem-ui/react-icons": ^0.0.5
   "dotenv-cli": ^8.0.0

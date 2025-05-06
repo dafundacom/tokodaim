@@ -53,7 +53,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "catalog:",
     "@tailwindcss/postcss": "catalog:tailwindcss",
-    "@tanstack/react-query-devtools": "^5.74.11",
+    "@tanstack/react-query-devtools": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",

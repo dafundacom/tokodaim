@@ -9,6 +9,9 @@ catalogs:
     '@next/bundle-analyzer':
       specifier: ^15.2.3
       version: 15.3.1
+    '@tanstack/react-query-devtools':
+      specifier: ^5.74.11
+      version: 5.74.11
     '@types/node':
       specifier: ^22.13.10
       version: 22.13.10
@@ -179,7 +182,7 @@ importers:
         specifier: catalog:tailwindcss
         version: 4.0.14
       '@tanstack/react-query-devtools':
-        specifier: ^5.74.11
+        specifier: 'catalog:'
         version: 5.74.11(@tanstack/react-query@5.69.0(react@19.1.0))(react@19.1.0)
       '@types/node':
         specifier: 'catalog:'
@@ -279,7 +282,7 @@ importers:
         specifier: catalog:tailwindcss
         version: 4.0.14
       '@tanstack/react-query-devtools':
-        specifier: ^5.74.11
+        specifier: 'catalog:'
         version: 5.74.11(@tanstack/react-query@5.69.0(react@19.1.0))(react@19.1.0)
       '@types/node':
         specifier: 'catalog:'
