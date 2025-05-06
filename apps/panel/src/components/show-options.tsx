@@ -21,7 +21,7 @@ interface ShowOptionsProps {
   editUrlNewTab?: string | UrlObject
   translateUrl?: string | UrlObject
   viewUrl?: string | UrlObject
-  description: string
+  description: string | null
 }
 
 const ShowOptions: React.FC<ShowOptionsProps> = (props) => {

@@ -40,12 +40,9 @@ export const digiflazzRouter = createTRPCRouter({
         sku: z.string(),
         customerNo: z.string(),
         refId: z.string(),
-        cmd: z.enum([
-          "inq-pasca",
-          "pay-pasca",
-          "status-pasca",
-          "pln-subscribe",
-        ]),
+        cmd: z
+          .enum(["inq-pasca", "pay-pasca", "status-pasca", "pln-subscribe"])
+          .nullish(),
         testing: z.boolean(),
         message: z.string(),
       }),

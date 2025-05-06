@@ -128,7 +128,7 @@ export default function UserTable(props: UserTableProps) {
                     }}
                     editUrl={`/user/edit/${user.id}`}
                     viewUrl={`/user/${user.username}`}
-                    description={user.name!}
+                    description={user.name}
                   />
                 </TableCell>
               </TableRow>
