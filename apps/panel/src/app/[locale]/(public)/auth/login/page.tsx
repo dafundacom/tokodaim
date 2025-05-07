@@ -1,18 +1,10 @@
 import NextLink from "next/link"
-import { redirect } from "next/navigation"
-import { getCurrentSession } from "@tokodaim/auth"
 import { getScopedI18n } from "@tokodaim/locales/server"
 import { Button, Icon as InternalIcon } from "@tokodaim/ui"
 import { Icon } from "@yopem-ui/react-icons"
 
 export default async function Page() {
   const ts = await getScopedI18n("user")
-
-  const { session } = await getCurrentSession()
-
-  if (session) {
-    redirect("/")
-  }
 
   return (
     <div className="container mx-auto flex h-screen w-screen flex-col items-center justify-center">
