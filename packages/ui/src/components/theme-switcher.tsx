@@ -8,16 +8,26 @@ import { Button } from "./button"
 
 export const ThemeSwitcher: React.FunctionComponent = () => {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" className="size-10 px-0 cursor-pointer">
+        <div className="size-5" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    )
   }
 
   return (
     <Button
       variant="ghost"
       className="size-10 px-0 cursor-pointer"
-      onClick={toggleTheme}
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? (
         <Icon name="Sun" className="transition-all" />
