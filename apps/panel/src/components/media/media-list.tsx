@@ -131,8 +131,8 @@ const MediaList: React.FunctionComponent<MediaListProps> = (props) => {
                 )
               }),
             )
-          : medias?.pages.map((media, i) =>
-              media.medias.map((media) => {
+          : medias?.pages.map((media) =>
+              media.medias.map((media, i) => {
                 return (
                   <div key={i}>
                     <NextImage
