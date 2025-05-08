@@ -32,6 +32,7 @@ import { slugify, uniqueCharacter } from "@tokodaim/utils"
 import { Icon } from "@yopem-ui/react-icons"
 import { useForm } from "react-hook-form"
 
+import UpdatePriceListButton from "@/components/update-price-list-button"
 import { api } from "@/lib/trpc/react"
 
 interface FormValues {
@@ -117,6 +118,9 @@ export default function ManualTopUpForm(props: ManualTopUpFormProps) {
 
   return (
     <div className="mx-0 space-y-4 lg:mx-8 lg:p-5">
+      <div className="flex items-end justify-end">
+        <UpdatePriceListButton />
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex max-w-2xl flex-col space-y-4">
