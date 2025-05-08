@@ -20,7 +20,7 @@ const DeleteMediaButton: React.FC<DeleteMediaButtonProps> = (props) => {
       <Button
         aria-label="Delete Media"
         size="icon"
-        className="absolute z-20 size-[30px] rounded-full"
+        className="text-background absolute z-20 size-[30px] rounded-full"
         variant="danger"
         onClick={() => setOpenDialog(true)}
       >

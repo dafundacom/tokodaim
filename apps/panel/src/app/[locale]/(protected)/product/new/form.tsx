@@ -327,7 +327,7 @@ export default function CreateProductForm(props: CreateProductFormProps) {
                   </div>
                   <Button
                     variant="outline"
-                    className="border-none p-0"
+                    className="border-none bg-transparent p-0"
                     onClick={() => setShowMetaData(!showMetaData)}
                   >
                     {showMetaData ? (

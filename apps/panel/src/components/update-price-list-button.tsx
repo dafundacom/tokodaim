@@ -38,7 +38,6 @@ const UpdatePriceListButton = () => {
 
   return (
     <Button
-      className="cursor-pointer"
       onClick={() => {
         void populatePriceList()
       }}
