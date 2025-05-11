@@ -4,6 +4,7 @@ import { mediaRouter } from "./routes/media"
 import { paymentRouter } from "./routes/payment"
 import { paymentMethodRouter } from "./routes/payment-method"
 import { productRouter } from "./routes/product"
+import { promoRouter } from "./routes/promo"
 import { transactionRouter } from "./routes/transaction"
 import { tripayRouter } from "./routes/tripay"
 import { userRouter } from "./routes/user"
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   payment: paymentRouter,
   paymentMethod: paymentMethodRouter,
   product: productRouter,
+  promo: promoRouter,
   transaction: transactionRouter,
   tripay: tripayRouter,
   user: userRouter,

@@ -63,6 +63,7 @@
     "@aws-sdk/client-s3": "^3.758.0",
     "@tokodaim/auth": "workspace:*",
     "@tokodaim/db": "workspace:*",
+    "@tokodaim/utils": "workspace:*",
     "@trpc/server": "catalog:trpc",
     "digiflazz-sdk": "^0.1.12",
     "superjson": "catalog:",

@@ -2,6 +2,7 @@ CREATE TYPE "public"."language" AS ENUM('id', 'en');--> statement-breakpoint
 CREATE TYPE "public"."media_type" AS ENUM('image', 'audio', 'video', 'document', 'other');--> statement-breakpoint
 CREATE TYPE "public"."payment_provider" AS ENUM('tripay', 'midtrans', 'duitku', 'xendit');--> statement-breakpoint
 CREATE TYPE "public"."payment_status" AS ENUM('unpaid', 'paid', 'failed', 'expired', 'error', 'refunded');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('published', 'draft', 'rejected', 'in_review');--> statement-breakpoint
 CREATE TYPE "public"."transaction_provider" AS ENUM('digiflazz', 'apigames');--> statement-breakpoint
 CREATE TYPE "public"."transaction_status" AS ENUM('processing', 'success', 'failed', 'error');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('user', 'member', 'author', 'admin');--> statement-breakpoint
@@ -104,6 +105,31 @@ CREATE TABLE "products" (
 	CONSTRAINT "products_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
+CREATE TABLE "promos" (
+	"id" text PRIMARY KEY NOT NULL,
+	"language" "language" DEFAULT 'id' NOT NULL,
+	"title" text NOT NULL,
+	"slug" text NOT NULL,
+	"content" text NOT NULL,
+	"excerpt" text NOT NULL,
+	"brand" text,
+	"meta_title" text,
+	"meta_description" text,
+	"status" "status" DEFAULT 'draft' NOT NULL,
+	"promo_translation_id" text NOT NULL,
+	"featured_image" text,
+	"featured" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "promos_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "promo_translations" (
+	"id" text PRIMARY KEY NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE "transactions" (
 	"id" text PRIMARY KEY NOT NULL,
 	"invoice_id" text NOT NULL,
@@ -177,6 +203,7 @@ ALTER TABLE "medias" ADD CONSTRAINT "medias_author_id_users_id_fk" FOREIGN KEY (
 ALTER TABLE "payments" ADD CONSTRAINT "payments_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "_product_items" ADD CONSTRAINT "_product_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "_product_items" ADD CONSTRAINT "_product_items_item_id_items_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."items"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "promos" ADD CONSTRAINT "promos_promo_translation_id_promo_translations_id_fk" FOREIGN KEY ("promo_translation_id") REFERENCES "public"."promo_translations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
