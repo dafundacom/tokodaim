@@ -10,7 +10,7 @@ export default async function PublicLayout({
   const { user } = await getCurrentSession()
 
   if (user) {
-    redirect("/dashboard")
+    redirect("/")
   }
 
   return (

@@ -2,14 +2,14 @@ import * as React from "react"
 import type { TransactionStatus } from "@tokodaim/db"
 import { Badge, cn, type BadgeProps } from "@tokodaim/ui"
 
-interface DashboardTransactionStatusBadgeProps extends BadgeProps {
+interface TransactionStatusBadgeProps extends BadgeProps {
   status: TransactionStatus
   children: React.ReactNode
 }
 
-const DashboardTransactionStatusBadge: React.FC<
-  DashboardTransactionStatusBadgeProps
-> = (props) => {
+const TransactionStatusBadge: React.FC<TransactionStatusBadgeProps> = (
+  props,
+) => {
   const { status, className, children } = props
 
   const statusToVariantMap: Record<TransactionStatus, BadgeProps["variant"]> = {
@@ -27,4 +27,4 @@ const DashboardTransactionStatusBadge: React.FC<
   )
 }
 
-export default DashboardTransactionStatusBadge
+export default TransactionStatusBadge

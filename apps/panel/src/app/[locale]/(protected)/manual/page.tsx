@@ -21,12 +21,12 @@ export async function generateMetadata(props: {
     title: "Manual Top Up",
     description: "Manual Top Up",
     alternates: {
-      canonical: `${siteUrl}/dashboard/manual`,
+      canonical: `${siteUrl}/manual`,
     },
     openGraph: {
       title: "Manual Top Up",
       description: "Manual Top Up",
-      url: `${siteUrl}/dashboard/manual`,
+      url: `${siteUrl}/manual`,
       locale: locale,
     },
   }

@@ -42,7 +42,7 @@ export default function CreateVoucherForm() {
   const { mutate: createVoucher } = api.voucher.create.useMutation({
     onSuccess: () => {
       form.reset()
-      router.push("/dashboard/voucher")
+      router.push("/voucher")
       toast({ variant: "success", description: ts("create_success") })
     },
     onError: (error) => {

@@ -242,7 +242,7 @@ export const promoRouter = createTRPCRouter({
         }
       }
     }),
-  dashboard: adminProtectedProcedure
+  panel: adminProtectedProcedure
     .input(
       z.object({
         language: languageType,
@@ -354,7 +354,7 @@ export const promoRouter = createTRPCRouter({
       }
     }
   }),
-  countDashboard: publicProcedure.query(async ({ ctx }) => {
+  countPanel: publicProcedure.query(async ({ ctx }) => {
     try {
       const data = await ctx.db.select({ value: count() }).from(promoTable)
 
@@ -428,7 +428,7 @@ export const promoRouter = createTRPCRouter({
         }
       }
     }),
-  searchDashboard: publicProcedure
+  searchPanel: publicProcedure
     .input(z.object({ language: languageType, searchQuery: z.string() }))
     .query(async ({ ctx, input }) => {
       try {
@@ -465,7 +465,7 @@ export const promoRouter = createTRPCRouter({
       }
     }),
   create: adminProtectedProcedure
-    .input(insertPromoSchema)
+    .input(insertPromoSchema.omit({ slug: true, promoTranslationId: true }))
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = await generateUniquePromoSlug(input.title)
@@ -574,7 +574,7 @@ export const promoRouter = createTRPCRouter({
       }
     }),
   translate: adminProtectedProcedure
-    .input(translatePromoSchema)
+    .input(translatePromoSchema.omit({ slug: true }))
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = await generateUniquePromoSlug(input.title)
