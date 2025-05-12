@@ -8,6 +8,7 @@ import {
   ThemeSwitcher,
 } from "@tokodaim/ui"
 
+import LogOutButton from "@/components/auth/logout-button"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 
 export default async function ProtectedLayout({
@@ -23,6 +24,7 @@ export default async function ProtectedLayout({
     return (
       <div className="flex h-screen items-center justify-center">
         <h1 className="text-3xl font-bold">Access Denied</h1>
+        <LogOutButton />
       </div>
     )
   }
