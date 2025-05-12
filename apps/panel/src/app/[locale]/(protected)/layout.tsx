@@ -22,7 +22,7 @@ export default async function ProtectedLayout({
 
   if (!isAdmin) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center space-y-4">
         <h1 className="text-3xl font-bold">Access Denied</h1>
         <LogOutButton />
       </div>
