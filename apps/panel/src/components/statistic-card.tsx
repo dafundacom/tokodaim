@@ -12,6 +12,7 @@ const StatisticCard = async () => {
   const transactions = await api.transaction.count()
   const payments = await api.payment.count()
   const vouchers = await api.voucher.count()
+  const promos = await api.promo.count()
 
   const medias = await api.media.count()
   const users = await api.user.count()
@@ -79,6 +80,19 @@ const StatisticCard = async () => {
           </CardTitle>
           <div className="absolute top-4 right-4">
             <Icon name="TicketPercent" className="size-5" />
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Promo */}
+      <Card className="@container/card">
+        <CardHeader className="relative">
+          <CardDescription>{t("promos")}</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {promos}
+          </CardTitle>
+          <div className="absolute top-4 right-4">
+            <Icon name="ReceiptText" className="size-5" />
           </div>
         </CardHeader>
       </Card>

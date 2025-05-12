@@ -20,6 +20,7 @@ import {
   Images,
   Package,
   Package2,
+  ReceiptText,
   TicketPercent,
   Users,
   Wallet,
@@ -68,7 +69,11 @@ export function AppSidebar(props: AppSidebarProps) {
         url: "/voucher",
         icon: TicketPercent,
       },
-
+      {
+        name: t("promos"),
+        url: "/promo",
+        icon: ReceiptText,
+      },
       {
         name: "Manual",
         url: "/manual",
