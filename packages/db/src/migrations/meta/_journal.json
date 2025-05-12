@@ -15,6 +15,13 @@
       "when": 1747022821027,
       "tag": "0001_yellow_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747024143826,
+      "tag": "0002_watery_silhouette",
+      "breakpoints": true
     }
   ]
 }

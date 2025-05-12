@@ -30,7 +30,7 @@ export const promoTable = pgTable("promos", {
   status: statusEnum("status").notNull().default("draft"),
   promoTranslationId: text("promo_translation_id")
     .notNull()
-    .references(() => promoTranslationTable.id),
+    .references(() => promoTranslationTable.id, { onDelete: "cascade" }),
   featuredImage: text("featured_image"),
   featured: boolean("featured").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),

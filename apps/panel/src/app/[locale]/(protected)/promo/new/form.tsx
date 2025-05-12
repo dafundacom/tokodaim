@@ -38,7 +38,7 @@ interface FormValues {
   title: string
   brand?: string
   language?: LanguageType
-  excerpt: string
+  excerpt?: string
   metaTitle?: string
   metaDescription?: string
   status?: StatusType

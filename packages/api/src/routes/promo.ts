@@ -465,16 +465,23 @@ export const promoRouter = createTRPCRouter({
       }
     }),
   create: adminProtectedProcedure
-    .input(insertPromoSchema.omit({ slug: true, promoTranslationId: true }))
+    .input(
+      insertPromoSchema
+        .omit({
+          slug: true,
+          promoTranslationId: true,
+        })
+        .extend({
+          excerpt: z.string().optional(),
+        }),
+    )
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = await generateUniquePromoSlug(input.title)
-        const generatedExcerpt = !input.excerpt
-          ? trimText(input.content, 160)
-          : input.excerpt
+        const generatedExcerpt = trimText(input.content, 160) || input.excerpt
         const generatedMetaTitle = input.title || input.metaTitle
         const generatedMetaDescription =
-          generatedExcerpt || input.metaDescription
+          generatedExcerpt ?? input.metaDescription
 
         const promoTranslation = await ctx.db
           .insert(promoTranslationTable)
@@ -488,7 +495,7 @@ export const promoRouter = createTRPCRouter({
           .values({
             ...input,
             slug: slug,
-            excerpt: generatedExcerpt,
+            excerpt: generatedExcerpt!,
             metaTitle: generatedMetaTitle,
             metaDescription: generatedMetaDescription,
             promoTranslationId: promoTranslation[0].id,
