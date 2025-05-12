@@ -26,7 +26,6 @@ RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
-COPY .prettierrc .prettierrc
 
 RUN pnpm turbo run build --filter=@tokodaim/panel...
 
