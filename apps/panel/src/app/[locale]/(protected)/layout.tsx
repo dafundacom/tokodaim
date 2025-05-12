@@ -1,4 +1,5 @@
 import * as React from "react"
+import { redirect } from "next/navigation"
 import { getCurrentSession } from "@tokodaim/auth"
 import {
   Separator,
@@ -19,6 +20,10 @@ export default async function ProtectedLayout({
   const { user } = await getCurrentSession()
 
   const isAdmin = user?.role === "admin"
+
+  if (!user) {
+    redirect("/auth/login")
+  }
 
   if (!isAdmin) {
     return (
