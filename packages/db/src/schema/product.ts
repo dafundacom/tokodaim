@@ -43,10 +43,10 @@ export const productItemTable = pgTable(
   {
     productId: text("product_id")
       .notNull()
-      .references(() => productTable.id),
+      .references(() => productTable.id, { onDelete: "cascade" }),
     itemId: text("item_id")
       .notNull()
-      .references(() => itemTable.id),
+      .references(() => itemTable.id, { onDelete: "cascade" }),
   },
   (t) => ({
     compoundKey: primaryKey({

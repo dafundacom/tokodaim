@@ -1,15 +1,11 @@
 import * as React from "react"
-import type { SelectDigiflazzPriceList, SelectItem } from "@tokodaim/db"
+import type {
+  SelectItem as SelectDataItem,
+  SelectDigiflazzPriceList,
+} from "@tokodaim/db"
 import { useI18n, useScopedI18n } from "@tokodaim/locales/client"
 import {
   Button,
-  cn,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
   Form,
   FormControl,
   FormField,
@@ -17,12 +13,14 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  ScrollArea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   toast,
 } from "@tokodaim/ui"
-import { Icon } from "@yopem-ui/react-icons"
 import { useForm } from "react-hook-form"
 
 import { api } from "@/lib/trpc/react"
@@ -37,7 +35,7 @@ interface FormValues {
 }
 
 export type SelectedItemsProps = Pick<
-  SelectItem,
+  SelectDataItem,
   "id" | "sku" | "price" | "title" | "originalPrice"
 >
 
@@ -137,7 +135,6 @@ const AddItems: React.FunctionComponent<AddItemsProps> = (props) => {
               )}
             />
             <div>
-              <FormLabel>SKU</FormLabel>
               <FormField
                 control={form.control}
                 name="sku"
@@ -146,68 +143,35 @@ const AddItems: React.FunctionComponent<AddItemsProps> = (props) => {
                 }}
                 render={({ field }) => (
                   <FormItem>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-full justify-between",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value
-                              ? priceLists.find(
-                                  (priceList) => field.value === priceList.sku,
-                                )?.productName
-                              : ts("placeholder")}
-                            <Icon
-                              name="ChevronDown"
-                              className="ml-2 size-4 shrink-0 opacity-50"
-                            />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-72 p-0" align="start">
-                        <Command>
-                          <CommandInput
-                            placeholder={ts("search_placeholder")}
-                          />
-                          <CommandEmpty>{ts("not_found")}</CommandEmpty>
-                          <CommandGroup>
-                            <CommandList>
-                              {priceLists.map((priceList) => (
-                                <CommandItem
-                                  value={priceList.productName}
-                                  key={priceList.sku}
-                                  className="hover:bg-muted cursor-pointer px-2 py-1"
-                                  onSelect={() => {
-                                    form.setValue("sku", priceList.sku)
-                                    form.setValue(
-                                      "originalPrice",
-                                      priceList.price,
-                                    )
-                                  }}
-                                >
-                                  <Icon
-                                    name="Check"
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      priceList.sku === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                  {priceList.productName} ({priceList.sku})
-                                </CommandItem>
-                              ))}
-                            </CommandList>
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
+                    <FormLabel>SKU</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value)
+                        const selectedItem = priceLists.find(
+                          (item) => item.sku === value,
+                        )
+                        if (selectedItem) {
+                          form.setValue("title", selectedItem.productName)
+                          form.setValue("originalPrice", selectedItem.price)
+                        }
+                      }}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={ts("placeholder")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <ScrollArea className="max-h-[250px]">
+                          {priceLists.map((priceList) => (
+                            <SelectItem value={priceList.sku}>
+                              {priceList.productName}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />

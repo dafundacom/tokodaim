@@ -230,7 +230,7 @@ export const productRouter = createTRPCRouter({
   }),
 
   create: adminProtectedProcedure
-    .input(insertProductSchema)
+    .input(insertProductSchema.omit({ slug: true }))
     .mutation(async ({ ctx, input }) => {
       try {
         const slug = await generateUniqueProductSlug(input.title)

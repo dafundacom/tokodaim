@@ -2,9 +2,8 @@
 
 import * as React from "react"
 import { useSearchParams } from "next/navigation"
-import { useI18n, useScopedI18n } from "@tokodaim/locales/client"
+import { useScopedI18n } from "@tokodaim/locales/client"
 
-import AddNew from "@/components/add-new"
 import { api } from "@/lib/trpc/react"
 import ItemTable from "./table"
 
@@ -13,7 +12,6 @@ export default function ItemContent() {
 
   const page = searchParams.get("page")
 
-  const t = useI18n()
   const ts = useScopedI18n("item")
 
   const perPage = 10
@@ -40,7 +38,6 @@ export default function ItemContent() {
 
   return (
     <>
-      <AddNew title={t("items")} url="/item/new" />
       {!isLoading && items !== undefined && items.length > 0 ? (
         <ItemTable
           items={items}
