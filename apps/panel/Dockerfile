@@ -1,46 +1,34 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
 RUN apk add --no-cache libc6-compat
 RUN apk update
 
-# Set working directory
+# Install dependencies only when needed
+FROM base AS deps
 WORKDIR /app
-RUN npm install --global pnpm turbo
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN pnpm turbo prune --scope=@tokodaim/panel --docker
+RUN npm run build
 
-# Add lockfile and package.json's of isolated subworkspace
-FROM node:22-alpine AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update
-WORKDIR /app
-RUN npm install --global pnpm turbo
-
-
-# First install the dependencies (as they change less often)
-COPY .gitignore .gitignore
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-
-RUN pnpm install
-
-# Build the project
-COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
-
-RUN pnpm turbo run build --filter=@tokodaim/panel...
-
-FROM node:22-alpine AS runner
+# Production image, copy all the files and run the app
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nextjs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-COPY --from=installer /app .
-COPY --from=installer --chown=nextjs:nextjs /app ./
+EXPOSE 3000
 
-CMD cd packages/web && npm run start
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]
