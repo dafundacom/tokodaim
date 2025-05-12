@@ -20,6 +20,7 @@
     "test": {},
     "lint": {},
     "lint:fix": {},
+    "start": {},
     "dev": {
       "cache": false,
       "persistent": true
