@@ -25,8 +25,7 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "start": "pnpm start",
-    "start:local": "pnpm with-env next start",
+    "start": "pnpm with-env next start",
     "typecheck": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },

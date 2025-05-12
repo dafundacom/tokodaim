@@ -24,13 +24,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     appEnv === "production" ? siteUrl : "http://localhost:3000",
   ),
-  title: "Panel",
+  title: {
+    template: `%s | ${siteTitle}`,
+    default: `Panel | ${siteTitle}`,
+  },
   description: "Tokodaim Panel",
   openGraph: {
     title: "Panel",
     description: "Tokodaim Panel",
     url: siteUrl,
-    siteName: siteTitle,
+    siteName: `Panel | ${siteTitle}`,
   },
   twitter: {
     card: "summary_large_image",
