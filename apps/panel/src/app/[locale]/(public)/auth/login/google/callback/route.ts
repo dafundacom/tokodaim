@@ -1,15 +1,17 @@
+/* eslint-disable no-restricted-imports */
+
 import { cookies } from "next/headers"
 import {
   createSession,
   generateSessionToken,
   globalGETRateLimit,
-  googleOAuth,
   setSessionTokenCookie,
 } from "@tokodaim/auth"
 import { ObjectParser } from "@tokodaim/utils"
 import { decodeIdToken, type OAuth2Tokens } from "arctic"
 
 import { api } from "@/lib/trpc/server"
+import { googleOAuth } from "../route"
 
 export async function GET(request: Request): Promise<Response> {
   const rateLimit = await globalGETRateLimit()
