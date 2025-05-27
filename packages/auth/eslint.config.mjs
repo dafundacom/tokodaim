@@ -6,4 +6,9 @@ export default [
     ignores: ["dist/**"],
   },
   ...baseConfig,
+  {
+    rules: {
+      "@typescript-eslint/no-non-null-assertion": "off",
+    },
+  },
 ]
