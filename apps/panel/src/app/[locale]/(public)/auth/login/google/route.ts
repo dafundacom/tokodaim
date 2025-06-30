@@ -1,16 +1,8 @@
 /* eslint-disable no-restricted-properties */
-/* eslint-disable turbo/no-undeclared-env-vars */
 
 import { cookies } from "next/headers"
-import { globalGETRateLimit } from "@tokodaim/auth"
-import { generateCodeVerifier, generateState, Google } from "arctic"
-
-export const googleOAuth = new Google(
-  process.env["GOOGLE_CLIENT_ID"] ?? "",
-  process.env["GOOGLE_CLIENT_SECRET"] ?? "",
-  process.env["GOOGLE_REDIRECT_URL"] ??
-    "http://localhost:3000/login/google/callback",
-)
+import { globalGETRateLimit, googleOAuth } from "@tokodaim/auth"
+import { generateCodeVerifier, generateState } from "arctic"
 
 export async function GET(): Promise<Response> {
   const rateLimit = await globalGETRateLimit()

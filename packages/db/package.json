@@ -47,7 +47,7 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,mts,js,jsx,mjs,json,md}\"",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
-    "migrate": "pnpm with-env npx tsx -r ./src/migrate.ts",
+    "migrate": "pnpm with-env drizzle-kit migrate",
     "generate": "pnpm with-env drizzle-kit generate",
     "push": "pnpm with-env drizzle-kit push",
     "studio": "pnpm with-env drizzle-kit studio",
